@@ -23,7 +23,8 @@ double const ACCELERATION = 100;
 double const INIT_VEL = 100;
 double const PELLET_TIME = 1;
 
-void on_key(char key, key_event_type_t type, double held_time, void *object, scene_t *scene) {
+void on_key(char key, key_event_type_t type, double held_time, void *object,
+            scene_t *scene, bool *play) {
     if (type == KEY_RELEASED) {
         body_set_velocity(object, (vector_t){0, 0});
     } else if (type == KEY_PRESSED) {
@@ -87,7 +88,7 @@ int main(int argc, char *argv[]) {
 
     sdl_on_key((key_handler_t)on_key);
     double time_passed = 0;
-    while (!sdl_is_done(scene, pacman_body)) {
+    while (!sdl_is_done(scene, pacman_body, NULL)) {
         double dt = time_since_last_tick();
         remove_pellets(pacman_body, PACMAN_RADIUS, PELLET_RADIUS, scene);
         scene_tick(scene, dt);

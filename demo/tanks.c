@@ -62,8 +62,12 @@ int main(int argc, char *argv[]) {
     make_pause_button(scene);
 
     scene_t *pause_scene = scene_init();
+    bool *play = malloc(sizeof(bool));
+    *play = true;
 
-    while (!sdl_is_done(scene, scene_get_body(scene, 0))) {
+    sdl_on_key((key_handler_t)on_key_push);
+
+    while (!sdl_is_done(scene, scene_get_body(scene, 0), play)) {
         double dt = time_since_last_tick();
         sdl_render_scene(scene);
 

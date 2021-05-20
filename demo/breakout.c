@@ -152,7 +152,7 @@ void set_up_board(scene_t *scene) {
 }
 
 void on_key_tap(char key, key_event_type_t type, double held_time,
-                void *object, scene_t *scene) {
+                void *object, scene_t *scene, bool *play) {
     if (type == KEY_RELEASED) {
         body_set_velocity(object, (vector_t){0, 0});
     } else if (type == KEY_PRESSED) {
@@ -203,7 +203,7 @@ int main(int argc, char *argv[]) {
 
     sdl_on_key((key_handler_t)on_key_tap);
     double time_passed = 0;
-    while (!sdl_is_done(scene, scene_get_body(scene, 0))) {
+    while (!sdl_is_done(scene, scene_get_body(scene, 0), NULL)) {
         double dt = time_since_last_tick();
 
         stop_boundary(scene, TOP_RIGHT_COORD, BOTTOM_LEFT_COORD, BUFFER);

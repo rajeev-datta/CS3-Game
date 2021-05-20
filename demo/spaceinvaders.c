@@ -41,10 +41,12 @@ const double SPACESHIP_MAJOR = 40;
 const double SPACESHIP_MINOR = 20;
 
 void spaceship_shoot(scene_t *scene, void *body) {
-    list_t *bullet = animate_rectangle(body_get_centroid(body), BULLET_WIDTH, BULLET_LENGTH);
+    list_t *bullet = animate_rectangle(body_get_centroid(body), BULLET_WIDTH,
+                                       BULLET_LENGTH);
     char *space_ship_bullet_info = malloc(sizeof(char *));
     *space_ship_bullet_info = SPACESHIP_BULLET;
-    body_t *bullet_body = body_init_with_info(bullet, BULLET_MASS, GREEN, space_ship_bullet_info, free);
+    body_t *bullet_body = body_init_with_info(bullet, BULLET_MASS,
+                                              GREEN, space_ship_bullet_info, free);
     body_set_velocity(bullet_body, BULLET_INIT_VEL);
     for (size_t i = 0; i < scene_bodies(scene); i++) {
         if (*(char *) body_get_info(scene_get_body(scene, i)) == INVADER_INFO) {
@@ -55,10 +57,12 @@ void spaceship_shoot(scene_t *scene, void *body) {
 }
 
 void invader_shoot(scene_t *scene, void *body) {
-    list_t *bullet = animate_rectangle(body_get_centroid(body), BULLET_WIDTH, BULLET_LENGTH);
+    list_t *bullet = animate_rectangle(body_get_centroid(body),
+                                       BULLET_WIDTH, BULLET_LENGTH);
     char *invader_bullet_info = malloc(sizeof(char *));
     *invader_bullet_info = INVADER_BULLET;
-    body_t *bullet_body = body_init_with_info(bullet, BULLET_MASS, GREY, invader_bullet_info, free);
+    body_t *bullet_body = body_init_with_info(bullet, BULLET_MASS, GREY,
+                                              invader_bullet_info, free);
     body_set_velocity(bullet_body, vec_negate(BULLET_INIT_VEL));
     scene_add_body(scene, bullet_body);
     for (size_t i = 0; i < scene_bodies(scene); i++) {
@@ -73,7 +77,8 @@ void is_shoot(scene_t *scene, body_t *body) {
     body_t *closest = scene_get_body(scene, 0);
     for (size_t i = 0; i < scene_bodies(scene); i++) {
         if (*(char *) body_get_info(scene_get_body(scene, i)) == INVADER_INFO) {
-            double curr_dist = fabs(body_get_centroid(body).x - body_get_centroid(scene_get_body(scene, i)).x);
+            double curr_dist = fabs(body_get_centroid(body).x
+                                   - body_get_centroid(scene_get_body(scene, i)).x);
             if (curr_dist < min_distance) {
                 min_distance = curr_dist;
                 closest = scene_get_body(scene, i);
@@ -83,7 +88,8 @@ void is_shoot(scene_t *scene, body_t *body) {
     invader_shoot(scene, closest);
 }
 
-void on_key_press(char key, key_event_type_t type, double held_time, void *object, scene_t *scene) {
+void on_key_press(char key, key_event_type_t type, double held_time,
+                  void *object, scene_t *scene, bool *play) {
     if (object != NULL && !body_is_removed(object)
         && *(char *)body_get_info(object) == SPACESHIP_INFO) {
         if (type == KEY_RELEASED) {
@@ -145,7 +151,7 @@ int main(int argc, char *argv[]) {
     sdl_on_key((key_handler_t)on_key_press);
     double time_passed = 0;
     while (*(char *)body_get_info(scene_get_body(scene, 0)) == SPACESHIP_INFO && 
-            !sdl_is_done(scene, scene_get_body(scene, 0))) {
+            !sdl_is_done(scene, scene_get_body(scene, 0), NULL)) {
         double dt = time_since_last_tick();
         wrapping_boundary(scene, TOP_RIGHT_COORD, INVADER_RADIUS, SPACING);
         stop_boundary(scene, TOP_RIGHT_COORD, BOTTOM_LEFT_COORD, SPACESHIP_MAJOR);

@@ -120,7 +120,7 @@ void sdl_init(vector_t min, vector_t max) {
     renderer = SDL_CreateRenderer(window, -1, 0);
 }
 
-bool sdl_is_done(scene_t *scene, void *object) {
+bool sdl_is_done(scene_t *scene, void *object, bool *play) {
     SDL_Event *event = malloc(sizeof(*event));
     assert(event != NULL);
 
@@ -146,7 +146,7 @@ bool sdl_is_done(scene_t *scene, void *object) {
                 double held_time = (timestamp - key_start_timestamp) / MS_PER_S;
                 assert(object != NULL);
                 if (!body_is_removed(object)) {
-                    key_handler(key, type, held_time, object, scene);
+                    key_handler(key, type, held_time, object, scene, play);
                 }
                 break;
         }

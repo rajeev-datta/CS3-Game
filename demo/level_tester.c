@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
         scene_add_body(scene, list_get(walls, i));
     }
 
-    while (!sdl_is_done(scene, scene_get_body(scene, 0))) {
+    while (!sdl_is_done(scene, scene_get_body(scene, 0), NULL)) {
         double dt = time_since_last_tick();
         sdl_render_scene(scene);
 

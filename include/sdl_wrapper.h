@@ -37,10 +37,12 @@ typedef enum {
  * @param key a character indicating which key was pressed
  * @param type the type of key event (KEY_PRESSED or KEY_RELEASED)
  * @param held_time if a press event, the time the key has been held in seconds
- * @param pacman a void * that could be of pacman's body
+ * @param body a void * that could be a body
+ * @param scene a scene_t representing the scene
+ * @param play a bool representing if the game is playing or not
  */
 typedef void (*key_handler_t)(char key, key_event_type_t type, double held_time,
-                              void *pacman, scene_t *scene);
+                              void *body, scene_t *scene, bool *play);
 
 /**
  * Initializes the SDL window and renderer.
@@ -55,10 +57,12 @@ void sdl_init(vector_t min, vector_t max);
  * Processes all SDL events and returns whether the window has been closed.
  * This function must be called in order to handle keypresses.
  *
- * @param pacman a void * that could be of pacman's body
+ * @param scene a scene_t representing the scene
+ * @param body a void * that could be a body
+ * @param play a boolean saying if we are playing the game
  * @return true if the window was closed, false otherwise
  */
-bool sdl_is_done(scene_t *scene, void *pacman);
+bool sdl_is_done(scene_t *scene, void *body, bool *play);
 
 /**
  * Clears the screen. Should be called before drawing polygons in each frame.

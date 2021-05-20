@@ -80,6 +80,21 @@ list_t *animate_rectangle(vector_t center, double length, double height) {
     return rectangle;
 }
 
+list_t *animate_level_1(vector_t top_right, double wall_length, double wall_height) {
+    list_t *walls = list_init((size_t) 5, free);
+    list_t *center_wall = animate_rectangle((vector_t) {top_right.x/2, top_right.y/2}, wall_length, wall_height);
+    list_t *left_top_wall = animate_rectangle((vector_t) {top_right.x/4, top_right.y - (wall_length/2)}, wall_length, wall_height);
+    list_t *left_bottom_wall = animate_rectangle((vector_t) {top_right.x/4, wall_length/2}, wall_length, wall_height);
+    list_t *right_top_wall = animate_rectangle((vector_t) {(top_right.x*3)/4, top_right.y - (wall_length/2)}, wall_length, wall_height);
+    list_t *right_bottom_wall = animate_rectangle((vector_t) {(top_right.x*3)/4, wall_length/2}, wall_length, wall_height);
+    list_add(walls, center_wall);
+    list_add(walls, left_top_wall);
+    list_add(walls, left_bottom_wall);
+    list_add(walls, right_top_wall);
+    list_add(walls, right_bottom_wall);
+    return walls;
+}
+
 list_t *make_star(vector_t center, double r1, double r2, int points) {
     list_t *star = list_init(points, free);
     double angle = M_PI / points;

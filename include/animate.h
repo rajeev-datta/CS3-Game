@@ -39,6 +39,8 @@ list_t *animate_invader(vector_t *center, double radius, int points);
 //Animates a rectangle, used as a bullet
 list_t *animate_rectangle(vector_t center, double length, double height);
 
+list_t *animate_level_1(vector_t top_right, double wall_length, double wall_height);
+
 /**
  *  @brief Makes a star
  *

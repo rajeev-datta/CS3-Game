@@ -21,7 +21,9 @@ const char WALL_INFO = 'w';
 const double BUFFER = 10;
 const double PAUSE_SCALE = 2.0/3;
 const double PAUSE_HEIGHT = 40;
-enum info{pause};
+const double BUTTON_LENGTH = 500;
+const double BUTTON_HEIGHT = 100;
+enum info{pause, resume, restart};
 
 void on_key_push(char key, key_event_type_t type, double held_time,
                  void *object, scene_t *scene, bool *play) {
@@ -47,6 +49,26 @@ void make_pause_button(scene_t *scene) {
     scene_add_body(scene, inner_rect_body);
 }
 
+void set_up_pause_screen(scene_t *scene) {
+    vector_t resume_center = {TOP_RIGHT_COORD.x / 2,
+                              TOP_RIGHT_COORD.y - 1.5 * BUTTON_HEIGHT};
+    list_t *resume = animate_rectangle(resume_center, BUTTON_LENGTH, BUTTON_HEIGHT);
+    int *resume_info = malloc(sizeof(int *));
+    *resume_info = resume;
+    body_t *resume_body = body_init_with_info(resume, INFINITY, RED,
+                                                resume_info, free);
+    scene_add_body(scene, resume_body);
+
+    vector_t restart_center = {resume_center.x,
+                              resume_center.y - 2 * BUTTON_HEIGHT};
+    list_t *restart = animate_rectangle(restart_center, BUTTON_LENGTH, BUTTON_HEIGHT);
+    int *restart_info = malloc(sizeof(int *));
+    *restart_info = restart;
+    body_t *restart_body = body_init_with_info(restart, INFINITY, RED,
+                                                restart_info, free);
+    scene_add_body(scene, restart_body);
+}
+
 int main(int argc, char *argv[]) {
     sdl_init(BOTTOM_LEFT_COORD, TOP_RIGHT_COORD);
     scene_t *scene = scene_init();
@@ -62,6 +84,7 @@ int main(int argc, char *argv[]) {
     make_pause_button(scene);
 
     scene_t *pause_scene = scene_init();
+    set_up_pause_screen(pause_scene);
     bool *play = malloc(sizeof(bool));
     *play = true;
 

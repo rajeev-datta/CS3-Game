@@ -192,6 +192,10 @@ void sdl_draw_polygon(list_t *points, rgb_color_t color) {
     free(y_points);
 }
 
+void sdl_write() {
+    
+}
+
 void sdl_show(void) {
     // Draw boundary lines
     vector_t window_center = get_window_center();

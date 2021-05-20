@@ -78,6 +78,11 @@ void sdl_clear(void);
 void sdl_draw_polygon(list_t *points, rgb_color_t color);
 
 /**
+ * Writes text
+ */
+void sdl_write();
+
+/**
  * Displays the rendered frame on the SDL window.
  * Must be called after drawing the polygons in order to show them.
  */

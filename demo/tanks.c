@@ -29,8 +29,12 @@ const double INIT_POWERUP_HEIGHT = 10;
 const double POWERUP_MASS = 50;
 const int NUM_POWERUPS = 6;
 const int TANK_POWER_UP_TIME = 10;
+enum pause_scene{RESUME_BUT, RESTART_BUT};
+enum info{PAUSE, RESUME, RESTART};
 
-enum info{pause, resume, restart};
+enum scene_indices{
+    PAUSE_BUTTON = 0
+};
 
 enum powerups{
     MACHINE_GUN = 0,
@@ -48,29 +52,29 @@ void on_key_push(char key, key_event_type_t type, double held_time,
     }
 }
 
-void on_mouse(scene_t *scene, double x, double y, bool *play) {
+bool within_rect(body_t *body, vector_t point) {
+    list_t *list = body_get_shape(body);
+    bool within = (point.x >= ((vector_t *)list_get(list, 0))->x
+                  && point.x <= ((vector_t *)list_get(list, 2))->x
+                  && point.y <= ((vector_t *)list_get(list, 1))->y
+                  && point.y >= ((vector_t *)list_get(list, 0))->y);
+
+    list_free(list);
+    return within;
+}
+
+void on_mouse(scene_t *scene, vector_t point, bool *play) {
     if (*play) {
-        // Checks if the mouse is clicking the pause button
-        if (x >= 3 * BUFFER && x <= 3 * BUFFER + PAUSE_SCALE * PAUSE_HEIGHT
-            && y <= TOP_RIGHT_COORD.y - 3 * BUFFER && y >= TOP_RIGHT_COORD.y - PAUSE_HEIGHT - 3 * BUFFER) {
+        if (within_rect(scene_get_body(scene, PAUSE_BUTTON), point)){
             *play = false;
-            return;
         }
     } else {
-        if (x >= TOP_RIGHT_COORD.x/2.0 - BUTTON_LENGTH/2.0 && x <= TOP_RIGHT_COORD.x/2.0 + BUTTON_LENGTH/2.0) {
-            // Checks if the mouse is clicking the resume button
-            if (y <= ((vector_t *)(list_get(body_get_shape(scene_get_body(scene, 0)), 1)))->y
-                     && y >= ((vector_t *)(list_get(body_get_shape(scene_get_body(scene, 0)), 0)))->y) {
-                *play = true;
-            }
-            // Checks if the mouse is clicking the restart button
-            else if (y <= ((vector_t *)(list_get(body_get_shape(scene_get_body(scene, 1)), 1)))->y
-                     && y >= ((vector_t *)(list_get(body_get_shape(scene_get_body(scene, 1)), 0)))->y) {
-                printf("clicked restart");
-            }
+        if (within_rect(scene_get_body(scene, RESUME_BUT), point)) {
+            *play = true;
+        } else if (within_rect(scene_get_body(scene, RESTART_BUT), point)) {
+            printf("clicked restart\n");
         }
     }
-    
 }
 
 void make_pause_button(scene_t *scene) {
@@ -79,7 +83,7 @@ void make_pause_button(scene_t *scene) {
                              TOP_RIGHT_COORD.y - PAUSE_HEIGHT/2 - 3 * BUFFER};
     list_t *big_rect = animate_rectangle(pause_center, width, PAUSE_HEIGHT);
     int *pause_info = malloc(sizeof(int *));
-    *pause_info = pause;
+    *pause_info = PAUSE;
     body_t *big_rect_body = body_init_with_info(big_rect, INFINITY, RED,
                                                 pause_info, free);
     scene_add_body(scene, big_rect_body);

@@ -142,7 +142,7 @@ bool sdl_is_done(scene_t *scene, void *object, bool *play) {
                 double y = event->motion.y;
                 vector_t window_center = get_window_center();
                 vector_t pixel = get_window_position((vector_t){x, y}, window_center);
-                mouse_handler(scene, pixel.x, pixel.y, play);
+                mouse_handler(scene, pixel, play);
             case SDL_KEYDOWN:
             case SDL_KEYUP:
                 // Skip the keypress if no handler is configured

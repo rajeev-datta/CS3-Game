@@ -51,11 +51,10 @@ typedef void (*key_handler_t)(char key, key_event_type_t type, double held_time,
  * Arrow keys have the special values listed above.
  *
  * @param scene a scene_t representing the scene
- * @param x the x-position of the mouse
- * @param y the y-position of the mouse
+ * @param point a vector_t representing the coordinates of the mouse
  * @param play a bool representing if the game is playing or not
  */
-typedef void (*mouse_handler_t)(scene_t *scene, double x, double y, bool *play);
+typedef void (*mouse_handler_t)(scene_t *scene, vector_t point, bool *play);
 
 /**
  * Initializes the SDL window and renderer.

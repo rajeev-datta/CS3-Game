@@ -129,8 +129,10 @@ void make_tank_power_up(scene_t *scene, int type) {
     scene_add_body(scene, power_up_body);
     assert(*(char *)body_get_info(scene_get_body(scene, 0)) == TANK_1_INFO);
     create_tank_powerup_collision(scene, scene_get_body(scene, 0), power_up_body, type);
+    create_partial_destructive_collision(scene, scene_get_body(scene, 0), power_up_body);
     assert(*(char *)body_get_info(scene_get_body(scene, 1)) == TANK_2_INFO);
     create_tank_powerup_collision(scene, scene_get_body(scene, 1), power_up_body, type);
+    create_partial_destructive_collision(scene, scene_get_body(scene, 1), power_up_body);
 }
 
 int main(int argc, char *argv[]) {

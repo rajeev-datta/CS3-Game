@@ -15,4 +15,6 @@ void laser_shoot(scene_t *scene, void *body);
 
 void remote_missle_shoot(scene_t *scene, void *body);
 
+void create_tank_powerup_collision(scene_t *scene, body_t *body1, body_t *powerup, char type);
+
 #endif // #ifndef __POWERUP_H__

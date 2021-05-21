@@ -40,4 +40,12 @@ void remote_missle_shoot(scene_t *scene, void *body) {
     // method to handle the shooting of machine gun
 }
 
+void tank_powerup_fxn(body_t *body1, body_t *body2, vector_t axis, void *aux) {
 
+}
+
+void create_tank_powerup_collision(scene_t *scene, body_t *body1, body_t *powerup, char type) {
+    powerup_aux_t *pow_aux = powerup_aux_init(powerup, type);
+    create_collision(scene, body1, powerup, (collision_handler_t) tank_powerup_fxn,
+                    pow_aux, (free_func_t) free);
+}

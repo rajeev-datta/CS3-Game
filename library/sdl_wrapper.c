@@ -156,8 +156,7 @@ bool sdl_is_done(scene_t *scene, void *object, bool *play) {
                 key_event_type_t type =
                     event->type == SDL_KEYDOWN ? KEY_PRESSED : KEY_RELEASED;
                 double held_time = (timestamp - key_start_timestamp) / MS_PER_S;
-                assert(object != NULL);
-                if (!body_is_removed(object)) {
+                if (object != NULL && !body_is_removed(object)) {
                     key_handler(key, type, held_time, object, scene, play);
                 }
                 break;

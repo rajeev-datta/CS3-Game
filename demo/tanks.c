@@ -35,11 +35,19 @@ void on_key_push(char key, key_event_type_t type, double held_time,
 }
 
 void on_mouse(scene_t *scene, double x, double y, bool *play) {
-    if (x >= 3 * BUFFER && x <= 3 * BUFFER + PAUSE_SCALE * PAUSE_HEIGHT
-        && y >= 3 * BUFFER && y <= PAUSE_HEIGHT + 3 * BUFFER) {
-        *play = false;
-        printf("it is now paused\n");
+    if (*play) {
+        // Checks if the mouse is clicking the pause button
+        if (x >= 3 * BUFFER && x <= 3 * BUFFER + PAUSE_SCALE * PAUSE_HEIGHT
+            && y >= 3 * BUFFER && y <= PAUSE_HEIGHT + 3 * BUFFER) {
+            *play = false;
+            printf("it is now paused\n");
+            return;
+        }
+    } else {
+        // Checks if the mouse is clicking the resume button
+        *play = true;
     }
+    
 }
 
 void make_pause_button(scene_t *scene) {
@@ -105,10 +113,14 @@ int main(int argc, char *argv[]) {
         double dt = time_since_last_tick();
         sdl_render_scene(scene);
 
+        while (!*play && !sdl_is_done(pause_scene, NULL, play)) {
+            sdl_render_scene(pause_scene);
+        }
+
         // Shoot a power-up at an interval of time.
         
         scene_tick(scene, dt);
     }
-    
-   scene_free(scene);
+    scene_free(pause_scene);
+    scene_free(scene);
 }

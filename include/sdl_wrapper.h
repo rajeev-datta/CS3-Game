@@ -45,6 +45,19 @@ typedef void (*key_handler_t)(char key, key_event_type_t type, double held_time,
                               void *body, scene_t *scene, bool *play);
 
 /**
+ * A keypress handler.
+ * When a key is pressed or released, the handler is passed its char value.
+ * Most keys are passed as their char value, e.g. 'a', '1', or '\r'.
+ * Arrow keys have the special values listed above.
+ *
+ * @param scene a scene_t representing the scene
+ * @param x the x-position of the mouse
+ * @param y the y-position of the mouse
+ * @param play a bool representing if the game is playing or not
+ */
+typedef void (*mouse_handler_t)(scene_t *scene, double x, double y, bool *play);
+
+/**
  * Initializes the SDL window and renderer.
  * Must be called once before any of the other SDL functions.
  *
@@ -124,6 +137,14 @@ void sdl_render_scene(scene_t *scene);
  * @param handler the function to call with each key press
  */
 void sdl_on_key(key_handler_t handler);
+
+/**
+ * Registers a function to be called every time a key is pressed.
+ * Overwrites any existing handler.
+ * 
+ * @param handler the function to call with each mouse press
+ */
+void sdl_on_mouse(mouse_handler_t handler);
 
 /**
  * Gets the amount of time that has passed since the last time

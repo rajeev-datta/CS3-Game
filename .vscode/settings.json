@@ -46,6 +46,7 @@
     "files.associations": {
         "assert.h": "c",
         "ios": "c",
-        "test_util.h": "c"
+        "test_util.h": "c",
+        "__node_handle": "c"
     }
 }

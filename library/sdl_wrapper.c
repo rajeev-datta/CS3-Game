@@ -4,6 +4,7 @@
 #include <time.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
+#include <stdio.h>
 #include "sdl_wrapper.h"
 #include "scene.h"
 
@@ -33,6 +34,10 @@ SDL_Renderer *renderer;
  * The keypress handler, or NULL if none has been configured.
  */
 key_handler_t key_handler = NULL;
+/**
+ * The mousepress handler, or NULL if none has been configured.
+ */
+mouse_handler_t mouse_handler = NULL;
 /**
  * SDL's timestamp when a key was last pressed or released.
  * Used to mesasure how long a key has been held.
@@ -129,6 +134,13 @@ bool sdl_is_done(scene_t *scene, void *object, bool *play) {
             case SDL_QUIT:
                 free(event);
                 return true;
+            case SDL_MOUSEBUTTONDOWN:
+                if (mouse_handler == NULL) {
+                    break;
+                }
+                double x = event->motion.x;
+                double y = event->motion.y;
+                mouse_handler(scene, x, y, play);
             case SDL_KEYDOWN:
             case SDL_KEYUP:
                 // Skip the keypress if no handler is configured
@@ -229,6 +241,10 @@ void sdl_render_scene(scene_t *scene) {
 
 void sdl_on_key(key_handler_t handler) {
     key_handler = handler;
+}
+
+void sdl_on_mouse(mouse_handler_t handler) {
+    mouse_handler = handler;
 }
 
 double time_since_last_tick(void) {

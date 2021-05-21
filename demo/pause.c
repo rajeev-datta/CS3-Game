@@ -75,8 +75,8 @@ void on_mouse(scene_t *scene, double x, double y, bool *play) {
 
 void make_pause_button(scene_t *scene) {
     double width = PAUSE_SCALE * PAUSE_HEIGHT;
-    vector_t pause_center = {BOTTOM_LEFT_COORD.x + width/2 + 3 * BUFFER,
-                             TOP_RIGHT_COORD.y - PAUSE_HEIGHT/2 - 3 * BUFFER};
+    vector_t pause_center = {BOTTOM_LEFT_COORD.x + width/2.0 + 3 * BUFFER,
+                             TOP_RIGHT_COORD.y - PAUSE_HEIGHT/2.0 - 3 * BUFFER};
     list_t *big_rect = animate_rectangle(pause_center, width, PAUSE_HEIGHT);
     int *pause_info = malloc(sizeof(int *));
     *pause_info = pause;
@@ -91,7 +91,7 @@ void make_pause_button(scene_t *scene) {
 }
 
 void set_up_pause_screen(scene_t *scene) {
-    vector_t resume_center = {TOP_RIGHT_COORD.x / 2,
+    vector_t resume_center = {TOP_RIGHT_COORD.x / 2.0,
                               TOP_RIGHT_COORD.y - 1.5 * BUTTON_HEIGHT};
     list_t *resume = animate_rectangle(resume_center, BUTTON_LENGTH, BUTTON_HEIGHT);
     int *resume_info = malloc(sizeof(int *));
@@ -111,35 +111,7 @@ void set_up_pause_screen(scene_t *scene) {
 }
 
 void make_tank_power_up(scene_t *scene, int type) {
-    rgb_color_t color;
-    if (type == MACHINE_GUN) {
-        color = (rgb_color_t) {0.0, 0.0, 0.0};
-    } else if (type == FRAG_BOMB) {
-        color = (rgb_color_t) {0.0, 0.5, 0.0};
-    } else if (type == LAND_MINE) {
-        color = (rgb_color_t) {0.0, 0.0, 0.5};
-    } else if (type == FORCE_FIELD) {
-        color = (rgb_color_t) {0.3, 0.0, 0.4};
-    } else if (type == LASER) {
-        color = (rgb_color_t) {0.4, 0.6, 0.2};
-    }
-    else {
-        color = (rgb_color_t) {165.0/255, 104.0/255, 42.0/255};
-    }
-    vector_t power_up_center = {rand() % (int)TOP_RIGHT_COORD.x,
-                                rand() % (int)TOP_RIGHT_COORD.y};
-    list_t *power_up = animate_rectangle(power_up_center, INIT_POWERUP_LENGTH, INIT_POWERUP_HEIGHT);
-    char *type_pt = malloc(sizeof(char));
-    *type_pt = (char) type;
-    body_t *power_up_body = body_init_with_info(power_up, POWERUP_MASS, color, type_pt, free);
-    body_set_velocity(power_up_body, (vector_t) {0, 0});
-    scene_add_body(scene, power_up_body);
-    assert(*(char *)body_get_info(scene_get_body(scene, 0)) == TANK_1_INFO);
-    create_tank_powerup_collision(scene, scene_get_body(scene, 0), power_up_body, type);
-    create_partial_destructive_collision(scene, scene_get_body(scene, 0), power_up_body);
-    assert(*(char *)body_get_info(scene_get_body(scene, 1)) == TANK_2_INFO);
-    create_tank_powerup_collision(scene, scene_get_body(scene, 1), power_up_body, type);
-    create_partial_destructive_collision(scene, scene_get_body(scene, 1), power_up_body);
+    
 }
 
 int main(int argc, char *argv[]) {
@@ -179,12 +151,6 @@ int main(int argc, char *argv[]) {
         }
 
         sdl_render_scene(temp_scene);
-
-        // Shoot a power-up at an interval of time.
-        if (time_passed > TANK_POWER_UP_TIME) {
-            make_tank_power_up(temp_scene, rand() % NUM_POWERUPS);
-            time_passed = 0;
-        }
         
         scene_tick(temp_scene, dt);
     }

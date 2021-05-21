@@ -47,6 +47,7 @@
         "assert.h": "c",
         "ios": "c",
         "test_util.h": "c",
-        "__node_handle": "c"
+        "__node_handle": "c",
+        "cstdio": "c"
     }
 }

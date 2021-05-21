@@ -1,5 +1,5 @@
 # List of demo programs
-DEMOS = bounce gravity pacman nbodies damping spaceinvaders pegs breakout level_tester tanks
+DEMOS = bounce gravity pacman nbodies damping spaceinvaders pegs breakout level_tester tanks pause
 # List of C files in "libraries" that we provide
 STAFF_LIBS = test_util sdl_wrapper
 # List of C files in "libraries" that you will write.
@@ -91,6 +91,9 @@ bin/level_tester: out/level_tester.o out/sdl_wrapper.o $(STUDENT_OBJS)
 		$(CC) $(CFLAGS) $(LIBS) $^ -o $@
 
 bin/tanks: out/tanks.o out/sdl_wrapper.o $(STUDENT_OBJS)
+		$(CC) $(CFLAGS) $(LIBS) $^ -o $@
+
+bin/pause: out/pause.o out/sdl_wrapper.o $(STUDENT_OBJS)
 		$(CC) $(CFLAGS) $(LIBS) $^ -o $@
 
 # Builds the test suite executables from the corresponding test .o file
@@ -246,6 +249,9 @@ bin/level_tester.exe: out/level_tester.obj out/sdl_wrapper.obj $(STUDENT_OBJS)
 bin/tanks.exe: out/tanks.obj out/sdl_wrapper.obj $(STUDENT_OBJS)
 	$(CC) $^ $(CFLAGS) -link $(LINKEROPTS) $(LIBS) -out:"$@"
 
+bin/pause.exe: out/pause.obj out/sdl_wrapper.obj $(STUDENT_OBJS)
+	$(CC) $^ $(CFLAGS) -link $(LINKEROPTS) $(LIBS) -out:"$@"
+
 # Builds the test suite executables from the corresponding test .o file
 # and the library .o files. The only difference from the demo build command
 # is that it doesn't link the SDL libraries.
@@ -263,6 +269,7 @@ bin/pegs bin\pegs: bin/pegs.exe ;
 bin/breakout bin\breakout: bin/breakout.exe ;
 bin/level_tester bin\level_tester: bin/level_tester.exe ;
 bin/tanks bin\tanks: bin/tanks.exe ;
+bin/pause bin\pause: bin/pause.exe ;
 bin/test_suite_% bin\test_suite_%: bin/test_suite_%.exe ;
 
 # CMD commands to test and clean

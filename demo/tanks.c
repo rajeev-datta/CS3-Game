@@ -24,7 +24,6 @@ const double PAUSE_SCALE = 2.0/3;
 const double PAUSE_HEIGHT = 40;
 const double BUTTON_LENGTH = 500;
 const double BUTTON_HEIGHT = 100;
-
 enum info{pause, resume, restart};
 
 void on_key_push(char key, key_event_type_t type, double held_time,
@@ -44,8 +43,11 @@ void on_mouse(scene_t *scene, double x, double y, bool *play) {
             return;
         }
     } else {
-        // Checks if the mouse is clicking the resume button
-        *play = true;
+        if (x >= TOP_RIGHT_COORD.x/2.0 - BUTTON_LENGTH/2.0 && x <= TOP_RIGHT_COORD.x/2.0 + BUTTON_LENGTH/2.0) {
+            // Checks if the mouse is clicking the resume button
+            *play = true;
+            
+        }
     }
     
 }
@@ -109,18 +111,25 @@ int main(int argc, char *argv[]) {
     sdl_on_key((key_handler_t)on_key_push);
     sdl_on_mouse((mouse_handler_t)on_mouse);
 
-    while (!sdl_is_done(scene, scene_get_body(scene, 0), play)) {
+    scene_t *temp_scene = malloc(sizeof(scene_t *));
+    temp_scene = scene;
+    while (!sdl_is_done(temp_scene, scene_get_body(scene, 0), play)) {
         double dt = time_since_last_tick();
-        sdl_render_scene(scene);
-
-        while (!*play && !sdl_is_done(pause_scene, NULL, play)) {
-            sdl_render_scene(pause_scene);
+        
+        if (*play) {
+            temp_scene = scene;
+        } else {
+            temp_scene = pause_scene;
         }
+
+        sdl_render_scene(temp_scene);
 
         // Shoot a power-up at an interval of time.
         
-        scene_tick(scene, dt);
+        scene_tick(temp_scene, dt);
     }
+
+    free(play);
     scene_free(pause_scene);
     scene_free(scene);
 }

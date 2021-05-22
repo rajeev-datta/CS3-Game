@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
 #include <stdbool.h>
+#include <assert.h>
 #include "sdl_wrapper.h"
 #include "animate.h"
 #include "polygon.h"
@@ -54,6 +55,7 @@ void on_key_push(char key, key_event_type_t type, double held_time,
 
 bool within_rect(body_t *body, vector_t point) {
     list_t *list = body_get_shape(body);
+    assert(list_size(list) == 4);
     bool within = (point.x >= ((vector_t *)list_get(list, 0))->x
                   && point.x <= ((vector_t *)list_get(list, 2))->x
                   && point.y <= ((vector_t *)list_get(list, 1))->y

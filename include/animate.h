@@ -7,6 +7,9 @@
 #include "sdl_wrapper.h"
 #include "body.h"
 
+///Animates a tank
+list_t *animate_tank(vector_t *coord);
+
 // Animates an ellipse
 list_t *animate_ellipse(vector_t *center, double major, double minor, int points);
 

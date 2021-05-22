@@ -14,6 +14,13 @@ const char SPACESHIP_INFORMATION = 's';
 const char PADDLE_INFORMATION = 'p';
 const int RECT_PTS = 4;
 
+list_t *animate_tank(vector_t *coord) {
+    //DON'T USE THIS! NOT DONE YET!
+    list_t *tank = list_init(12, free);
+    list_add(tank, coord);
+    return tank;
+}
+
 list_t *animate_ellipse(vector_t *center, double major, double minor, int points) {
     list_t *ellipse = animate_circle(*center, major, points);
     double init_y = ((vector_t *)list_get(ellipse, 0))->y;

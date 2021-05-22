@@ -90,6 +90,10 @@ void *body_get_info(body_t *body) {
     return body->info;
 }
 
+double body_get_orientation(body_t *body) {
+    return body->orientation;
+}
+
 void body_set_centroid(body_t *body, vector_t x) {
     vector_t translation = vec_subtract(x, body->centroid);
     polygon_translate(body->shape, translation);

@@ -6,7 +6,7 @@ typedef struct tank tank_t;
 typedef void (*shooting_handler_t)
     (scene_t *scene, tank_t *tank);
 
-tank_t *tank_init(list_t *points, void *info, shooting_handler_t *weapon);
+tank_t *tank_init(list_t *points, void* info, shooting_handler_t weapon);
 
 body_t *tank_get_body(tank_t *tank);
 

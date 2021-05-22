@@ -6,10 +6,10 @@ const rgb_color_t RED = {1, 0, 0};
 
 typedef struct tank {
     body_t *shape;
-    shooting_handler_t *weapon;
+    shooting_handler_t weapon;
 } tank_t;
 
-tank_t *tank_init(list_t *points, void* info, shooting_handler_t *weapon) {
+tank_t *tank_init(list_t *points, void* info, shooting_handler_t weapon) {
     tank_t *tank_obj = malloc(sizeof(tank_t));
     body_t *shape;
     
@@ -26,4 +26,12 @@ tank_t *tank_init(list_t *points, void* info, shooting_handler_t *weapon) {
     tank_obj->weapon = weapon;
 
     return tank_obj;
+}
+
+body_t *tank_get_body(tank_t *tank) {
+    return tank->shape;
+}
+
+void tank_set_shooting_handler(tank_t *tank, shooting_handler_t new_weapon) {
+    tank->weapon = new_weapon;
 }

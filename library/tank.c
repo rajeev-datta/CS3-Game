@@ -11,20 +11,19 @@ typedef struct tank {
 
 tank_t *tank_init(list_t *points, void* info, shooting_handler_t weapon) {
     tank_t *tank_obj = malloc(sizeof(tank_t));
-    body_t *shape;
     
     //enemy tank
     if (info == 'e') { 
-        shape = body_init(points, MASS, BLACK);
+        body_t *shape = body_init(points, MASS, BLACK);
+        tank_obj->shape = shape;
     }
     //player tank, info == 'p'
     else {
-        shape = body_init(points, MASS, RED);
+        body_t *shape = body_init(points, MASS, RED);
+        tank_obj->shape = shape;
     }
     
-    tank_obj->shape = shape;
     tank_obj->weapon = weapon;
-
     return tank_obj;
 }
 

@@ -17,6 +17,7 @@ const int CIRCLE_PTS = 16;
 const double BULLET_RADIUS = 5;
 const vector_t TANK_BULLET_INIT_VEL = {0,100}; // will need to change so it is pointing in the direction of tank
 const double BULLET_ELASTICITY = 0.9;
+const double MACHINE_GUN_RELOAD_TIME = 0.5;
 
 typedef struct tank_powerup_aux {
     tank_t *tank;
@@ -84,6 +85,7 @@ void tank_powerup_fxn(body_t *body1, body_t *body2, vector_t axis, void *aux) {
 
     if (((tank_powerup_aux_t *)aux)->type == (char) 0) {
         // machine gun power up
+        tank_set_new_reload_time(((tank_powerup_aux_t *)aux)->tank, MACHINE_GUN_RELOAD_TIME);
         tank_set_shooting_handler(((tank_powerup_aux_t *)aux)->tank, (shooting_handler_t) machine_gun_shoot);
     } else if (((tank_powerup_aux_t *)aux)->type == (char) 1) {
         //frag bomb power up

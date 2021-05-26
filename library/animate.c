@@ -16,9 +16,52 @@ const char PADDLE_INFORMATION = 'p';
 const int RECT_PTS = 4;
 
 list_t *animate_tank(vector_t *coord) {
-    //DON'T USE THIS! NOT DONE YET!
     list_t *tank = list_init(12, free);
     list_add(tank, coord);
+    vector_t *point1 = malloc(sizeof(vector_t));
+    point1->x = coord->x + 30;
+    point1->y = coord->y;
+    list_add(tank, point1);
+    vector_t *point2 = malloc(sizeof(vector_t));
+    point2->x = coord->x + 40;
+    point2->y = coord->y - 10;
+    list_add(tank, point2);
+    vector_t *point3 = malloc(sizeof(vector_t));
+    point3->x = coord->x + 50;
+    point3->y = coord->y - 20;
+    list_add(tank, point3);
+    vector_t *point4 = malloc(sizeof(vector_t));
+    point4->x = coord->x + 60;
+    point4->y = coord->y - 30;
+    list_add(tank, point4);
+    vector_t *point5 = malloc(sizeof(vector_t));
+    point5->x = coord->x + 110;
+    point5->y = coord->y - 30;
+    list_add(tank, point5);
+    vector_t *point6 = malloc(sizeof(vector_t));
+    point6->x = coord->x + 75;
+    point6->y = coord->y - 60;
+    list_add(tank, point6);
+    vector_t *point7 = malloc(sizeof(vector_t));
+    point7->x = coord->x;
+    point7->y = coord->y - 60;
+    list_add(tank, point7);
+    vector_t *point8 = malloc(sizeof(vector_t));
+    point8->x = coord->x - 20;
+    point8->y = coord->y - 30;
+    list_add(tank, point8);
+    vector_t *point9 = malloc(sizeof(vector_t));
+    point9->x = coord->x;
+    point9->y = coord->y - 30;
+    list_add(tank, point9);
+    vector_t *point10 = malloc(sizeof(vector_t));
+    point10->x = coord->x + 90;
+    point10->y = coord->y - 10;
+    list_add(tank, point10);
+    vector_t *point11 = malloc(sizeof(vector_t));
+    point11->x = coord->x + 90;
+    point11->y = coord->y - 20;
+    list_add(tank, point11);
     return tank;
 }
 

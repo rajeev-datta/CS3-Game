@@ -48,9 +48,35 @@ enum powerups{
 void on_key_push(char key, key_event_type_t type, double held_time,
                  void *object, scene_t *scene, bool *play) {
     if (*play) {
-
+        double curr_rot = 0;
+        if (type == KEY_RELEASED) {
+            body_set_velocity(object, (vector_t){0, 0});
+        } else if (type == KEY_PRESSED) {
+            vector_t speed = {0, 0};
+        switch (key) {
+            case LEFT_ARROW:
+                speed.x = -INIT_VEL * cos(body_get_orientation(object));
+                speed.y = -INIT_VEL * sin(body_get_orientation(object));
+                break;
+            case RIGHT_ARROW:
+                speed.x = INIT_VEL * cos(body_get_orientation(object));
+                speed.y = INIT_VEL * sin(body_get_orientation(object));
+                break;
+            case UP_ARROW:
+                body_set_rotation(object, body_get_orientation(object) + ANGLE_OFFSET);
+                break;
+            case DOWN_ARROW:
+                body_set_rotation(object, body_get_orientation(object) - ANGLE_OFFSET);
+                break;
+            case ' ':
+                
+                break;
+        }
+        body_set_velocity(object, speed);
+        }
     }
 }
+
 
 bool within_rect(body_t *body, vector_t point) {
     list_t *list = body_get_shape(body);
@@ -175,6 +201,7 @@ int main(int argc, char *argv[]) {
     while (!sdl_is_done(temp_scene, scene_get_body(scene, 0), play)) {
         double dt = time_since_last_tick();
         time_passed += dt;
+
         if (*play) {
             temp_scene = scene;
         } else {

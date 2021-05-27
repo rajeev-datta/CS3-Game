@@ -112,4 +112,8 @@ void scene_tick(scene_t *scene, double dt) {
             body_tick(body, dt);
         }
     }
+
+    // for loop over bodies and check if it is a frag bomb
+    // check the current time of the bomb body and see if it should be denotated
+    // call body detonate
 }

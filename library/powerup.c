@@ -16,7 +16,7 @@
 const int CIRCLE_PTS = 16;
 const double BULLET_RADIUS = 5;
 const double MACHINE_GUN_BULLET_RADIUS = 2.5;
-const vector_t TANK_BULLET_INIT_VEL = {0,100}; // will need to change so it is pointing in the direction of tank
+const double TANK_BULLET_INIT_VEL = 100;
 const double BULLET_ELASTICITY = 0.9;
 const double MACHINE_GUN_RELOAD_TIME = 0.5;
 const double MACHINE_GUN_RANGE = 5;
@@ -50,7 +50,11 @@ void default_gun_shoot(scene_t *scene, body_t *body) {
     *tank_bullet_info = TANK_BULLET;
     body_t *bullet_body = body_init_with_info(bullet, BULLET_MASS,
                                               GREEN, tank_bullet_info, free);
-    body_set_velocity(bullet_body, TANK_BULLET_INIT_VEL);
+    vector_t tank_bullet_init_velocity;
+    tank_bullet_init_velocity.x = TANK_BULLET_INIT_VEL * cos(body_get_orientation(body));
+    tank_bullet_init_velocity.y = TANK_BULLET_INIT_VEL * sin(body_get_orientation(body));
+    body_set_velocity(bullet_body, tank_bullet_init_velocity);
+
     for (size_t i = 0; i < scene_bodies(scene); i++) {
         if (*(char *) body_get_info(scene_get_body(scene, i)) == TANK_INFO_1 || *(char *) body_get_info(scene_get_body(scene, i)) == TANK_INFO_2) {
             create_destructive_collision(scene, bullet_body, scene_get_body(scene, i));
@@ -70,7 +74,13 @@ void machine_gun_shoot(scene_t *scene, body_t *body) {
     *tank_bullet_info = TANK_BULLET;
     body_t *bullet_body = body_init_with_info(bullet, BULLET_MASS,
                                               RED, tank_bullet_info, free);
-    body_set_velocity(bullet_body, TANK_BULLET_INIT_VEL);
+
+    vector_t tank_bullet_init_velocity;
+    tank_bullet_init_velocity.x = TANK_BULLET_INIT_VEL * cos(body_get_orientation(body));
+    tank_bullet_init_velocity.y = TANK_BULLET_INIT_VEL * sin(body_get_orientation(body));
+    body_set_velocity(bullet_body, tank_bullet_init_velocity);
+
+    body_set_velocity(bullet_body, tank_bullet_init_velocity);
     for (size_t i = 0; i < scene_bodies(scene); i++) {
         if (*(char *) body_get_info(scene_get_body(scene, i)) == TANK_INFO_1 || *(char *) body_get_info(scene_get_body(scene, i)) == TANK_INFO_2) {
             create_destructive_collision(scene, bullet_body, scene_get_body(scene, i));
@@ -84,22 +94,39 @@ void machine_gun_shoot(scene_t *scene, body_t *body) {
 
 void frag_bomb_shoot(scene_t *scene, body_t *body) {
     // method to handle the shooting of frag bomb
+
+    list_t *bullet = animate_circle(body_get_centroid(body), MACHINE_GUN_BULLET_RADIUS,
+                                       CIRCLE_PTS);
+    char *tank_bullet_info = malloc(sizeof(char *));
+    *tank_bullet_info = TANK_BULLET;
+    body_t *bullet_body = body_init_with_info(bullet, BULLET_MASS,
+                                              RED, tank_bullet_info, free);
+    body_set_velocity(bullet_body, TANK_BULLET_INIT_VEL);
+    for (size_t i = 0; i < scene_bodies(scene); i++) {
+        if (*(char *) body_get_info(scene_get_body(scene, i)) == TANK_INFO_1 || *(char *) body_get_info(scene_get_body(scene, i)) == TANK_INFO_2) {
+            create_destructive_collision(scene, bullet_body, scene_get_body(scene, i));
+        }
+        if (*(char *) body_get_info(scene_get_body(scene, i)) == WALL_INFO) {
+            create_physics_collision(scene, BULLET_ELASTICITY, bullet_body, scene_get_body(scene, i));
+        }
+    }
+    scene_add_body(scene, bullet_body);
 }
 
 void land_mine_shoot(scene_t *scene, body_t *body) {
-    // method to handle the shooting of machine gun
+    // method to handle the shooting of land mine
 }
 
 void force_field_shoot(scene_t *scene, body_t *body) {
-    // method to handle the shooting of machine gun
+    // method to handle the shooting of force field
 }
 
 void laser_shoot(scene_t *scene, body_t *body) {
-    // method to handle the shooting of machine gun
+    // method to handle the shooting of laser
 }
 
-void remote_missle_shoot(scene_t *scene, body_t *body) {
-    // method to handle the shooting of machine gun
+void remote_missile_shoot(scene_t *scene, body_t *body) {
+    // method to handle the shooting of remote missile
 }
 
 void tank_powerup_fxn(body_t *body1, body_t *body2, vector_t axis, void *aux) {
@@ -123,8 +150,8 @@ void tank_powerup_fxn(body_t *body1, body_t *body2, vector_t axis, void *aux) {
         // laser power up
         tank_set_shooting_handler(((tank_powerup_aux_t *)aux)->tank, (shooting_handler_t) laser_shoot);
     } else {
-        // remote controlled missle power up
-        tank_set_shooting_handler(((tank_powerup_aux_t *)aux)->tank, (shooting_handler_t) remote_missle_shoot);
+        // remote controlled missile power up
+        tank_set_shooting_handler(((tank_powerup_aux_t *)aux)->tank, (shooting_handler_t) remote_missile_shoot);
     }
 }
 

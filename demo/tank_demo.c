@@ -57,6 +57,13 @@ typedef enum powerups{
     REMOTE_MISSILE,
 } powerups_t;
 
+typedef enum bodies {
+    PLAYER_TANK,
+    ENEMY_TANK,
+    WALL,
+    BULLET
+} body_t;
+
 void make_pause_button(scene_t *scene) {
     double width = PAUSE_SCALE * PAUSE_HEIGHT;
     vector_t pause_center = {BOTTOM_LEFT_COORD.x + width/2.0 + 3 * BUFFER,

@@ -1,6 +1,15 @@
 #include "body.h"
 #include "scene.h"
 
+typedef enum body_type {
+    TANK_1,
+    TANK_2,
+    ENEMY_TANK,
+    TANK_FRAG_BOMB,
+    BULLET,
+    WALL,
+} body_type_t;
+
 typedef struct tank tank_t;
 
 typedef void (*shooting_handler_t)

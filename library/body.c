@@ -4,8 +4,17 @@
 #include "vector.h"
 #include "color.h"
 #include "polygon.h"
+#include "scene.h"
 #include <math.h>
 #include <stdbool.h>
+#include "tank.h"
+
+const int NUM_OF_BOMB_FRAGS = 10;
+const double FRAG_INIT_VEL = 75;
+const int CIRC_PTS = 16;
+const double FRAG_RADIUS = 3;
+const double FRAG_MASS = 10;
+const double FRAG_ELASTICITY = 0.9;
 
 typedef struct body {
     list_t *shape;
@@ -181,4 +190,35 @@ void body_increase_time(body_t *body, double time_increment) {
     double curr_time = body_get_time(body);
     curr_time += time_increment;
     body_set_time(body, curr_time);
+}
+
+void body_detonate(scene_t *scene, body_t *body) {
+    body_remove(body);
+
+    double angle = 2 * M_PI / NUM_OF_BOMB_FRAGS;
+
+    for (int i; i < NUM_OF_BOMB_FRAGS; i++) {
+        list_t *bullet = animate_circle(body_get_centroid(body), FRAG_RADIUS,
+                                       CIRC_PTS);
+        body_type_t *tank_bullet_info = malloc(sizeof(body_type_t *));
+        *tank_bullet_info = BULLET;
+        body_t *frag_body = body_init_with_info(bullet, FRAG_MASS,
+                                                GREY, tank_bullet_info, free);
+
+        vector_t frag_init_velocity;
+        frag_init_velocity.x = FRAG_INIT_VEL * cos(angle);
+        frag_init_velocity.y = FRAG_INIT_VEL * sin(angle);
+        body_set_velocity(frag_body, frag_init_velocity);
+
+        for (size_t i = 0; i < scene_bodies(scene); i++) {
+            if (*(body_type_t *) body_get_info(scene_get_body(scene, i)) == TANK_1 || *(body_type_t *) body_get_info(scene_get_body(scene, i)) == TANK_2) {
+                create_destructive_collision(scene, frag_body, scene_get_body(scene, i));
+            }
+            if (*(body_type_t *) body_get_info(scene_get_body(scene, i)) == WALL) {
+                create_physics_collision(scene, FRAG_ELASTICITY, frag_body, scene_get_body(scene, i));
+            }
+        }
+        angle += 2 * M_PI / NUM_OF_BOMB_FRAGS;
+        scene_add_body(scene, body);
+    }
 }

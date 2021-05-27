@@ -20,6 +20,11 @@ const double TANK_BULLET_INIT_VEL = 100;
 const double BULLET_ELASTICITY = 0.9;
 const double MACHINE_GUN_RELOAD_TIME = 0.5;
 const double MACHINE_GUN_RANGE = 5;
+const double FRAG_BOMB_RELOAD_TIME = 4;
+const double FRAG_BUMB_RANGE = 7;
+const double FRAG_BOMB_RADIUS = 7;
+const double BULLET_MASS = 100;
+const double FRAG_BOMB_RANGE = 6;
 
 // will need to give bullets a time component so we can keep track of when bullets should be removed?
 // how should I do this though? Cuz I can only add bodies to scene and so I'm not sure how I would keep track of these additional
@@ -46,8 +51,8 @@ void default_gun_shoot(scene_t *scene, body_t *body) {
     // method to handle the shooting of normal gun
     list_t *bullet = animate_circle(body_get_centroid(body), BULLET_RADIUS,
                                        CIRCLE_PTS);
-    char *tank_bullet_info = malloc(sizeof(char *));
-    *tank_bullet_info = TANK_BULLET;
+    body_type_t *tank_bullet_info = malloc(sizeof(body_type_t *));
+    *tank_bullet_info = BULLET;
     body_t *bullet_body = body_init_with_info(bullet, BULLET_MASS,
                                               GREEN, tank_bullet_info, free);
     vector_t tank_bullet_init_velocity;
@@ -56,10 +61,10 @@ void default_gun_shoot(scene_t *scene, body_t *body) {
     body_set_velocity(bullet_body, tank_bullet_init_velocity);
 
     for (size_t i = 0; i < scene_bodies(scene); i++) {
-        if (*(char *) body_get_info(scene_get_body(scene, i)) == TANK_INFO_1 || *(char *) body_get_info(scene_get_body(scene, i)) == TANK_INFO_2) {
+        if (*(body_type_t *) body_get_info(scene_get_body(scene, i)) == TANK_1 || *(body_type_t *) body_get_info(scene_get_body(scene, i)) == TANK_2) {
             create_destructive_collision(scene, bullet_body, scene_get_body(scene, i));
         }
-        if (*(char *) body_get_info(scene_get_body(scene, i)) == WALL_INFO) {
+        if (*(body_type_t *) body_get_info(scene_get_body(scene, i)) == WALL) {
             create_physics_collision(scene, BULLET_ELASTICITY, bullet_body, scene_get_body(scene, i));
         }
     }
@@ -68,10 +73,10 @@ void default_gun_shoot(scene_t *scene, body_t *body) {
 
 void machine_gun_shoot(scene_t *scene, body_t *body) {
     // method to handle the shooting of machine gun
-    list_t *bullet = animate_circle(body_get_centroid(body), MACHINE_GUN_BULLET_RADIUS,
+    list_t *bullet = animate_circle(body_get_centroid(body), FRAG_BOMB_RADIUS,
                                        CIRCLE_PTS);
-    char *tank_bullet_info = malloc(sizeof(char *));
-    *tank_bullet_info = TANK_BULLET;
+    body_type_t *tank_bullet_info = malloc(sizeof(body_type_t *));
+    *tank_bullet_info = BULLET;
     body_t *bullet_body = body_init_with_info(bullet, BULLET_MASS,
                                               RED, tank_bullet_info, free);
 
@@ -80,12 +85,11 @@ void machine_gun_shoot(scene_t *scene, body_t *body) {
     tank_bullet_init_velocity.y = TANK_BULLET_INIT_VEL * sin(body_get_orientation(body));
     body_set_velocity(bullet_body, tank_bullet_init_velocity);
 
-    body_set_velocity(bullet_body, tank_bullet_init_velocity);
     for (size_t i = 0; i < scene_bodies(scene); i++) {
-        if (*(char *) body_get_info(scene_get_body(scene, i)) == TANK_INFO_1 || *(char *) body_get_info(scene_get_body(scene, i)) == TANK_INFO_2) {
+        if (*(body_type_t *) body_get_info(scene_get_body(scene, i)) == TANK_1 || *(body_type_t *) body_get_info(scene_get_body(scene, i)) == TANK_2) {
             create_destructive_collision(scene, bullet_body, scene_get_body(scene, i));
         }
-        if (*(char *) body_get_info(scene_get_body(scene, i)) == WALL_INFO) {
+        if (*(body_type_t *) body_get_info(scene_get_body(scene, i)) == WALL) {
             create_physics_collision(scene, BULLET_ELASTICITY, bullet_body, scene_get_body(scene, i));
         }
     }
@@ -97,20 +101,24 @@ void frag_bomb_shoot(scene_t *scene, body_t *body) {
 
     list_t *bullet = animate_circle(body_get_centroid(body), MACHINE_GUN_BULLET_RADIUS,
                                        CIRCLE_PTS);
-    char *tank_bullet_info = malloc(sizeof(char *));
-    *tank_bullet_info = TANK_BULLET;
-    body_t *bullet_body = body_init_with_info(bullet, BULLET_MASS,
-                                              RED, tank_bullet_info, free);
-    body_set_velocity(bullet_body, TANK_BULLET_INIT_VEL);
+    body_type_t *tank_frag_bomb_info = malloc(sizeof(body_type_t *));
+    *tank_frag_bomb_info = TANK_FRAG_BOMB;
+    body_t *frag_bomb_body = body_init_with_info(bullet, BULLET_MASS,
+                                              BLACK, tank_frag_bomb_info, free);
+    vector_t tank_bullet_init_velocity;
+    tank_bullet_init_velocity.x = TANK_BULLET_INIT_VEL * cos(body_get_orientation(body));
+    tank_bullet_init_velocity.y = TANK_BULLET_INIT_VEL * sin(body_get_orientation(body));
+
+    body_set_velocity(frag_bomb_body, tank_bullet_init_velocity);
     for (size_t i = 0; i < scene_bodies(scene); i++) {
-        if (*(char *) body_get_info(scene_get_body(scene, i)) == TANK_INFO_1 || *(char *) body_get_info(scene_get_body(scene, i)) == TANK_INFO_2) {
-            create_destructive_collision(scene, bullet_body, scene_get_body(scene, i));
+        if (*(body_type_t *) body_get_info(scene_get_body(scene, i)) == TANK_1 || *(body_type_t *) body_get_info(scene_get_body(scene, i)) == TANK_2) {
+            create_destructive_collision(scene, frag_bomb_body, scene_get_body(scene, i));
         }
-        if (*(char *) body_get_info(scene_get_body(scene, i)) == WALL_INFO) {
-            create_physics_collision(scene, BULLET_ELASTICITY, bullet_body, scene_get_body(scene, i));
+        if (*(body_type_t *) body_get_info(scene_get_body(scene, i)) == WALL) {
+            create_physics_collision(scene, BULLET_ELASTICITY, frag_bomb_body, scene_get_body(scene, i));
         }
     }
-    scene_add_body(scene, bullet_body);
+    scene_add_body(scene, frag_bomb_body);
 }
 
 void land_mine_shoot(scene_t *scene, body_t *body) {
@@ -139,6 +147,8 @@ void tank_powerup_fxn(body_t *body1, body_t *body2, vector_t axis, void *aux) {
         tank_set_shooting_handler(((tank_powerup_aux_t *)aux)->tank, (shooting_handler_t) machine_gun_shoot);
     } else if (((tank_powerup_aux_t *)aux)->type == (char) 1) {
         //frag bomb power up
+        tank_set_new_reload_time(((tank_powerup_aux_t *)aux)->tank, FRAG_BOMB_RELOAD_TIME);
+        tank_set_new_range(((tank_powerup_aux_t *)aux)->tank, FRAG_BOMB_RANGE);
         tank_set_shooting_handler(((tank_powerup_aux_t *)aux)->tank, (shooting_handler_t) frag_bomb_shoot);
     } else if (((tank_powerup_aux_t *)aux)->type == (char) 2) {
         //land mine power up

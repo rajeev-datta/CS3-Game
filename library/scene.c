@@ -5,6 +5,7 @@
 #include "color.h"
 #include "body.h"
 #include "scene.h"
+#include "tank.h"
 
 const size_t INIT_NUM_BODIES = 15;
 

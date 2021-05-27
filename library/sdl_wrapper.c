@@ -1,3 +1,4 @@
+#include "sdl_wrapper.h"
 #include <assert.h>
 #include <math.h>
 #include <stdlib.h>
@@ -6,8 +7,8 @@
 #include <SDL2/SDL2_gfxPrimitives.h>
 #include <SDL2/SDL_ttf.h>
 #include <stdio.h>
-#include "sdl_wrapper.h"
 #include "scene.h"
+#include <string.h>
 
 const char WINDOW_TITLE[] = "CS 3";
 const int WINDOW_WIDTH = 1000;
@@ -225,8 +226,8 @@ void sdl_write(int x, int y, int width, int height, char *chosen_font, int font_
 
     SDL_RenderCopy(renderer, message, NULL, &message_rect);
 
-    // SDL_FreeSurface(surfaceMessage);
-    // SDL_DestroyTexture(message);
+    SDL_FreeSurface(surfaceMessage);
+    SDL_DestroyTexture(message);
 }
 
 void sdl_show(void) {

@@ -14,6 +14,7 @@
 #include "color.h"
 #include "list.h"
 #include "forces.h"
+#include <string.h>
 
 const vector_t BOTTOM_LEFT_COORD = {0, 0};
 const vector_t TOP_RIGHT_COORD = {1000, 500};
@@ -39,7 +40,7 @@ double const ANGLE_OFFSET = (10 * M_PI)/180;
 const double ELASTICITY = 1;
 const int NUM_SCENES = 2;
 const int FONT_SIZE = 24;
-const SDL_Color BLACK_TEXT = {0, 0, 0};
+const SDL_Color BLACK_TEXT = {255, 0, 0};
 typedef enum pause_scene{RESUME_BUT, RESTART_BUT} pause_scene_t;
 typedef enum info{
     PAUSE,
@@ -115,7 +116,7 @@ void level_1(vector_t top_right, double wall_length, double wall_height, scene_t
 void on_key_push(char key, key_event_type_t type, double held_time,
                  void *object, scene_t *scene, bool *play) {
     if (*play) {
-
+        
     }
 }
 
@@ -150,7 +151,7 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes) {
 }
 
 void add_pause_screen_text(scene_t *scene) {
-    char *font = "Limelight.ttf";
+    char *font = "AnticSlab-Regular.ttf";
 
     list_t *resume_shape = body_get_shape(scene_get_body(scene, RESUME_BUT));
     assert(list_size(resume_shape) == 4);
@@ -166,6 +167,9 @@ void add_pause_screen_text(scene_t *scene) {
     y = ((vector_t *)list_get(restart_shape, 1))->y;
     char *restart_text = "Restart";
     sdl_write(x, y, width, height, font, FONT_SIZE, BLACK_TEXT, restart_text);
+
+    char *test_text = "Testing";
+    sdl_write(100, 100, width, height, font, FONT_SIZE, BLACK_TEXT, test_text);
 
     list_free(resume_shape);
     list_free(restart_shape);

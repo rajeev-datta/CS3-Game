@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_image.h>
 #include "color.h"
 #include "list.h"
 #include "scene.h"

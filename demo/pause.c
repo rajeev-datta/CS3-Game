@@ -3,6 +3,7 @@
 #include <time.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_image.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
 #include <stdbool.h>
 #include <assert.h>
@@ -12,6 +13,7 @@
 #include "star.h"
 #include "color.h"
 #include "list.h"
+#include "forces.h"
 
 const vector_t BOTTOM_LEFT_COORD = {0, 0};
 const vector_t TOP_RIGHT_COORD = {1000, 500};
@@ -25,8 +27,8 @@ const char TANK_INFO = 't';
 const double BUFFER = 10;
 const double PAUSE_SCALE = 2.0/3;
 const double PAUSE_HEIGHT = 40;
-const double BUTTON_LENGTH = 500;
-const double BUTTON_HEIGHT = 100;
+const double BUTTON_LENGTH = 300;
+const double BUTTON_HEIGHT = 50;
 const double INIT_POWERUP_LENGTH = 10;
 const double INIT_POWERUP_HEIGHT = 10;
 const double POWERUP_MASS = 50;
@@ -38,7 +40,7 @@ const double ELASTICITY = 1;
 const int NUM_SCENES = 2;
 const int FONT_SIZE = 24;
 const SDL_Color BLACK_TEXT = {0, 0, 0};
-typedef enum pause_scene{RESUME_BUT, RESTART_BUT};
+typedef enum pause_scene{RESUME_BUT, RESTART_BUT} pause_scene_t;
 typedef enum info{
     PAUSE,
     RESUME,
@@ -47,7 +49,7 @@ typedef enum info{
 
 typedef enum scene_indices{
     PAUSE_BUTTON,
-};
+} scene_indices_t;
 
 typedef enum powerups{
     MACHINE_GUN,
@@ -148,7 +150,7 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes) {
 }
 
 void add_pause_screen_text(scene_t *scene) {
-    char *font = "Sans.ttf";
+    char *font = "OpenSans-Regular.ttf";
 
     list_t *resume_shape = body_get_shape(scene_get_body(scene, RESUME_BUT));
     assert(list_size(resume_shape) == 4);

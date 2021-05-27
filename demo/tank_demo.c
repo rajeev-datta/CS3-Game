@@ -36,18 +36,19 @@ double const INIT_VEL = 400;
 double const ANGLE_OFFSET = (10 * M_PI)/180;
 const double ELASTICITY = 1;
 const int NUM_SCENES = 2;
-enum pause_scene{RESUME_BUT, RESTART_BUT};
-enum info{
+
+typedef enum pause_scene{RESUME_BUT, RESTART_BUT};
+typedef enum info{
     PAUSE,
     RESUME,
-    RESTART};
+    RESTART
+} info_t;
 
-enum scene_indices{
-    PAUSE_BUTTON = 0
-
+typedef enum scene_indices{
+    PAUSE_BUTTON,
 };
 
-enum powerups{
+typedef enum powerups{
     MACHINE_GUN,
     FRAG_BOMB,
     LAND_MINE,
@@ -61,7 +62,7 @@ void make_pause_button(scene_t *scene) {
     vector_t pause_center = {BOTTOM_LEFT_COORD.x + width/2.0 + 3 * BUFFER,
                              TOP_RIGHT_COORD.y - PAUSE_HEIGHT/2.0 - 3 * BUFFER};
     list_t *big_rect = animate_rectangle(pause_center, width, PAUSE_HEIGHT);
-    int *pause_info = malloc(sizeof(int *));
+    info_t *pause_info = malloc(sizeof(info_t *));
     *pause_info = PAUSE;
     body_t *big_rect_body = body_init_with_info(big_rect, INFINITY, RED,
                                                 pause_info, free);
@@ -74,14 +75,14 @@ void make_pause_button(scene_t *scene) {
 }
 
 void level_1(vector_t top_right, double wall_length, double wall_height, scene_t *scene) {
-    char *tank_info = malloc(sizeof(char *));
-    tank_info = TANK_INFO;
+    body_type_t *tank_info = malloc(sizeof(body_type_t *));
+    tank_info = TANK_1;
     list_t *tank = animate_rectangle((vector_t) {100, TOP_RIGHT_COORD.y/2}, 50, 50);
     body_t *tank_body = body_init_with_info(tank, 50, RED, tank_info, free);
     scene_add_body(scene, tank_body);
 
-    char *wall_info = malloc(sizeof(char *));
-    wall_info = WALL_INFO;
+    body_type_t *wall_info = malloc(sizeof(body_type_t *));
+    wall_info = WALL;
     list_t *center_wall = animate_rectangle((vector_t) {top_right.x/2, top_right.y/2}, wall_length, wall_height*2);
     body_t *center_wall_body = body_init_with_info(center_wall, INFINITY, RED, wall_info, free);
     scene_add_body(scene, center_wall_body);
@@ -203,7 +204,7 @@ void set_up_pause_screen(scene_t *scene) {
     scene_add_body(scene, restart_body);
 }
 
-void make_tank_power_up(scene_t *scene, int type) {
+void make_tank_power_up(scene_t *scene, powerups_t type) {
     rgb_color_t color;
     if (type == MACHINE_GUN) {
         color = (rgb_color_t) {0.0, 0.0, 0.0};
@@ -222,15 +223,15 @@ void make_tank_power_up(scene_t *scene, int type) {
     vector_t power_up_center = {rand() % (int)TOP_RIGHT_COORD.x,
                                 rand() % (int)TOP_RIGHT_COORD.y};
     list_t *power_up = animate_rectangle(power_up_center, INIT_POWERUP_LENGTH, INIT_POWERUP_HEIGHT);
-    char *type_pt = malloc(sizeof(char));
-    *type_pt = (char) type;
+    powerups_t *type_pt = malloc(sizeof(powerups_t));
+    *type_pt = type;
     body_t *power_up_body = body_init_with_info(power_up, POWERUP_MASS, color, type_pt, free);
     body_set_velocity(power_up_body, (vector_t) {0, 0});
     scene_add_body(scene, power_up_body);
-    assert(*(char *)body_get_info(scene_get_body(scene, 0)) == TANK_1_INFO);
+    assert(*(body_type_t *)body_get_info(scene_get_body(scene, 0)) == TANK_1); // tank 1 is most likely not at index 0 anymore
     create_tank_powerup_collision(scene, scene_get_body(scene, 0), power_up_body, type);
     create_partial_destructive_collision(scene, scene_get_body(scene, 0), power_up_body);
-    assert(*(char *)body_get_info(scene_get_body(scene, 1)) == TANK_2_INFO);
+    assert(*(body_type_t *)body_get_info(scene_get_body(scene, 1)) == TANK_2); // tank 2 is most likely not at index 0 anymore
     create_tank_powerup_collision(scene, scene_get_body(scene, 1), power_up_body, type);
     create_partial_destructive_collision(scene, scene_get_body(scene, 1), power_up_body);
 }
@@ -239,7 +240,7 @@ void check_bullet_ranges(scene_t *scene, tank_t *tank) {
     double curr_range = tank_get_curr_range(tank);
     
     for (size_t i; i < scene_bodies; i++) {
-        if (*(char *)body_get_info(scene_get_body(scene, i)) == BULLET_INFO) {
+        if (*(body_type_t *)body_get_info(scene_get_body(scene, i)) == BULLET) {
             double curr_time = body_get_time(scene_get_body(scene, i));
 
             if (curr_time > curr_range) {
@@ -251,7 +252,7 @@ void check_bullet_ranges(scene_t *scene, tank_t *tank) {
 
 void update_bullet_times(scene_t *scene, double dt) {
     for (size_t i; i < scene_bodies; i++) {
-        if (*(char *)body_get_info(scene_get_body(scene, i)) == BULLET_INFO) {
+        if (*(body_type_t *)body_get_info(scene_get_body(scene, i)) == BULLET) {
             body_increase_time(scene_get_body(scene, i), dt);
         }
     }
@@ -259,7 +260,8 @@ void update_bullet_times(scene_t *scene, double dt) {
 
 void update_tank_times(scene_t *scene, double dt) {
     for (size_t i; i < scene_bodies; i++) {
-        if (*(char *)body_get_info(scene_get_body(scene, i)) == TANK_INFO) {
+        if (*(body_type_t *)body_get_info(scene_get_body(scene, i)) == TANK_1 ||
+            *(body_type_t *)body_get_info(scene_get_body(scene, i)) == TANK_2) {
             body_increase_time(scene_get_body(scene, i), dt);
         }
     }
@@ -273,6 +275,21 @@ void check_powerup_time(tank_t *tank, double dt) {
         if (curr_time > tank_get_total_powerup_time(tank)) {
             tank_set_shooting_handler(tank, NULL);
             tank_set_powerup_time(tank, 0);
+        }
+    }
+}
+
+void check_detonation(scene_t *scene, tank_t *tank, double dt) {
+    double curr_range = tank_get_curr_range(tank);
+    
+    for (size_t i; i < scene_bodies; i++) {
+        if (*(body_type_t *)body_get_info(scene_get_body(scene, i)) == FRAG_BOMB) {
+            body_increase_time(scene_get_body(scene, i), dt);
+            double curr_time = body_get_time(scene_get_body(scene, i));
+
+            if (curr_time > curr_range) {
+                body_detonate(scene, scene_get_body(scene, i));
+            }
         }
     }
 }
@@ -305,7 +322,7 @@ int main(int argc, char *argv[]) {
     list_t *tank_pts = animate_tank(tank_center);
     tank_t *tank1 = tank_init(tank_center, NULL);
 
-    scene_add_body(tank_get_body(tank1));
+    scene_add_body(scene, tank_get_body(tank1));
 
     while (!sdl_is_done(scene, scene_get_body(scene, 0), play, scenes)) {
         double dt = time_since_last_tick();
@@ -315,6 +332,8 @@ int main(int argc, char *argv[]) {
 
         update_bullet_times(scene, dt);
         check_bullet_ranges(scene, tank1);
+
+        check_detonation(scene, tank1, dt);
 
         if (*play) {
             temp_scene = scene;

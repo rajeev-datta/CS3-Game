@@ -64,6 +64,24 @@ typedef enum bodies {
     BULLET
 } body_t;
 
+void put_forces(scene_t *scene) { //should work for different levels because scene is argument
+    for(size_t i = 0; i < scene_bodies(scene); i++) {
+        for(size_t j = 0; j < scene_bodies(scene); j++) {
+            if(scene_get_body(i)->type == BULLET) {
+                if(scene_get_body(j)->type == PLAYER_TANK || scene_get_body(j)->type == ENEMY_TANK) {
+                    //bullet disappears because tanks have lives, so they survive
+                    //need to write code to check for lives
+                    create_partial_destructive_collision(scene, scene_get_body(j), scene_get_body(i));
+                }
+                else if(scene_get_body(j)->type == WALL) {
+                    create_physics_collision(scene, ELASTICITY, scene_get_body(i), scene_get_body(j));
+                }
+            }
+        }
+    }
+
+}
+
 void make_pause_button(scene_t *scene) {
     double width = PAUSE_SCALE * PAUSE_HEIGHT;
     vector_t pause_center = {BOTTOM_LEFT_COORD.x + width/2.0 + 3 * BUFFER,

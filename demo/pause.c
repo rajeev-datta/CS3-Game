@@ -38,28 +38,32 @@ const double ELASTICITY = 1;
 const int NUM_SCENES = 2;
 const int FONT_SIZE = 24;
 const SDL_Color BLACK_TEXT = {0, 0, 0};
-enum pause_scene{RESUME_BUT, RESTART_BUT};
-enum info{PAUSE, RESUME, RESTART};
+typedef enum pause_scene{RESUME_BUT, RESTART_BUT};
+typedef enum info{
+    PAUSE,
+    RESUME,
+    RESTART
+} info_t;
 
-enum scene_indices{
-    PAUSE_BUTTON = 0
+typedef enum scene_indices{
+    PAUSE_BUTTON,
 };
 
-enum powerups{
-    MACHINE_GUN = 0,
-    FRAG_BOMB = 1,
-    LAND_MINE = 2,
-    FORCE_FIELD = 3,
-    LASER = 4,
-    REMOTE_MISSLE = 5,
-};
+typedef enum powerups{
+    MACHINE_GUN,
+    FRAG_BOMB,
+    LAND_MINE,
+    FORCE_FIELD,
+    LASER,
+    REMOTE_MISSILE,
+} powerups_t;
 
 void make_pause_button(scene_t *scene) {
     double width = PAUSE_SCALE * PAUSE_HEIGHT;
     vector_t pause_center = {BOTTOM_LEFT_COORD.x + width/2.0 + 3 * BUFFER,
                              TOP_RIGHT_COORD.y - PAUSE_HEIGHT/2.0 - 3 * BUFFER};
     list_t *big_rect = animate_rectangle(pause_center, width, PAUSE_HEIGHT);
-    int *pause_info = malloc(sizeof(int *));
+    info_t *pause_info = malloc(sizeof(info_t));
     *pause_info = PAUSE;
     body_t *big_rect_body = body_init_with_info(big_rect, INFINITY, RED,
                                                 pause_info, free);
@@ -169,8 +173,8 @@ void set_up_pause_screen(scene_t *scene) {
     vector_t resume_center = {TOP_RIGHT_COORD.x / 2.0,
                               TOP_RIGHT_COORD.y - 1.5 * BUTTON_HEIGHT};
     list_t *resume = animate_rectangle(resume_center, BUTTON_LENGTH, BUTTON_HEIGHT);
-    int *resume_info = malloc(sizeof(int *));
-    *resume_info = resume;
+    info_t *resume_info = malloc(sizeof(info_t));
+    *resume_info = RESUME;
     body_t *resume_body = body_init_with_info(resume, INFINITY, MAROON,
                                                 resume_info, free);
     scene_add_body(scene, resume_body);
@@ -178,8 +182,8 @@ void set_up_pause_screen(scene_t *scene) {
     vector_t restart_center = {resume_center.x,
                               resume_center.y - 2 * BUTTON_HEIGHT};
     list_t *restart = animate_rectangle(restart_center, BUTTON_LENGTH, BUTTON_HEIGHT);
-    int *restart_info = malloc(sizeof(int *));
-    *restart_info = restart;
+    info_t *restart_info = malloc(sizeof(info_t));
+    *restart_info = RESTART;
     body_t *restart_body = body_init_with_info(restart, INFINITY, MAROON,
                                                 restart_info, free);
     scene_add_body(scene, restart_body);

@@ -138,4 +138,6 @@ void scene_tick(scene_t *scene, double dt);
  */
 void erase_scene(scene_t *scene);
 
+void scene_body_detonate(scene_t *scene, body_t *body);
+
 #endif // #ifndef __SCENE_H__

@@ -206,6 +206,4 @@ void body_set_time(body_t *body, double time);
 
 void body_increase_time(body_t *body, double time_increment);
 
-void body_detonate(scene_t *scene, body_t *body);
-
 #endif // #ifndef __BODY_H__

@@ -15,9 +15,15 @@
 
 const int CIRCLE_PTS = 16;
 const double BULLET_RADIUS = 5;
+const double MACHINE_GUN_BULLET_RADIUS = 2.5;
 const vector_t TANK_BULLET_INIT_VEL = {0,100}; // will need to change so it is pointing in the direction of tank
 const double BULLET_ELASTICITY = 0.9;
 const double MACHINE_GUN_RELOAD_TIME = 0.5;
+const double MACHINE_GUN_RANGE = 5;
+
+// will need to give bullets a time component so we can keep track of when bullets should be removed?
+// how should I do this though? Cuz I can only add bodies to scene and so I'm not sure how I would keep track of these additional
+// bullet structs. Should I just give body another parameter for time?
 
 typedef struct tank_powerup_aux {
     tank_t *tank;
@@ -58,6 +64,22 @@ void default_gun_shoot(scene_t *scene, body_t *body) {
 
 void machine_gun_shoot(scene_t *scene, body_t *body) {
     // method to handle the shooting of machine gun
+    list_t *bullet = animate_circle(body_get_centroid(body), MACHINE_GUN_BULLET_RADIUS,
+                                       CIRCLE_PTS);
+    char *tank_bullet_info = malloc(sizeof(char *));
+    *tank_bullet_info = TANK_BULLET;
+    body_t *bullet_body = body_init_with_info(bullet, BULLET_MASS,
+                                              RED, tank_bullet_info, free);
+    body_set_velocity(bullet_body, TANK_BULLET_INIT_VEL);
+    for (size_t i = 0; i < scene_bodies(scene); i++) {
+        if (*(char *) body_get_info(scene_get_body(scene, i)) == TANK_INFO_1 || *(char *) body_get_info(scene_get_body(scene, i)) == TANK_INFO_2) {
+            create_destructive_collision(scene, bullet_body, scene_get_body(scene, i));
+        }
+        if (*(char *) body_get_info(scene_get_body(scene, i)) == WALL_INFO) {
+            create_physics_collision(scene, BULLET_ELASTICITY, bullet_body, scene_get_body(scene, i));
+        }
+    }
+    scene_add_body(scene, bullet_body);
 }
 
 void frag_bomb_shoot(scene_t *scene, body_t *body) {
@@ -86,6 +108,7 @@ void tank_powerup_fxn(body_t *body1, body_t *body2, vector_t axis, void *aux) {
     if (((tank_powerup_aux_t *)aux)->type == (char) 0) {
         // machine gun power up
         tank_set_new_reload_time(((tank_powerup_aux_t *)aux)->tank, MACHINE_GUN_RELOAD_TIME);
+        tank_set_new_range(((tank_powerup_aux_t *)aux)->tank, MACHINE_GUN_RANGE);
         tank_set_shooting_handler(((tank_powerup_aux_t *)aux)->tank, (shooting_handler_t) machine_gun_shoot);
     } else if (((tank_powerup_aux_t *)aux)->type == (char) 1) {
         //frag bomb power up

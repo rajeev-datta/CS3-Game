@@ -200,4 +200,10 @@ void body_remove(body_t *body);
  */
 bool body_is_removed(body_t *body);
 
+double body_get_time(body_t *body);
+
+void body_set_time(body_t *body, double time);
+
+void body_increase_time(body_t *body, double time_increment);
+
 #endif // #ifndef __BODY_H__

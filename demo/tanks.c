@@ -11,6 +11,7 @@
 #include "star.h"
 #include "color.h"
 #include "list.h"
+#include "tank.h"
 
 const vector_t BOTTOM_LEFT_COORD = {0, 0};
 const vector_t TOP_RIGHT_COORD = {1000, 500};
@@ -103,6 +104,9 @@ void level_1(vector_t top_right, double wall_length, double wall_height, scene_t
     create_physics_collision(scene, ELASTICITY, tank_body, right_bottom_wall_body);
 }
 
+// how to include a time constraint on how often space can be used to shoot
+// can find the reload time from tank, but not sure how to get the time between key pushes
+
 void on_key_push(char key, key_event_type_t type, double held_time,
                  void *object, scene_t *scene, bool *play) {
     if (*play) {
@@ -127,7 +131,7 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                 body_set_rotation(object, body_get_orientation(object) - ANGLE_OFFSET);
                 break;
             case ' ':
-                
+                tank_shoot(scene, (tank_t *) object);
                 break;
         }
         body_set_velocity(object, speed);
@@ -224,6 +228,28 @@ void make_tank_power_up(scene_t *scene, int type) {
     create_partial_destructive_collision(scene, scene_get_body(scene, 1), power_up_body);
 }
 
+void check_bullet_ranges(scene_t *scene, tank_t *tank) {
+    double curr_range = tank_get_curr_range(tank);
+    
+    for (size_t i; i < scene_bodies; i++) {
+        if (*(char *)body_get_info(scene_get_body(scene, i)) == BULLET_INFO) {
+            double curr_time = body_get_time(scene_get_body(scene, i));
+
+            if (curr_time > curr_range) {
+                body_remove(scene_get_body(scene, i));
+            }
+        }
+    }
+}
+
+void update_bullet_times(scene_t *scene, double dt) {
+    for (size_t i; i < scene_bodies; i++) {
+        if (*(char *)body_get_info(scene_get_body(scene, i)) == BULLET_INFO) {
+            body_increase_time(scene_get_body(scene, i), dt);
+        }
+    }
+}
+
 int main(int argc, char *argv[]) {
     sdl_init(BOTTOM_LEFT_COORD, TOP_RIGHT_COORD);
     scene_t *scene = scene_init();
@@ -245,9 +271,19 @@ int main(int argc, char *argv[]) {
     scenes[0] = scene;
     scenes[1] = pause_scene;
 
+    vector_t *tank_center = malloc(sizeof(vector_t));
+    vector_t center = {rand() % (int)TOP_RIGHT_COORD.x, rand() % (int)TOP_RIGHT_COORD.y};
+    *tank_center = center;
+
+    list_t *tank_pts = animate_tank(tank_center);
+    tank_t *tank1 = tank_init(tank_center, NULL);
+
     while (!sdl_is_done(scene, scene_get_body(scene, 0), play, scenes)) {
         double dt = time_since_last_tick();
         time_passed += dt;
+
+        update_bullet_times(scene, dt);
+        check_bullet_ranges(scene, tank1);
 
         if (*play) {
             temp_scene = scene;

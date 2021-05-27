@@ -19,6 +19,7 @@ typedef struct body {
     void *info;
     free_func_t info_freer;
     bool remove;
+    double time;
 } body_t;
 
 body_t *body_init(list_t *shape, double mass, rgb_color_t color) {
@@ -37,6 +38,7 @@ body_t *body_init(list_t *shape, double mass, rgb_color_t color) {
     body_obj->impulse = VEC_ZERO;
     body_obj->remove = false;
     body_obj->info_freer = NULL;
+    body_obj->time = 0;
     return body_obj;
 }
 
@@ -165,4 +167,18 @@ void body_remove(body_t *body) {
 
 bool body_is_removed(body_t *body) {
     return body->remove;
+}
+
+double body_get_time(body_t *body) {
+    return body->time;
+}
+
+void body_set_time(body_t *body, double time) {
+    body->time = time;
+}
+
+void body_increase_time(body_t *body, double time_increment) {
+    double curr_time = body_get_time(body);
+    curr_time += time_increment;
+    body_set_time(body, curr_time);
 }

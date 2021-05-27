@@ -150,7 +150,7 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes) {
 }
 
 void add_pause_screen_text(scene_t *scene) {
-    char *font = "OpenSans-Regular.ttf";
+    char *font = "Limelight.ttf";
 
     list_t *resume_shape = body_get_shape(scene_get_body(scene, RESUME_BUT));
     assert(list_size(resume_shape) == 4);

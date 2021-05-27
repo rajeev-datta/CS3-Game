@@ -210,6 +210,9 @@ void sdl_draw_polygon(list_t *points, rgb_color_t color) {
 void sdl_write(int x, int y, int width, int height, char *chosen_font, int font_size,
                SDL_Color color, char *text) {
     TTF_Font *font = TTF_OpenFont((const char *)chosen_font, font_size);
+    if (!font) {
+        printf("TTF_OpenFontRW: %s\n", TTF_GetError());
+    }
     
     SDL_Surface *surfaceMessage = TTF_RenderText_Solid(font, (const char *)text, color);
     SDL_Texture *message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
@@ -222,8 +225,8 @@ void sdl_write(int x, int y, int width, int height, char *chosen_font, int font_
 
     SDL_RenderCopy(renderer, message, NULL, &message_rect);
 
-    SDL_FreeSurface(surfaceMessage);
-    SDL_DestroyTexture(message);
+    // SDL_FreeSurface(surfaceMessage);
+    // SDL_DestroyTexture(message);
 }
 
 void sdl_show(void) {

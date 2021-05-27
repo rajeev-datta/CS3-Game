@@ -216,7 +216,13 @@ void sdl_write(int x, int y, int width, int height, char *chosen_font, int font_
     }
     
     SDL_Surface *surfaceMessage = TTF_RenderText_Solid(font, (const char *)text, color);
+    if (!surfaceMessage) {
+        printf("TTF_RenderText_SolidRW: %s\n", TTF_GetError());
+    }
     SDL_Texture *message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
+    if (!message) {
+        printf("SDL_CreateTextureFromSurfaceRW: %s\n", SDL_GetError());
+    }
 
     SDL_Rect message_rect;
     message_rect.x = x;

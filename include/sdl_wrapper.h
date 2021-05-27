@@ -53,8 +53,10 @@ typedef void (*key_handler_t)(char key, key_event_type_t type, double held_time,
  * @param scene a scene_t representing the scene
  * @param point a vector_t representing the coordinates of the mouse
  * @param play a bool representing if the game is playing or not
+ * @param scenes an array of scene_t's representing the scenes in the game
  */
-typedef void (*mouse_handler_t)(scene_t *scene, vector_t point, bool *play);
+typedef void (*mouse_handler_t)(scene_t *scene, vector_t point, bool *play,
+                                scene_t **scenes);
 
 /**
  * Initializes the SDL window and renderer.
@@ -72,9 +74,10 @@ void sdl_init(vector_t min, vector_t max);
  * @param scene a scene_t representing the scene
  * @param body a void * that could be a body
  * @param play a boolean saying if we are playing the game
+ * @param scenes an array of scene_t's representing the scenes in the game
  * @return true if the window was closed, false otherwise
  */
-bool sdl_is_done(scene_t *scene, void *body, bool *play);
+bool sdl_is_done(scene_t *scene, void *body, bool *play, scene_t **scenes);
 
 /**
  * Clears the screen. Should be called before drawing polygons in each frame.

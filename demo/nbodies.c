@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    while (!sdl_is_done(scene, NULL, NULL)) {
+    while (!sdl_is_done(scene, NULL, NULL, NULL)) {
         double dt = time_since_last_tick();
         scene_tick(scene, dt);
         sdl_render_scene(scene);

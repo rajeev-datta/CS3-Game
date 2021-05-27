@@ -131,4 +131,11 @@ void scene_add_bodies_force_creator(
  */
 void scene_tick(scene_t *scene, double dt);
 
+/**
+ * Removes all of the bodies in the scene.
+ * Does not remove the scene itself.
+ * @param scene the scene that the bodies will be removed from
+ */
+void erase_scene(scene_t *scene);
+
 #endif // #ifndef __SCENE_H__

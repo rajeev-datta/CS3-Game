@@ -4,6 +4,7 @@
 #include <time.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
+#include <SDL2/SDL_ttf.h>
 #include <stdio.h>
 #include "sdl_wrapper.h"
 #include "scene.h"
@@ -123,6 +124,7 @@ void sdl_init(vector_t min, vector_t max) {
         SDL_WINDOW_RESIZABLE
     );
     renderer = SDL_CreateRenderer(window, -1, 0);
+    TTF_Init();
 }
 
 bool sdl_is_done(scene_t *scene, void *object, bool *play, scene_t **scenes) {
@@ -205,8 +207,23 @@ void sdl_draw_polygon(list_t *points, rgb_color_t color) {
     free(y_points);
 }
 
-void sdl_write() {
+void sdl_write(int x, int y, int width, int height, char *chosen_font, int font_size,
+               SDL_Color color, char *text) {
+    TTF_Font *font = TTF_OpenFont((const char *)chosen_font, font_size);
     
+    SDL_Surface *surfaceMessage = TTF_RenderText_Solid(font, (const char *)text, color);
+    SDL_Texture *message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
+
+    SDL_Rect message_rect;
+    message_rect.x = x;
+    message_rect.y = y;
+    message_rect.w = width;
+    message_rect.h = height;
+
+    SDL_RenderCopy(renderer, message, NULL, &message_rect);
+
+    SDL_FreeSurface(surfaceMessage);
+    SDL_DestroyTexture(message);
 }
 
 void sdl_show(void) {
@@ -256,3 +273,4 @@ double time_since_last_tick(void) {
     last_clock = now;
     return difference;
 }
+

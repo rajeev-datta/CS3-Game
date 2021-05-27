@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
 #include <stdbool.h>
 #include <assert.h>
@@ -35,6 +36,8 @@ double const INIT_VEL = 400;
 double const ANGLE_OFFSET = (10 * M_PI)/180;
 const double ELASTICITY = 1;
 const int NUM_SCENES = 2;
+const int FONT_SIZE = 24;
+const SDL_Color BLACK_TEXT = {0, 0, 0};
 enum pause_scene{RESUME_BUT, RESTART_BUT};
 enum info{PAUSE, RESUME, RESTART};
 
@@ -122,28 +125,44 @@ bool within_rect(body_t *body, vector_t point) {
     return within;
 }
 
-void erase_old_scene(scene_t **scenes) {
-    for (size_t i = 0; i < scene_bodies(scenes[0]); i++) {
-        scene_remove_body(scenes[0], i);
-    }
-}
-
 void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes) {
     if (*play) {
-        if (within_rect(scene_get_body(scenes[0], PAUSE_BUTTON), point)){
+        if (within_rect(scene_get_body(scene, PAUSE_BUTTON), point)){
             *play = false;
         }
     } else {
-        if (within_rect(scene_get_body(scenes[1], RESUME_BUT), point)) {
+        if (within_rect(scene_get_body(scene, RESUME_BUT), point)) {
             *play = true;
-        } else if (within_rect(scene_get_body(scenes[1], RESTART_BUT), point)) {
+        } else if (within_rect(scene_get_body(scene, RESTART_BUT), point)) {
             printf("clicked restart\n");
-            erase_old_scene(scenes);
+            erase_scene(scenes[0]);
             make_pause_button(scenes[0]);
             level_1(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[0]);
             *play = true;
         }
     }
+}
+
+void add_pause_screen_text(scene_t *scene) {
+    char *font = "Sans.ttf";
+
+    list_t *resume_shape = body_get_shape(scene_get_body(scene, RESUME_BUT));
+    assert(list_size(resume_shape) == 4);
+    int x = ((vector_t *)list_get(resume_shape, 0))->x;
+    int y = ((vector_t *)list_get(resume_shape, 1))->y;
+    int width = BUTTON_LENGTH;
+    int height = BUTTON_HEIGHT;
+    char *resume_text = "Resume";
+    sdl_write(x, y, width, height, font, FONT_SIZE, BLACK_TEXT, resume_text);
+
+    list_t *restart_shape = body_get_shape(scene_get_body(scene, RESTART_BUT));
+    assert(list_size(restart_shape) == 4);
+    y = ((vector_t *)list_get(restart_shape, 1))->y;
+    char *restart_text = "Restart";
+    sdl_write(x, y, width, height, font, FONT_SIZE, BLACK_TEXT, restart_text);
+
+    list_free(resume_shape);
+    list_free(restart_shape);
 }
 
 void set_up_pause_screen(scene_t *scene) {
@@ -192,10 +211,10 @@ int main(int argc, char *argv[]) {
     scenes[1] = pause_scene;
 
 
-    while (!sdl_is_done(scene, scene_get_body(scene, 0), play, scenes)) {
+    while (!sdl_is_done(temp_scene, scene_get_body(scene, 0), play, scenes)) {
         double dt = time_since_last_tick();
         time_passed += dt;
-        
+
         if (*play) {
             temp_scene = scene;
         } else {
@@ -204,6 +223,9 @@ int main(int argc, char *argv[]) {
         }
 
         sdl_render_scene(temp_scene);
+        if (!*play) {
+            add_pause_screen_text(temp_scene);
+        }
         
         scene_tick(temp_scene, dt);
     }
@@ -212,3 +234,4 @@ int main(int argc, char *argv[]) {
     scene_free(scene);
     free(scenes);
 }
+

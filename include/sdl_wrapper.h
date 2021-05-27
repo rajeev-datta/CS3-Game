@@ -2,6 +2,7 @@
 #define __SDL_WRAPPER_H__
 
 #include <stdbool.h>
+#include <SDL2/SDL_ttf.h>
 #include "color.h"
 #include "list.h"
 #include "scene.h"
@@ -93,9 +94,18 @@ void sdl_clear(void);
 void sdl_draw_polygon(list_t *points, rgb_color_t color);
 
 /**
- * Writes text
+ * Writes text to the screen
+ * @param x an integer representing the x-coordinate of the upper-left corner of the text box
+ * @param y an integer representing the y-coordinate of the upper-left corner of the text box
+ * @param width an integer representing the width of the text box
+ * @param height an integer representing the height of the text box
+ * @param font the name of the font file
+ * @param font_size the size of the font
+ * @param color the color of the text
+ * @param text the text that will be written on the screen
  */
-void sdl_write();
+void sdl_write(int x, int y, int width, int height, char *font, int font_size, SDL_Color color,
+               char *text);
 
 /**
  * Displays the rendered frame on the SDL window.
@@ -157,3 +167,4 @@ void sdl_on_mouse(mouse_handler_t handler);
 double time_since_last_tick(void);
 
 #endif // #ifndef __SDL_WRAPPER_H__
+

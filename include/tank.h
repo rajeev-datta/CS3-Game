@@ -27,3 +27,11 @@ void tank_shoot(scene_t *scene, tank_t *tank);
 double tank_get_curr_reload(tank_t *tank);
 
 double tank_get_curr_range(tank_t *tank);
+
+void tank_increase_powerup_time(tank_t *tank, double time_increment);
+
+double tank_get_total_powerup_time(tank_t *tank);
+
+double tank_get_curr_powerup_time(tank_t *tank);
+
+void tank_set_powerup_time(tank_t *tank, double time);

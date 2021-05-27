@@ -250,6 +250,18 @@ void update_bullet_times(scene_t *scene, double dt) {
     }
 }
 
+void check_powerup_time(tank_t *tank, double dt) {
+    if (tank_get_weapon(tank) != NULL) {
+        tank_increase_powerup_time(tank, dt);
+        double curr_time = tank_get_curr_powerup_time(tank);
+
+        if (curr_time > tank_get_total_powerup_time(tank)) {
+            tank_set_shooting_handler(tank, NULL);
+            tank_set_powerup_time(tank, 0);
+        }
+    }
+}
+
 int main(int argc, char *argv[]) {
     sdl_init(BOTTOM_LEFT_COORD, TOP_RIGHT_COORD);
     scene_t *scene = scene_init();
@@ -281,6 +293,8 @@ int main(int argc, char *argv[]) {
     while (!sdl_is_done(scene, scene_get_body(scene, 0), play, scenes)) {
         double dt = time_since_last_tick();
         time_passed += dt;
+
+        check_powerup_time(tank1, dt);
 
         update_bullet_times(scene, dt);
         check_bullet_ranges(scene, tank1);

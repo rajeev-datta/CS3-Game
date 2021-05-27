@@ -16,7 +16,8 @@ typedef struct tank {
     double new_reload_time;
     double default_range;
     double new_range;
-    double powerup_time;
+    double curr_powerup_time;
+    double total_powerup_time;
     void *info;
 } tank_t;
 
@@ -41,7 +42,8 @@ tank_t *tank_init(list_t *points, void* info) {
     tank_obj->default_range = default_bullet_range;
     tank_obj->new_range = 0;
     tank_obj->info = info;
-    tank_obj->powerup_time;
+    tank_obj->total_powerup_time = POWERUP_TIME;
+    tank_obj->curr_powerup_time = 0;
     return tank_obj;
 }
 
@@ -103,3 +105,22 @@ double tank_get_curr_range(tank_t *tank) {
         return tank->new_range;
     }
 }
+
+void tank_increase_powerup_time(tank_t *tank, double time_increment) {
+    double curr_time = tank->curr_powerup_time;
+    curr_time += time_increment;
+    tank->curr_powerup_time = curr_time;
+}
+
+double tank_get_total_powerup_time(tank_t *tank) {
+    return tank->total_powerup_time;
+}
+
+double tank_get_curr_powerup_time(tank_t *tank) {
+    return tank->curr_powerup_time;
+}
+
+void tank_set_powerup_time(tank_t *tank, double time) {
+    tank->curr_powerup_time = time;
+}
+

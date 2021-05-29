@@ -213,7 +213,7 @@ int main(int argc, char *argv[]) {
             set_up_board(scene);
             time_passed = 0;
         }
-
+        sdl_clear();
         sdl_render_scene(scene);
         time_passed += dt;
 

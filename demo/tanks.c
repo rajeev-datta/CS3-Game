@@ -355,7 +355,7 @@ int main(int argc, char *argv[]) {
             temp_scene = pause_scene;
             time_passed = 0;
         }
-
+        sdl_clear();
         sdl_render_scene(temp_scene);
 
         // Shoot a power-up at an interval of time.

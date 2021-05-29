@@ -155,6 +155,7 @@ int main(int argc, char *argv[]) {
         double dt = time_since_last_tick();
         wrapping_boundary(scene, TOP_RIGHT_COORD, INVADER_RADIUS, SPACING);
         stop_boundary(scene, TOP_RIGHT_COORD, BOTTOM_LEFT_COORD, SPACESHIP_MAJOR);
+        sdl_clear();
         sdl_render_scene(scene);
         time_passed += dt;
         if (time_passed > INVADER_BULLET_TIME && scene_get_body(scene, 0) != NULL

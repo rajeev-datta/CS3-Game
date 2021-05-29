@@ -231,11 +231,13 @@ int main(int argc, char *argv[]) {
             temp_scene = pause_scene;
             time_passed = 0;
         }
+        sdl_clear();
 
-        sdl_render_scene(temp_scene);
         if (!*play) {
             add_pause_screen_text(temp_scene);
         }
+
+        sdl_render_scene(temp_scene);
         
         scene_tick(temp_scene, dt);
     }

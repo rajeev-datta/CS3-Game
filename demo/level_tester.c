@@ -149,6 +149,7 @@ int main(int argc, char *argv[]) {
 
     while (!sdl_is_done(scene, scene_get_body(scene, 0), NULL, NULL)) {
         double dt = time_since_last_tick();
+        sdl_clear();
         sdl_render_scene(scene);      
         scene_tick(scene, dt);
     }

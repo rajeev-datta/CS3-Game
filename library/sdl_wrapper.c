@@ -256,7 +256,6 @@ void sdl_show(void) {
 }
 
 void sdl_render_scene(scene_t *scene) {
-    sdl_clear();
     size_t body_count = scene_bodies(scene);
     for (size_t i = 0; i < body_count; i++) {
         body_t *body = scene_get_body(scene, i);

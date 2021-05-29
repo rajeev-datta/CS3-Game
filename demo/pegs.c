@@ -267,6 +267,7 @@ int main(void) {
         }
 
         scene_tick(scene, dt);
+        sdl_clear();
         sdl_render_scene(scene);
     }
 

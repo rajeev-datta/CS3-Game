@@ -38,27 +38,27 @@ void level_1(vector_t top_right, double wall_length, double wall_height, scene_t
     list_t *center_wall = animate_rectangle((vector_t) {top_right.x/2, top_right.y/2}, wall_length, wall_height*2);
     body_t *center_wall_body = body_init_with_info(center_wall, INFINITY, RED, wall_info, free);
     scene_add_body(scene, center_wall_body);
-    create_physics_collision(scene, ELASTICITY, tank_body, center_wall_body);
+    //create_physics_collision(scene, ELASTICITY, tank_body, center_wall_body);
 
     list_t *left_top_wall = animate_rectangle((vector_t) {top_right.x/4, top_right.y - (wall_height/2)}, wall_length, wall_height);
     body_t *left_top_wall_body = body_init_with_info(left_top_wall, INFINITY, RED, wall_info, free);
     scene_add_body(scene, left_top_wall_body);
-    create_physics_collision(scene, ELASTICITY, tank_body, left_top_wall_body);
+    //create_physics_collision(scene, ELASTICITY, tank_body, left_top_wall_body);
 
     list_t *left_bottom_wall = animate_rectangle((vector_t) {top_right.x/4, wall_height/2}, wall_length, wall_height);
     body_t *left_bottom_wall_body = body_init_with_info(left_bottom_wall, INFINITY, RED, wall_info, free);
     scene_add_body(scene, left_bottom_wall_body);
-    create_physics_collision(scene, ELASTICITY, tank_body, left_bottom_wall_body);
+    //create_physics_collision(scene, ELASTICITY, tank_body, left_bottom_wall_body);
 
     list_t *right_top_wall = animate_rectangle((vector_t) {(top_right.x*3)/4, top_right.y - (wall_height/2)}, wall_length, wall_height);
     body_t *right_top_wall_body = body_init_with_info(right_top_wall, INFINITY, RED, wall_info, free);
     scene_add_body(scene, right_top_wall_body);
-    create_physics_collision(scene, ELASTICITY, tank_body, right_top_wall_body);
+    //create_physics_collision(scene, ELASTICITY, tank_body, right_top_wall_body);
 
     list_t *right_bottom_wall = animate_rectangle((vector_t) {(top_right.x*3)/4, wall_height/2}, wall_length, wall_height);
     body_t *right_bottom_wall_body = body_init_with_info(right_bottom_wall, INFINITY, RED, wall_info, free);
     scene_add_body(scene, right_bottom_wall_body);
-    create_physics_collision(scene, ELASTICITY, tank_body, right_bottom_wall_body);
+    //create_physics_collision(scene, ELASTICITY, tank_body, right_bottom_wall_body);
 }
 
 void level_2(vector_t top_right, double wall_length, double wall_height, scene_t *scene) {
@@ -144,13 +144,13 @@ void on_key_press(char key, key_event_type_t type, double held_time,
 int main(int argc, char *argv[]) {
     sdl_init(BOTTOM_LEFT_COORD, TOP_RIGHT_COORD);
     scene_t *scene = scene_init();
-    level_2(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scene);
+    level_1(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scene);
     sdl_on_key((key_handler_t)on_key_press);
 
     while (!sdl_is_done(scene, scene_get_body(scene, 0), NULL, NULL)) {
         double dt = time_since_last_tick();
-        sdl_clear();
-        sdl_render_scene(scene);      
+        wall_boundary(scene);
+        sdl_render_scene(scene);
         scene_tick(scene, dt);
     }
     

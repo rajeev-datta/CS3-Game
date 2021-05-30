@@ -280,3 +280,25 @@ void stop_boundary(scene_t *scene, vector_t top_right, vector_t bottom_left, dou
         }
     }
 }
+
+void wall_boundary(scene_t *scene) {
+    body_t *tank_body = scene_get_body(scene, 0);
+    for (size_t i = 0; i < scene_bodies(scene); i++) {
+        body_t *curr_body = scene_get_body(scene, i);
+        if (body_get_info(curr_body) == WALL_INFORMATION) {
+            collision_info_t collision = find_collision(body_get_real_shape(tank_body), body_get_real_shape(curr_body));
+            if (collision.collided) {
+                printf("(%f, %f)", collision.axis.x, collision.axis.y);
+                // if (collision.axis.x < 0 && collision.axis.y == 0) {
+                //     body_set_centroid(tank_body, (vector_t) {body_get_centroid(tank_body).x - 10, body_get_centroid(tank_body).y});
+                // }
+                // else if (collision.axis.x == 0 && collision.axis.y > 0) {
+                //     body_set_centroid(tank_body, (vector_t) {body_get_centroid(tank_body).x, body_get_centroid(tank_body).y - 10});
+                // }
+                // else if (collision.axis.x == 0 && collision.axis.y < 0) {
+                //     body_set_centroid(tank_body, (vector_t) {body_get_centroid(tank_body).x, body_get_centroid(tank_body).y + 10});
+                // }
+            }
+        }
+    }
+}

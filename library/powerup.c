@@ -12,6 +12,7 @@
 #include <stdbool.h>
 #include "animate.h"
 #include "tank.h"
+#include "powerup.h"
 
 const int CIRCLE_PTS = 16;
 const double BULLET_RADIUS = 5;
@@ -158,22 +159,22 @@ void remote_missile_shoot(scene_t *scene, body_t *body) {
 void tank_powerup_fxn(body_t *body1, body_t *body2, vector_t axis, void *aux) {
     body_remove(body2);
 
-    if (((tank_powerup_aux_t *)aux)->type == (char) 0) {
+    if (((tank_powerup_aux_t *)aux)->type == MACHINE_GUN) {
         // machine gun power up
         tank_set_new_reload_time(((tank_powerup_aux_t *)aux)->tank, MACHINE_GUN_RELOAD_TIME);
         tank_set_new_range(((tank_powerup_aux_t *)aux)->tank, MACHINE_GUN_RANGE);
         tank_set_shooting_handler(((tank_powerup_aux_t *)aux)->tank, (shooting_handler_t) machine_gun_shoot);
-    } else if (((tank_powerup_aux_t *)aux)->type == (char) 1) {
+    } else if (((tank_powerup_aux_t *)aux)->type == FRAG_BOMB) {
         //frag bomb power up
         tank_set_new_reload_time(((tank_powerup_aux_t *)aux)->tank, FRAG_BOMB_RELOAD_TIME);
         tank_set_new_range(((tank_powerup_aux_t *)aux)->tank, FRAG_BOMB_RANGE);
         tank_set_shooting_handler(((tank_powerup_aux_t *)aux)->tank, (shooting_handler_t) frag_bomb_shoot);
-    } else if (((tank_powerup_aux_t *)aux)->type == (char) 2) {
+    } else if (((tank_powerup_aux_t *)aux)->type == LAND_MINE) {
         //land mine power up
         tank_set_new_reload_time(((tank_powerup_aux_t *)aux)->tank, LAND_MINE_RELOAD_TIME);
         tank_set_new_range(((tank_powerup_aux_t *)aux)->tank, LAND_MINE_TIME_LIMIT);
         tank_set_shooting_handler(((tank_powerup_aux_t *)aux)->tank, (shooting_handler_t) land_mine_shoot);
-    } else if (((tank_powerup_aux_t *)aux)->type == (char) 3) {
+    } else if (((tank_powerup_aux_t *)aux)->type == FORCE_FIELD) {
         // force field power up
         tank_set_new_range(((tank_powerup_aux_t *)aux)->tank, FORCE_FIELD_TIME_LIMIT);
         tank_set_shooting_handler(((tank_powerup_aux_t *)aux)->tank, (shooting_handler_t) force_field_shoot);
@@ -183,7 +184,7 @@ void tank_powerup_fxn(body_t *body1, body_t *body2, vector_t axis, void *aux) {
     }
 }
 
-void create_tank_powerup_collision(scene_t *scene, tank_t *tank, body_t *powerup, char type) {
+void create_tank_powerup_collision(scene_t *scene, tank_t *tank, body_t *powerup, powerups_t type) {
     tank_powerup_aux_t *tank_pow_aux = tank_powerup_aux_init(tank, type);
     body_t *body1 = tank_get_body(tank);
     create_collision(scene, body1, powerup, (collision_handler_t) tank_powerup_fxn,

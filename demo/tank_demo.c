@@ -70,20 +70,12 @@ typedef enum scene_indices{
     PAUSE_BUTTON,
 };
 
-typedef enum powerups{
-    MACHINE_GUN,
-    FRAG_BOMB,
-    LAND_MINE,
-    FORCE_FIELD,
-    REMOTE_MISSILE,
-} powerups_t;
-
 typedef enum bodies {
     PLAYER_TANK,
     ENEMY_TANK,
     WALL,
     BULLET
-} body_t;
+} bodies_t;
 
 void put_forces(scene_t *scene) { //should work for different levels because scene is argument
     for(size_t i = 0; i < scene_bodies(scene); i++) {

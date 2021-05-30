@@ -134,6 +134,56 @@ void level_1(vector_t top_right, double wall_length, double wall_height, scene_t
     create_physics_collision(scene, ELASTICITY, tank_body, right_bottom_wall_body);
 }
 
+void level_2(vector_t top_right, double wall_length, double wall_height, scene_t *scene) {
+    char *tank_info = malloc(sizeof(char *));
+    tank_info = TANK_INFO;
+    list_t *tank = animate_rectangle((vector_t) {100, TOP_RIGHT_COORD.y/2}, 50, 50);
+    body_t *tank_body = body_init_with_info(tank, 50, RED, tank_info, free);
+    scene_add_body(scene, tank_body);
+    
+    char *wall_info = malloc(sizeof(char *));
+    wall_info = WALL_INFO;
+    list_t *center_top_wall = animate_rectangle((vector_t) {top_right.x/2, (top_right.y*3.5)/10}, wall_height, wall_length);
+    body_t *center_top_wall_body = body_init_with_info(center_top_wall, INFINITY, RED, wall_info, free);
+    scene_add_body(scene, center_top_wall_body);
+    create_physics_collision(scene, ELASTICITY, tank_body, center_top_wall_body);
+
+    list_t *center_bottom_wall = animate_rectangle((vector_t) {top_right.x/2, (top_right.y*6.5)/10}, wall_height, wall_length);
+    body_t *center_bottom_wall_body = body_init_with_info(center_bottom_wall, INFINITY, RED, wall_info, free);
+    scene_add_body(scene, center_bottom_wall_body);
+    create_physics_collision(scene, ELASTICITY, tank_body, center_bottom_wall_body);
+
+    list_t *left_top_wall = animate_rectangle((vector_t) {(top_right.x*3)/10, (top_right.y*4)/5}, wall_height, wall_length);
+    body_t *left_top_wall_body = body_init_with_info(left_top_wall, INFINITY, RED, wall_info, free);
+    scene_add_body(scene, left_top_wall_body);
+    create_physics_collision(scene, ELASTICITY, tank_body, left_top_wall_body);
+
+    list_t *left_center_wall = animate_rectangle((vector_t) {(top_right.x*3)/10, (top_right.y)/2}, wall_length, wall_height);
+    body_t *left_center_wall_body = body_init_with_info(left_center_wall, INFINITY, RED, wall_info, free);
+    scene_add_body(scene, left_center_wall_body);
+    create_physics_collision(scene, ELASTICITY, tank_body, left_center_wall_body);
+
+    list_t *left_bottom_wall = animate_rectangle((vector_t) {(top_right.x*3)/10, (top_right.y)/5}, wall_height, wall_length);
+    body_t *left_bottom_wall_body = body_init_with_info(left_bottom_wall, INFINITY, RED, wall_info, free);
+    scene_add_body(scene, left_bottom_wall_body);
+    create_physics_collision(scene, ELASTICITY, tank_body, left_bottom_wall_body);
+
+    list_t *right_top_wall = animate_rectangle((vector_t) {(top_right.x*7)/10, (top_right.y*4)/5}, wall_height, wall_length);
+    body_t *right_top_wall_body = body_init_with_info(right_top_wall, INFINITY, RED, wall_info, free);
+    scene_add_body(scene, right_top_wall_body);
+    create_physics_collision(scene, ELASTICITY, tank_body, right_top_wall_body);
+
+    list_t *right_center_wall = animate_rectangle((vector_t) {(top_right.x*7)/10, (top_right.y)/2}, wall_length, wall_height);
+    body_t *right_center_wall_body = body_init_with_info(right_center_wall, INFINITY, RED, wall_info, free);
+    scene_add_body(scene, right_center_wall_body);
+    create_physics_collision(scene, ELASTICITY, tank_body, right_center_wall_body);
+
+    list_t *right_bottom_wall = animate_rectangle((vector_t) {(top_right.x*7)/10, (top_right.y)/5}, wall_height, wall_length);
+    body_t *right_bottom_wall_body = body_init_with_info(right_bottom_wall, INFINITY, RED, wall_info, free);
+    scene_add_body(scene, right_bottom_wall_body);
+    create_physics_collision(scene, ELASTICITY, tank_body, right_bottom_wall_body);
+}
+
 // how to include a time constraint on how often space can be used to shoot
 // can find the reload time from tank, but not sure how to get the time between key pushes
 

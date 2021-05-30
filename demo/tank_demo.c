@@ -5,6 +5,7 @@
 #include <SDL2/SDL2_gfxPrimitives.h>
 #include <stdbool.h>
 #include <assert.h>
+#include <SDL2/SDL_mixer.h>
 #include "sdl_wrapper.h"
 #include "animate.h"
 #include "polygon.h"

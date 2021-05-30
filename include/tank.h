@@ -1,7 +1,7 @@
 #ifndef __TANK_H__
 #define __TANK_H__
 
-#include "body.h
+#include "body.h"
 #include "scene.h"
 
 const double FORCE_FIELD_TIME_LIMIT = 5;

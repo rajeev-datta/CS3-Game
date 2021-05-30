@@ -42,7 +42,12 @@ const int NUM_SCENES = 2;
 const int FONT_SIZE = 100;
 const double TEXT_SCALE = 0.8;
 const SDL_Color WHITE_TEXT = {255, 255, 255};
+const SDL_Color BLACK_TEXT = {0, 0, 0};
 const int LEVEL_BUFFER = 50;
+const int EASY_TEXT_WIDTH = 50;
+const int MEDIUM_TEXT_WIDTH = 90;
+const int HARD_TEXT_WIDTH = 50;
+const int LEVEL_TEXT_HEIGHT = 20;
 
 typedef enum pause_scene{
     RESUME_BUT,
@@ -251,6 +256,22 @@ void add_pause_screen_text(scene_t *scene) {
     y = ((vector_t *)list_get(restart_shape, 1))->y - BUTTON_HEIGHT * (1 - TEXT_SCALE)/2;
     char *restart_text = "Restart";
     sdl_write(x, y, width, height, font, FONT_SIZE, WHITE_TEXT, restart_text);
+
+    char *medium_text = "MEDIUM";
+    int medium_x = (TOP_RIGHT_COORD.x - MEDIUM_TEXT_WIDTH) / 2.0;
+    int levels_y = (TOP_RIGHT_COORD.y - BUTTON_HEIGHT) / 2.0;
+    sdl_write(medium_x,levels_y, MEDIUM_TEXT_WIDTH, LEVEL_TEXT_HEIGHT, font, FONT_SIZE,
+              BLACK_TEXT, medium_text);
+
+    char *easy_text = "EASY";
+    int easy_x = medium_x - (TOP_RIGHT_COORD.x - LEVEL_BUFFER)/3.0;
+    sdl_write(easy_x,levels_y, EASY_TEXT_WIDTH, LEVEL_TEXT_HEIGHT, font, FONT_SIZE,
+              BLACK_TEXT, easy_text);
+
+    char *hard_text = "HARD";
+    int hard_x = medium_x + (TOP_RIGHT_COORD.x + HARD_TEXT_WIDTH)/3.0;
+    sdl_write(hard_x,levels_y, HARD_TEXT_WIDTH, LEVEL_TEXT_HEIGHT, font, FONT_SIZE,
+              BLACK_TEXT, hard_text);
 
     list_free(resume_shape);
     list_free(restart_shape);

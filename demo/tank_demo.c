@@ -46,6 +46,8 @@ const int CIRC_PTS = 16;
 const double FORCE_FIELD_INNER_RADIUS = 7;
 const double FORCE_FIELD_OUTER_RADIUS = 8;
 const double FORCE_FIELD_MASS = 50;
+const double IMG_X_SCALE = 0.9;
+const double IMG_Y_SCALE = 0.8;
 
 typedef enum pause_scene{
     RESUME_BUT,
@@ -324,7 +326,7 @@ void set_up_pause_screen(scene_t *scene) {
 }
 
 void add_pause_screen_text(scene_t *scene) {
-    char *font = "AnticSlab-Regular.ttf";
+    char *font = "fonts/AnticSlab-Regular.ttf";
 
     list_t *resume_shape = body_get_shape(scene_get_body(scene, RESUME_BUT));
     assert(list_size(resume_shape) == 4);
@@ -343,6 +345,27 @@ void add_pause_screen_text(scene_t *scene) {
 
     list_free(resume_shape);
     list_free(restart_shape);
+}
+
+void add_pause_screen_images(scene_t *scene) {
+    double level_width = TOP_RIGHT_COORD.x / 3.0 - LEVEL_BUFFER;
+    double level_height = level_width/2;
+    double image_width = level_width * IMG_X_SCALE;
+    double image_height = level_height * IMG_Y_SCALE;
+
+    list_t *easy_shape = body_get_shape(scene_get_body(scene, EASY_BUT));
+    assert(list_size(easy_shape) == 4);
+    int easy_x = ((vector_t *)list_get(easy_shape, 0))->x + level_width * (1 - IMG_X_SCALE)/2;
+    int easy_y = ((vector_t *)list_get(easy_shape, 1))->y - level_height * (1 - IMG_Y_SCALE)/2;
+    char *easy_image = "images/level1.png";
+    sdl_image(easy_image, easy_x, easy_y, image_width, image_height);
+
+    list_t *medium_shape = body_get_shape(scene_get_body(scene, MEDIUM_BUT));
+    assert(list_size(medium_shape) == 4);
+    int medium_x = ((vector_t *)list_get(medium_shape, 0))->x + level_width * (1 - IMG_X_SCALE)/2;
+    int medium_y = ((vector_t *)list_get(medium_shape, 1))->y - level_height * (1 - IMG_Y_SCALE)/2;
+    char *medium_image = "images/level2.png";
+    sdl_image(medium_image, medium_x, medium_y, image_width, image_height);
 }
 
 void make_tank_power_up(scene_t *scene, powerups_t type) {
@@ -565,6 +588,7 @@ int main(int argc, char *argv[]) {
         sdl_render_scene(temp_scene);
         if (!*play) {
             add_pause_screen_text(temp_scene);
+            add_pause_screen_images(temp_scene);
         }
         sdl_show();
 

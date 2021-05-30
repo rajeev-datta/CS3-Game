@@ -6,6 +6,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
 #include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_image.h>
 #include <stdio.h>
 #include "scene.h"
 #include <string.h>
@@ -137,6 +138,8 @@ void sdl_init(vector_t min, vector_t max) {
     );
     renderer = SDL_CreateRenderer(window, -1, 0);
     TTF_Init();
+    SDL_Init(SDL_INIT_VIDEO);
+
 }
 
 bool sdl_is_done(scene_t *scene, void *object, bool *play, scene_t **scenes, int *level) {
@@ -248,6 +251,30 @@ void sdl_write(double x, double y, int width, int height, char *chosen_font, int
     SDL_FreeSurface(surfaceMessage);
     SDL_DestroyTexture(message);
     TTF_CloseFont(font);
+}
+
+void sdl_image(const char* file, int x, int y, int width, int height) {
+    SDL_Surface *image = IMG_Load(file);
+    if (!image) {
+        printf("IMG_LoadRW: %s\n", IMG_GetError());
+    }
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, image);
+    if (!texture) {
+        printf("SDL_CreateTextureFromSurfaceRW: %s\n", SDL_GetError());
+    }
+
+    vector_t pixel = get_scene_position((vector_t){x,y});
+
+    SDL_Rect image_rect;
+    image_rect.x = (int) pixel.x;
+    image_rect.y = (int) pixel.y;
+    image_rect.w = width;
+    image_rect.h = height;
+
+    SDL_RenderCopy(renderer, texture, NULL, &image_rect);
+
+    SDL_FreeSurface(image);
+    SDL_DestroyTexture(texture);
 }
 
 void sdl_show(void) {

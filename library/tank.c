@@ -18,22 +18,13 @@ typedef struct tank {
     double new_range;
     double curr_powerup_time;
     double total_powerup_time;
-    void *info;
 } tank_t;
 
-tank_t *tank_init(list_t *points, void* info) {
+tank_t *tank_init(list_t *points) {
     tank_t *tank_obj = malloc(sizeof(tank_t));
     
-    //enemy tank
-    if (info == 'e') { 
-        body_t *shape = body_init(points, MASS, BLACK);
-        tank_obj->shape = shape;
-    }
-    //player tank, info == 'p'
-    else {
-        body_t *shape = body_init(points, MASS, RED);
-        tank_obj->shape = shape;
-    }
+    body_t *shape = body_init(points, MASS, RED);
+    tank_obj->shape = shape;
     
     tank_obj->weapon = NULL;
     tank_obj->default_weapon = (shooting_handler_t) default_gun_shoot;
@@ -41,7 +32,23 @@ tank_t *tank_init(list_t *points, void* info) {
     tank_obj->new_reload_time = 0;
     tank_obj->default_range = default_bullet_range;
     tank_obj->new_range = 0;
-    tank_obj->info = info;
+    tank_obj->total_powerup_time = POWERUP_TIME;
+    tank_obj->curr_powerup_time = 0;
+    return tank_obj;
+}
+
+tank_t *enemy_tank_init(list_t *points) {
+    tank_t *tank_obj = malloc(sizeof(tank_t));
+    
+    body_t *shape = body_init(points, MASS, BLACK);
+    tank_obj->shape = shape;
+    
+    tank_obj->weapon = NULL;
+    tank_obj->default_weapon = (shooting_handler_t) default_gun_shoot;
+    tank_obj->default_reload = default_reload_time;
+    tank_obj->new_reload_time = 0;
+    tank_obj->default_range = default_bullet_range;
+    tank_obj->new_range = 0;
     tank_obj->total_powerup_time = POWERUP_TIME;
     tank_obj->curr_powerup_time = 0;
     return tank_obj;

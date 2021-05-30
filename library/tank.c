@@ -85,7 +85,7 @@ double tank_get_default_range(tank_t *tank) {
 
 void tank_shoot(scene_t *scene, tank_t *tank) {
     body_t *tank_body = tank_get_body(tank);
-    if (tank_get_weapon(tank) != NULL) {
+    if (tank_get_weapon(tank) != NULL && tank_get_weapon(tank) != (shooting_handler_t) force_field_shoot) {
         shooting_handler_t weapon = tank_get_weapon(tank);
         weapon(scene, tank_body);
     }
@@ -106,7 +106,7 @@ double tank_get_curr_reload(tank_t *tank) {
 }
 
 double tank_get_curr_range(tank_t *tank) {
-    if (tank->new_range == 0) {
+    if (tank->new_range == 0 || tank_get_weapon(tank) == (shooting_handler_t) force_field_shoot) {
         return tank->default_range;
     }
     else {
@@ -130,5 +130,9 @@ double tank_get_curr_powerup_time(tank_t *tank) {
 
 void tank_set_powerup_time(tank_t *tank, double time) {
     tank->curr_powerup_time = time;
+}
+
+double tank_get_new_weapon_range(tank_t *tank) {
+    return tank->new_range;
 }
 

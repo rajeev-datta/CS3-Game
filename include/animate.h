@@ -24,6 +24,8 @@ list_t *animate_ellipse(vector_t *center, double major, double minor, int points
  */
 list_t *animate_circle(vector_t center, double radius, int points);
 
+list_t *animate_ring(vector_t center, double inner_radius, double outer_radius, int points);
+
 /**
  *  @brief Makes Pacman
  *

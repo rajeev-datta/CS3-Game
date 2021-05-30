@@ -88,6 +88,37 @@ list_t *animate_circle(vector_t center, double radius, int points) {
     return circle;
 }
 
+list_t *animate_ring(vector_t center, double inner_radius, double outer_radius, int points) {
+    list_t *ring = list_init(2*points, free);
+
+    list_t *inner_circle = list_init(points, free);
+    list_t *outer_circle = list_init(points, free);
+    double angle = 0;
+
+    for (int j = 0; j < points; j++) {
+        vector_t *point = malloc(sizeof(vector_t));
+        point->x = center.x + inner_radius * cos(angle);
+        point->y = center.y + inner_radius * sin(angle);
+        list_add(inner_circle, point);
+
+        vector_t *point_2 = malloc(sizeof(vector_t));
+        point_2->x = center.x + outer_radius * cos(angle);
+        point_2->y = center.y + outer_radius * sin(angle);
+        list_add(outer_circle, point_2);
+        angle += M_PI * 2 / points;
+    }
+
+    for (int j = 0; j < list_size(inner_circle); j++) {
+        list_add(ring, list_get(inner_circle, j));
+    }
+
+    for (int j = 0; j < list_size(outer_circle); j++) {
+        list_add(ring, list_get(outer_circle, j));
+    }
+
+    return ring;
+}
+
 list_t *animate_pacman(vector_t *center, double radius, int points) {
     list_t *circle = animate_circle(*center, radius, points);
     list_t *pacman = list_init(points - points/4 + 1, free);

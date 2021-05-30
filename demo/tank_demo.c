@@ -13,6 +13,7 @@
 #include "color.h"
 #include "list.h"
 #include "tank.h"
+#include "powerup.h"
 
 const vector_t BOTTOM_LEFT_COORD = {0, 0};
 const vector_t TOP_RIGHT_COORD = {1000, 500};
@@ -31,7 +32,7 @@ const double BUTTON_HEIGHT = 100;
 const double INIT_POWERUP_LENGTH = 10;
 const double INIT_POWERUP_HEIGHT = 10;
 const double POWERUP_MASS = 50;
-const int NUM_POWERUPS = 6;
+const int NUM_POWERUPS = 5;
 const int TANK_POWER_UP_TIME = 10;
 double const INIT_VEL = 400;
 double const ANGLE_OFFSET = (10 * M_PI)/180;
@@ -41,6 +42,10 @@ const int FONT_SIZE = 100;
 const double TEXT_SCALE = 0.8;
 const SDL_Color WHITE_TEXT = {255, 255, 255};
 const int LEVEL_BUFFER = 50;
+const int CIRC_PTS = 16;
+const double FORCE_FIELD_INNER_RADIUS = 7;
+const double FORCE_FIELD_OUTER_RADIUS = 8;
+const double FORCE_FIELD_MASS = 50;
 
 typedef enum pause_scene{
     RESUME_BUT,
@@ -65,7 +70,6 @@ typedef enum powerups{
     FRAG_BOMB,
     LAND_MINE,
     FORCE_FIELD,
-    LASER,
     REMOTE_MISSILE,
 } powerups_t;
 
@@ -351,8 +355,6 @@ void make_tank_power_up(scene_t *scene, powerups_t type) {
         color = (rgb_color_t) {0.0, 0.0, 0.5};
     } else if (type == FORCE_FIELD) {
         color = (rgb_color_t) {0.3, 0.0, 0.4};
-    } else if (type == LASER) {
-        color = (rgb_color_t) {0.4, 0.6, 0.2};
     }
     else {
         color = (rgb_color_t) {165.0/255, 104.0/255, 42.0/255};
@@ -431,6 +433,80 @@ void check_detonation(scene_t *scene, tank_t *tank, double dt) {
     }
 }
 
+void update_land_mine_times(scene_t *scene, double dt) {
+    for (size_t i; i < scene_bodies; i++) {
+        if (*(body_type_t *)body_get_info(scene_get_body(scene, i)) == LAND_MINE) {
+            body_increase_time(scene_get_body(scene, i), dt);
+        }
+    }
+}
+
+void check_land_mine_times(scene_t *scene, tank_t *tank) {
+    double curr_range = tank_get_curr_range(tank);
+    
+    for (size_t i; i < scene_bodies; i++) {
+        if (*(body_type_t *)body_get_info(scene_get_body(scene, i)) == LAND_MINE) {
+            double curr_time = body_get_time(scene_get_body(scene, i));
+
+            if (curr_time > curr_range) {
+                body_remove(scene_get_body(scene, i));
+            }
+        }
+    }
+}
+
+bool *check_for_force_field(scene_t *scene) {
+    for (size_t i; i < scene_bodies; i++) {
+        if (*(body_type_t *)body_get_info(scene_get_body(scene, i)) == TANK_FORCE_FIELD) {
+            return true;
+        }
+    }
+    return false;
+}
+
+body_t *create_new_force_field(scene_t *scene, tank_t *tank) {
+    body_t *tank_body = tank_get_body(tank);
+    list_t *force_field_pts = animate_ring(body_get_centroid(tank_body), FORCE_FIELD_INNER_RADIUS, FORCE_FIELD_OUTER_RADIUS, CIRC_PTS);
+
+    body_type_t *tank_force_field_info = malloc(sizeof(body_type_t *));
+    *tank_force_field_info = TANK_FORCE_FIELD;
+
+    body_t *force_field_body = body_init_with_info(force_field_pts, FORCE_FIELD_MASS,
+                                              BLUE, tank_force_field_info, free);
+
+    body_set_velocity(force_field_body, (vector_t) {0, 0});
+    for (size_t i = 0; i < scene_bodies(scene); i++) {
+        if (*(body_type_t *) body_get_info(scene_get_body(scene, i)) == BULLET) {
+            create_partial_destructive_collision(scene, force_field_body, scene_get_body(scene, i));
+        }
+    }
+    scene_add_body(scene, force_field_body);
+}
+
+void handle_force_field(scene_t *scene, tank_t *tank, double dt) {
+    if (tank_get_weapon(tank) == (shooting_handler_t) force_field_shoot) {
+        if (check_for_force_field(scene)) {
+            for (size_t i; i < scene_bodies; i++) {
+                if (*(body_type_t *)body_get_info(scene_get_body(scene, i)) == TANK_FORCE_FIELD) {
+                    body_t *force_field = scene_get_body(scene, i);
+                    body_increase_time(force_field, dt);
+                    double curr_time = body_get_time(force_field);
+                    
+                    if (curr_time > tank_get_curr_range(tank)) {
+                        body_remove(force_field);
+                    } else {
+                        body_remove(force_field);
+                        body_t *new_force_field = create_new_force_field(scene, tank);
+                        body_set_time(new_force_field, curr_time);
+                    }
+                }
+            }
+        }
+    } else {
+        create_new_force_field(scene, tank);
+    }
+}
+
 int main(int argc, char *argv[]) {
     sdl_init(BOTTOM_LEFT_COORD, TOP_RIGHT_COORD);
     scene_t *scene = scene_init();
@@ -459,7 +535,7 @@ int main(int argc, char *argv[]) {
     *tank_center = center;
 
     list_t *tank_pts = animate_tank(tank_center);
-    tank_t *tank1 = tank_init(tank_center, NULL);
+    tank_t *tank1 = tank_init(tank_center);
 
     scene_add_body(scene, tank_get_body(tank1));
 
@@ -470,9 +546,14 @@ int main(int argc, char *argv[]) {
         check_powerup_time(tank1, dt);
 
         update_bullet_times(scene, dt);
+        update_land_mine_times(scene, dt);
+
         check_bullet_ranges(scene, tank1);
+        check_land_mine_times(scene, tank1);
 
         check_detonation(scene, tank1, dt);
+
+        handle_force_field(scene, tank1, dt);
 
         if (*play) {
             temp_scene = scene;

@@ -25,6 +25,9 @@ const double FRAG_BUMB_RANGE = 7;
 const double FRAG_BOMB_RADIUS = 7;
 const double BULLET_MASS = 100;
 const double FRAG_BOMB_RANGE = 6;
+const double LAND_MINE_RELOAD_TIME = 7;
+const double LAND_MINE_TIME_LIMIT = 10;
+const double LAND_MINE_SIDE_LENGTH = 7;
 
 // will need to give bullets a time component so we can keep track of when bullets should be removed?
 // how should I do this though? Cuz I can only add bodies to scene and so I'm not sure how I would keep track of these additional
@@ -123,14 +126,26 @@ void frag_bomb_shoot(scene_t *scene, body_t *body) {
 
 void land_mine_shoot(scene_t *scene, body_t *body) {
     // method to handle the shooting of land mine
+
+    list_t *mine = animate_rectangle(body_get_centroid(body), LAND_MINE_SIDE_LENGTH,
+                                       LAND_MINE_SIDE_LENGTH);
+    body_type_t *tank_land_mine_info = malloc(sizeof(body_type_t *));
+    *tank_land_mine_info = TANK_LAND_MINE;
+    body_t *land_mine_body = body_init_with_info(mine, BULLET_MASS,
+                                              PURPLE, tank_land_mine_info, free);
+
+    body_set_velocity(land_mine_body, (vector_t) {0, 0});
+    for (size_t i = 0; i < scene_bodies(scene); i++) {
+        if (*(body_type_t *) body_get_info(scene_get_body(scene, i)) == TANK_1 || *(body_type_t *) body_get_info(scene_get_body(scene, i)) == TANK_2) {
+            create_destructive_collision(scene, land_mine_body, scene_get_body(scene, i));
+        }
+    }
+    scene_add_body(scene, land_mine_body);
 }
 
 void force_field_shoot(scene_t *scene, body_t *body) {
     // method to handle the shooting of force field
-}
-
-void laser_shoot(scene_t *scene, body_t *body) {
-    // method to handle the shooting of laser
+    // placeholder to show the tank is currently using a force field
 }
 
 void remote_missile_shoot(scene_t *scene, body_t *body) {
@@ -152,13 +167,13 @@ void tank_powerup_fxn(body_t *body1, body_t *body2, vector_t axis, void *aux) {
         tank_set_shooting_handler(((tank_powerup_aux_t *)aux)->tank, (shooting_handler_t) frag_bomb_shoot);
     } else if (((tank_powerup_aux_t *)aux)->type == (char) 2) {
         //land mine power up
+        tank_set_new_reload_time(((tank_powerup_aux_t *)aux)->tank, LAND_MINE_RELOAD_TIME);
+        tank_set_new_range(((tank_powerup_aux_t *)aux)->tank, LAND_MINE_TIME_LIMIT);
         tank_set_shooting_handler(((tank_powerup_aux_t *)aux)->tank, (shooting_handler_t) land_mine_shoot);
     } else if (((tank_powerup_aux_t *)aux)->type == (char) 3) {
         // force field power up
+        tank_set_new_range(((tank_powerup_aux_t *)aux)->tank, FORCE_FIELD_TIME_LIMIT);
         tank_set_shooting_handler(((tank_powerup_aux_t *)aux)->tank, (shooting_handler_t) force_field_shoot);
-    } else if (((tank_powerup_aux_t *)aux)->type == (char) 4) {
-        // laser power up
-        tank_set_shooting_handler(((tank_powerup_aux_t *)aux)->tank, (shooting_handler_t) laser_shoot);
     } else {
         // remote controlled missile power up
         tank_set_shooting_handler(((tank_powerup_aux_t *)aux)->tank, (shooting_handler_t) remote_missile_shoot);

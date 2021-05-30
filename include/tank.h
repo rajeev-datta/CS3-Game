@@ -8,7 +8,11 @@ typedef enum body_type {
     TANK_FRAG_BOMB,
     BULLET,
     WALL,
+    TANK_LAND_MINE,
+    TANK_FORCE_FIELD,
 } body_type_t;
+
+const double FORCE_FIELD_TIME_LIMIT = 5;
 
 typedef struct tank tank_t;
 
@@ -17,7 +21,7 @@ typedef void (*shooting_handler_t)
 
 tank_t *tank_init(list_t *points);
 
-tank_t *enemy_tank_init(list_t *points);
+tank_t *enemy_tank_init(list_t *points, vector_t speed);
 
 body_t *tank_get_body(tank_t *tank);
 

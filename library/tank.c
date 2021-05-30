@@ -2,8 +2,6 @@
 #include "powerup.h"
 
 const int MASS = 100;
-const rgb_color_t BLACK = {0, 0, 0}; 
-const rgb_color_t RED = {1, 0, 0};
 const double default_reload_time = 2;
 const double default_bullet_range = 10;
 const double POWERUP_TIME = 10;
@@ -41,7 +39,7 @@ tank_t *enemy_tank_init(list_t *points, vector_t speed) {
     tank_t *tank_obj = malloc(sizeof(tank_t));
     
     body_t *shape = body_init(points, MASS, BLACK);
-    shape->velocity = speed;
+    body_set_velocity(shape, speed);
     tank_obj->shape = shape;
 
     tank_obj->weapon = NULL;

@@ -278,7 +278,6 @@ void sdl_render_scene(scene_t *scene) {
         sdl_draw_polygon(shape, body_get_color(body));
         list_free(shape);
     }
-    // sdl_show();
 }
 
 void sdl_on_key(key_handler_t handler) {

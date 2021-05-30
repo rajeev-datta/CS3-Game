@@ -39,8 +39,9 @@ double const INIT_VEL = 400;
 double const ANGLE_OFFSET = (10 * M_PI)/180;
 const double ELASTICITY = 1;
 const int NUM_SCENES = 2;
-const int FONT_SIZE = 24;
-const SDL_Color BLACK_TEXT = {255, 0, 0};
+const int FONT_SIZE = 100;
+const double TEXT_SCALE = 0.8;
+const SDL_Color WHITE_TEXT = {255, 255, 255};
 typedef enum pause_scene{RESUME_BUT, RESTART_BUT} pause_scene_t;
 typedef enum info{
     PAUSE,
@@ -205,18 +206,18 @@ void add_pause_screen_text(scene_t *scene) {
 
     list_t *resume_shape = body_get_shape(scene_get_body(scene, RESUME_BUT));
     assert(list_size(resume_shape) == 4);
-    int x = ((vector_t *)list_get(resume_shape, 0))->x;
-    int y = ((vector_t *)list_get(resume_shape, 1))->y;
-    int width = BUTTON_LENGTH;
-    int height = BUTTON_HEIGHT;
+    int x = ((vector_t *)list_get(resume_shape, 0))->x + BUTTON_LENGTH * (1 - TEXT_SCALE)/2;
+    int y = ((vector_t *)list_get(resume_shape, 1))->y - BUTTON_HEIGHT * (1 - TEXT_SCALE)/2;
+    int width = BUTTON_LENGTH * TEXT_SCALE;
+    int height = BUTTON_HEIGHT * TEXT_SCALE;
     char *resume_text = "Resume";
-    sdl_write(x, y, width, height, font, FONT_SIZE, BLACK_TEXT, resume_text);
+    sdl_write(x, y, width, height, font, FONT_SIZE, WHITE_TEXT, resume_text);
 
     list_t *restart_shape = body_get_shape(scene_get_body(scene, RESTART_BUT));
     assert(list_size(restart_shape) == 4);
-    y = ((vector_t *)list_get(restart_shape, 1))->y;
+    y = ((vector_t *)list_get(restart_shape, 1))->y - BUTTON_HEIGHT * (1 - TEXT_SCALE)/2;
     char *restart_text = "Restart";
-    sdl_write(x, y, width, height, font, FONT_SIZE, BLACK_TEXT, restart_text);
+    sdl_write(x, y, width, height, font, FONT_SIZE, WHITE_TEXT, restart_text);
 
     list_free(resume_shape);
     list_free(restart_shape);
@@ -280,13 +281,10 @@ int main(int argc, char *argv[]) {
         }
 
         sdl_render_scene(temp_scene);
-
         if (!*play) {
             add_pause_screen_text(temp_scene);
         }
-
         sdl_show();
-        
         scene_tick(temp_scene, dt);
     }
     free(play);

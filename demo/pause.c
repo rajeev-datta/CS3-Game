@@ -192,7 +192,7 @@ bool within_rect(body_t *body, vector_t point) {
     return within;
 }
 
-void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes) {
+void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int *level) {
     if (*play) {
         if (within_rect(scene_get_body(scene, PAUSE_BUTTON), point)){
             *play = false;
@@ -204,21 +204,32 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes) {
             printf("clicked restart\n");
             erase_scene(scenes[0]);
             make_pause_button(scenes[0]);
-            level_1(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[0]);
+            if (*level == 1) {
+                level_1(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[0]);
+            } else if (*level == 2) {
+                level_2(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[0]);
+            } else if (*level == 3) {
+                printf("imagine level 3 is here\n");
+                level_1(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[0]);
+            }
             *play = true;
         } else if (within_rect(scene_get_body(scene, EASY_BUT), point)) {
             printf("clicked easy\n");
             erase_scene(scenes[0]);
             make_pause_button(scenes[0]);
             level_1(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[0]);
+            *level = 1;
             *play = true;
         } else if (within_rect(scene_get_body(scene, MEDIUM_BUT), point)) {
+            printf("clicked medium\n");
             erase_scene(scenes[0]);
             make_pause_button(scenes[0]);
             level_2(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[0]);
+            *level = 2;
             *play = true;
         } else if (within_rect(scene_get_body(scene, HARD_BUT), point)) {
             printf("clicked hard\n");
+            *level = 3;
         }
     }
 }
@@ -277,6 +288,8 @@ int main(int argc, char *argv[]) {
     scene_t *scene = scene_init();
     make_pause_button(scene);
     level_1(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scene);
+    int *level = malloc(sizeof(int));
+    *level = 1;
 
     scene_t *pause_scene = scene_init();
     set_up_pause_screen(pause_scene);
@@ -294,7 +307,7 @@ int main(int argc, char *argv[]) {
     scenes[1] = pause_scene;
 
 
-    while (!sdl_is_done(temp_scene, scene_get_body(scene, 0), play, scenes)) {
+    while (!sdl_is_done(temp_scene, scene_get_body(scene, 0), play, scenes, level)) {
         double dt = time_since_last_tick();
         time_passed += dt;
 

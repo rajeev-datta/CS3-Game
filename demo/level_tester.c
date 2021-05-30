@@ -147,7 +147,7 @@ int main(int argc, char *argv[]) {
     level_1(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scene);
     sdl_on_key((key_handler_t)on_key_press);
 
-    while (!sdl_is_done(scene, scene_get_body(scene, 0), NULL, NULL)) {
+    while (!sdl_is_done(scene, scene_get_body(scene, 0), NULL, NULL, NULL)) {
         double dt = time_since_last_tick();
         wall_boundary(scene);
         sdl_render_scene(scene);

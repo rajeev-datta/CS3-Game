@@ -111,6 +111,16 @@ void sdl_write(double x, double y, int width, int height, char *font, int font_s
                char *text);
 
 /**
+ * Puts an image on the screen
+ * @param file the path of the file
+ * @param x an integer representing the x-coordinate of the upper-left corner of the image
+ * @param y an integer representing the y-coordinate of the upper-left corner of the image
+ * @param width an integer representing the width of the image
+ * @param height an integer representing the height of the image
+ */
+void sdl_image(const char* file, int x, int y, int width, int height);
+
+/**
  * Displays the rendered frame on the SDL window.
  * Must be called after drawing the polygons in order to show them.
  */

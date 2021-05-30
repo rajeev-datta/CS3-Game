@@ -37,12 +37,13 @@ tank_t *tank_init(list_t *points) {
     return tank_obj;
 }
 
-tank_t *enemy_tank_init(list_t *points) {
+tank_t *enemy_tank_init(list_t *points, vector_t speed) {
     tank_t *tank_obj = malloc(sizeof(tank_t));
     
     body_t *shape = body_init(points, MASS, BLACK);
+    shape->velocity = speed;
     tank_obj->shape = shape;
-    
+
     tank_obj->weapon = NULL;
     tank_obj->default_weapon = (shooting_handler_t) default_gun_shoot;
     tank_obj->default_reload = default_reload_time;

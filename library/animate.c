@@ -12,6 +12,7 @@
 const double ELLIPSE_SCALE = 1.0/3;
 const char INVADER_INFORMATION = 'i';
 const char SPACESHIP_INFORMATION = 's';
+const char WALL_INFORMATION = 'w';
 const char PADDLE_INFORMATION = 'p';
 const int RECT_PTS = 4;
 

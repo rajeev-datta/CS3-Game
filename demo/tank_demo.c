@@ -102,7 +102,7 @@ void make_pause_button(scene_t *scene) {
 void level_1(vector_t top_right, double wall_length, double wall_height, scene_t *scene) {
     body_type_t *tank_info = malloc(sizeof(body_type_t *));
     tank_info = TANK_1;
-    list_t *tank = animate_rectangle((vector_t) {100, TOP_RIGHT_COORD.y/2}, 50, 50);
+    list_t *tank = animate_tank((vector_t) {100, TOP_RIGHT_COORD.y/2});
     body_t *tank_body = body_init_with_info(tank, 50, RED, tank_info, free);
     scene_add_body(scene, tank_body);
 

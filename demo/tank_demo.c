@@ -14,6 +14,8 @@
 #include "list.h"
 #include "tank.h"
 #include "powerup.h"
+#include "vector.h"
+#include "scene.h"
 
 const vector_t BOTTOM_LEFT_COORD = {0, 0};
 const vector_t TOP_RIGHT_COORD = {1000, 500};
@@ -21,6 +23,7 @@ const double LEVEL_1_WALL_LENGTH = 10;
 const double LEVEL_1_WALL_HEIGHT = 100;
 const rgb_color_t RED = {1, 0, 0};
 const rgb_color_t MAROON = {128.0/255, 0, 0};
+const rgb_color_t BLUE = {0, 0, 1};
 const rgb_color_t BACKGROUND = {1, 1, 1};
 const char WALL_INFO = 'w';
 const char TANK_INFO = 't';
@@ -85,14 +88,14 @@ typedef enum bodies {
 void put_forces(scene_t *scene) { //should work for different levels because scene is argument
     for(size_t i = 0; i < scene_bodies(scene); i++) {
         for(size_t j = 0; j < scene_bodies(scene); j++) {
-            if(scene_get_body(i)->type == BULLET) {
-                if(scene_get_body(j)->type == PLAYER_TANK || scene_get_body(j)->type == ENEMY_TANK) {
+            if(body_get_info(scene_get_body(scene, i)) == BULLET) {
+                if(body_get_info(scene_get_body(scene, j)) == PLAYER_TANK || body_get_info(scene_get_body(scene, j)) == ENEMY_TANK) {
                     //bullet disappears because tanks have lives, so they survive
                     //need to write code to check for lives
-                    create_partial_destructive_collision(scene, scene_get_body(j), scene_get_body(i));
+                    create_partial_destructive_collision(scene, scene_get_body(scene, j), scene_get_body(scene, i));
                 }
-                else if(scene_get_body(j)->type == WALL) {
-                    create_physics_collision(scene, ELASTICITY, scene_get_body(i), scene_get_body(j));
+                else if(body_get_info(scene_get_body(scene, j)) == WALL) {
+                    create_physics_collision(scene, ELASTICITY, scene_get_body(scene, i), scene_get_body(scene, j));
                 }
             }
         }
@@ -120,7 +123,10 @@ void make_pause_button(scene_t *scene) {
 void level_1(vector_t top_right, double wall_length, double wall_height, scene_t *scene) {
     body_type_t *tank_info = malloc(sizeof(body_type_t *));
     tank_info = TANK_1;
-    list_t *tank = animate_tank((vector_t) {100, TOP_RIGHT_COORD.y/2});
+    vector_t *tank_center = malloc(sizeof(vector_t));
+    vector_t center = {100, (int) TOP_RIGHT_COORD.y/2};
+    *tank_center = center;
+    list_t *tank = animate_tank(tank_center);
     body_t *tank_body = body_init_with_info(tank, 50, RED, tank_info, free);
     scene_add_body(scene, tank_body);
 

@@ -256,7 +256,7 @@ int main(void) {
 
     // Repeatedly render scene
     double time_since_drop = INFINITY;
-    while (!sdl_is_done(scene, NULL, NULL, NULL)) {
+    while (!sdl_is_done(scene, NULL, NULL, NULL, NULL)) {
         double dt = time_since_last_tick();
 
         // Add a new ball every DROP_INTERVAL seconds
@@ -267,8 +267,8 @@ int main(void) {
         }
 
         scene_tick(scene, dt);
-        sdl_clear();
         sdl_render_scene(scene);
+        sdl_show();
     }
 
     // Clean up scene

@@ -1,5 +1,5 @@
 # List of demo programs
-DEMOS = bounce gravity pacman nbodies damping spaceinvaders pegs breakout level_tester tanks pause
+DEMOS = bounce gravity pacman nbodies damping spaceinvaders pegs breakout level_tester tank_demo pause
 # List of C files in "libraries" that we provide
 STAFF_LIBS = test_util sdl_wrapper
 # List of C files in "libraries" that you will write.
@@ -90,7 +90,7 @@ bin/breakout: out/breakout.o out/sdl_wrapper.o $(STUDENT_OBJS)
 bin/level_tester: out/level_tester.o out/sdl_wrapper.o $(STUDENT_OBJS)
 		$(CC) $(CFLAGS) $(LIBS) $^ -o $@
 
-bin/tanks: out/tanks.o out/sdl_wrapper.o $(STUDENT_OBJS)
+bin/tank_demo: out/tank_demo.o out/sdl_wrapper.o $(STUDENT_OBJS)
 		$(CC) $(CFLAGS) $(LIBS) $^ -o $@
 
 bin/pause: out/pause.o out/sdl_wrapper.o $(STUDENT_OBJS)
@@ -246,7 +246,7 @@ bin/breakout.exe: out/breakout.obj out/sdl_wrapper.obj $(STUDENT_OBJS)
 bin/level_tester.exe: out/level_tester.obj out/sdl_wrapper.obj $(STUDENT_OBJS)
 	$(CC) $^ $(CFLAGS) -link $(LINKEROPTS) $(LIBS) -out:"$@"
 
-bin/tanks.exe: out/tanks.obj out/sdl_wrapper.obj $(STUDENT_OBJS)
+bin/tank_demo.exe: out/tank_demo.obj out/sdl_wrapper.obj $(STUDENT_OBJS)
 	$(CC) $^ $(CFLAGS) -link $(LINKEROPTS) $(LIBS) -out:"$@"
 
 bin/pause.exe: out/pause.obj out/sdl_wrapper.obj $(STUDENT_OBJS)
@@ -268,7 +268,7 @@ bin/spaceinvaders bin\spaceinvaders: bin/spaceinvaders.exe ;
 bin/pegs bin\pegs: bin/pegs.exe ;
 bin/breakout bin\breakout: bin/breakout.exe ;
 bin/level_tester bin\level_tester: bin/level_tester.exe ;
-bin/tanks bin\tanks: bin/tanks.exe ;
+bin/tank_demo bin\tank_demo: bin/tank_demo.exe ;
 bin/pause bin\pause: bin/pause.exe ;
 bin/test_suite_% bin\test_suite_%: bin/test_suite_%.exe ;
 

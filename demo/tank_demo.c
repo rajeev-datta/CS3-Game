@@ -37,8 +37,19 @@ double const INIT_VEL = 400;
 double const ANGLE_OFFSET = (10 * M_PI)/180;
 const double ELASTICITY = 1;
 const int NUM_SCENES = 2;
+const int FONT_SIZE = 100;
+const double TEXT_SCALE = 0.8;
+const SDL_Color WHITE_TEXT = {255, 255, 255};
+const int LEVEL_BUFFER = 50;
 
-typedef enum pause_scene{RESUME_BUT, RESTART_BUT};
+typedef enum pause_scene{
+    RESUME_BUT,
+    RESTART_BUT,
+    MEDIUM_BUT,
+    EASY_BUT,
+    HARD_BUT
+} pause_scene_t;
+
 typedef enum info{
     PAUSE,
     RESUME,
@@ -83,21 +94,21 @@ void put_forces(scene_t *scene) { //should work for different levels because sce
 
 }
 
+void add_rect_to_scene(scene_t *scene, vector_t center, int width, int height,
+                       int information, rgb_color_t color) {
+    list_t *rect = animate_rectangle(center, width, height);
+    info_t *info = malloc(sizeof(info_t));
+    *info = information;
+    body_t *rect_body = body_init_with_info(rect, INFINITY, color, info, free);
+    scene_add_body(scene, rect_body);
+}
+
 void make_pause_button(scene_t *scene) {
     double width = PAUSE_SCALE * PAUSE_HEIGHT;
     vector_t pause_center = {BOTTOM_LEFT_COORD.x + width/2.0 + 3 * BUFFER,
                              TOP_RIGHT_COORD.y - PAUSE_HEIGHT/2.0 - 3 * BUFFER};
-    list_t *big_rect = animate_rectangle(pause_center, width, PAUSE_HEIGHT);
-    info_t *pause_info = malloc(sizeof(info_t *));
-    *pause_info = PAUSE;
-    body_t *big_rect_body = body_init_with_info(big_rect, INFINITY, RED,
-                                                pause_info, free);
-    scene_add_body(scene, big_rect_body);
-
-    list_t *inner_rect = animate_rectangle(pause_center, width/3.0, PAUSE_HEIGHT);
-    body_t *inner_rect_body = body_init_with_info(inner_rect, INFINITY,
-                                                  BACKGROUND, pause_info, free);
-    scene_add_body(scene, inner_rect_body);
+    add_rect_to_scene(scene, pause_center, width, PAUSE_HEIGHT, PAUSE, RED);
+    add_rect_to_scene(scene, pause_center, width/3.0, PAUSE_HEIGHT, PAUSE, BACKGROUND);
 }
 
 void level_1(vector_t top_right, double wall_length, double wall_height, scene_t *scene) {
@@ -242,42 +253,92 @@ void erase_old_scene(scene_t **scenes) {
     }
 }
 
-void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes) {
+void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int *level) {
     if (*play) {
-        if (within_rect(scene_get_body(scenes[0], PAUSE_BUTTON), point)){
+        if (within_rect(scene_get_body(scene, PAUSE_BUTTON), point)){
             *play = false;
         }
     } else {
-        if (within_rect(scene_get_body(scenes[1], RESUME_BUT), point)) {
+        if (within_rect(scene_get_body(scene, RESUME_BUT), point)) {
             *play = true;
-        } else if (within_rect(scene_get_body(scenes[1], RESTART_BUT), point)) {
+        } else if (within_rect(scene_get_body(scene, RESTART_BUT), point)) {
             printf("clicked restart\n");
-            erase_old_scene(scenes);
+            erase_scene(scenes[0]);
+            make_pause_button(scenes[0]);
+            if (*level == 1) {
+                level_1(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[0]);
+            } else if (*level == 2) {
+                level_2(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[0]);
+            } else if (*level == 3) {
+                printf("imagine level 3 is here\n");
+                level_1(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[0]);
+            }
+            *play = true;
+        } else if (within_rect(scene_get_body(scene, EASY_BUT), point)) {
+            printf("clicked easy\n");
+            erase_scene(scenes[0]);
             make_pause_button(scenes[0]);
             level_1(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[0]);
+            *level = 1;
             *play = true;
+        } else if (within_rect(scene_get_body(scene, MEDIUM_BUT), point)) {
+            printf("clicked medium\n");
+            erase_scene(scenes[0]);
+            make_pause_button(scenes[0]);
+            level_2(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[0]);
+            *level = 2;
+            *play = true;
+        } else if (within_rect(scene_get_body(scene, HARD_BUT), point)) {
+            printf("clicked hard\n");
+            *level = 3;
         }
     }
 }
 
 void set_up_pause_screen(scene_t *scene) {
-    vector_t resume_center = {TOP_RIGHT_COORD.x / 2,
+    vector_t resume_center = {TOP_RIGHT_COORD.x / 2.0,
                               TOP_RIGHT_COORD.y - 1.5 * BUTTON_HEIGHT};
-    list_t *resume = animate_rectangle(resume_center, BUTTON_LENGTH, BUTTON_HEIGHT);
-    int *resume_info = malloc(sizeof(int *));
-    *resume_info = resume;
-    body_t *resume_body = body_init_with_info(resume, INFINITY, MAROON,
-                                                resume_info, free);
-    scene_add_body(scene, resume_body);
-
+    add_rect_to_scene(scene, resume_center, BUTTON_LENGTH, BUTTON_HEIGHT, RESUME,
+                      MAROON);
     vector_t restart_center = {resume_center.x,
                               resume_center.y - 2 * BUTTON_HEIGHT};
-    list_t *restart = animate_rectangle(restart_center, BUTTON_LENGTH, BUTTON_HEIGHT);
-    int *restart_info = malloc(sizeof(int *));
-    *restart_info = restart;
-    body_t *restart_body = body_init_with_info(restart, INFINITY, MAROON,
-                                                restart_info, free);
-    scene_add_body(scene, restart_body);
+    add_rect_to_scene(scene, restart_center, BUTTON_LENGTH, BUTTON_HEIGHT, RESTART,
+                      MAROON);
+
+    double level_width = TOP_RIGHT_COORD.x / 3.0 - LEVEL_BUFFER;
+    double level_height = level_width/2;
+    vector_t medium_center = {TOP_RIGHT_COORD.x / 2, TOP_RIGHT_COORD.y/2 - 2.5 * BUTTON_HEIGHT};
+    add_rect_to_scene(scene, medium_center, level_width, level_height, MEDIUM_BUT,
+                      MAROON);
+    vector_t easy_center = {medium_center.x - LEVEL_BUFFER - level_width, medium_center.y};
+    add_rect_to_scene(scene, easy_center, level_width, level_height, EASY_BUT,
+                      MAROON);
+    vector_t hard_center = {medium_center.x + LEVEL_BUFFER + level_width, medium_center.y};
+    add_rect_to_scene(scene, hard_center, level_width, level_height, HARD_BUT,
+                      MAROON);
+    
+}
+
+void add_pause_screen_text(scene_t *scene) {
+    char *font = "AnticSlab-Regular.ttf";
+
+    list_t *resume_shape = body_get_shape(scene_get_body(scene, RESUME_BUT));
+    assert(list_size(resume_shape) == 4);
+    int x = ((vector_t *)list_get(resume_shape, 0))->x + BUTTON_LENGTH * (1 - TEXT_SCALE)/2;
+    int y = ((vector_t *)list_get(resume_shape, 1))->y - BUTTON_HEIGHT * (1 - TEXT_SCALE)/2;
+    int width = BUTTON_LENGTH * TEXT_SCALE;
+    int height = BUTTON_HEIGHT * TEXT_SCALE;
+    char *resume_text = "Resume";
+    sdl_write(x, y, width, height, font, FONT_SIZE, WHITE_TEXT, resume_text);
+
+    list_t *restart_shape = body_get_shape(scene_get_body(scene, RESTART_BUT));
+    assert(list_size(restart_shape) == 4);
+    y = ((vector_t *)list_get(restart_shape, 1))->y - BUTTON_HEIGHT * (1 - TEXT_SCALE)/2;
+    char *restart_text = "Restart";
+    sdl_write(x, y, width, height, font, FONT_SIZE, WHITE_TEXT, restart_text);
+
+    list_free(resume_shape);
+    list_free(restart_shape);
 }
 
 void make_tank_power_up(scene_t *scene, powerups_t type) {
@@ -375,6 +436,8 @@ int main(int argc, char *argv[]) {
     scene_t *scene = scene_init();
     make_pause_button(scene);
     level_1(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scene);
+    int *level = malloc(sizeof(int));
+    *level = 1;
 
     scene_t *pause_scene = scene_init();
     set_up_pause_screen(pause_scene);
@@ -400,7 +463,7 @@ int main(int argc, char *argv[]) {
 
     scene_add_body(scene, tank_get_body(tank1));
 
-    while (!sdl_is_done(scene, scene_get_body(scene, 0), play, scenes)) {
+    while (!sdl_is_done(scene, scene_get_body(scene, 0), play, scenes, level)) {
         double dt = time_since_last_tick();
         time_passed += dt;
 
@@ -418,8 +481,11 @@ int main(int argc, char *argv[]) {
             time_passed = 0;
         }
 
-        sdl_clear();
         sdl_render_scene(temp_scene);
+        if (!*play) {
+            add_pause_screen_text(temp_scene);
+        }
+        sdl_show();
 
         // Shoot a power-up at an interval of time.
         if (time_passed > TANK_POWER_UP_TIME) {

@@ -56,9 +56,10 @@ typedef void (*key_handler_t)(char key, key_event_type_t type, double held_time,
  * @param point a vector_t representing the coordinates of the mouse
  * @param play a bool representing if the game is playing or not
  * @param scenes an array of scene_t's representing the scenes in the game
+ * @param level a pointer to an int representing the level of the game
  */
 typedef void (*mouse_handler_t)(scene_t *scene, vector_t point, bool *play,
-                                scene_t **scenes);
+                                scene_t **scenes, int *level);
 
 /**
  * Initializes the SDL window and renderer.
@@ -77,9 +78,10 @@ void sdl_init(vector_t min, vector_t max);
  * @param body a void * that could be a body
  * @param play a boolean saying if we are playing the game
  * @param scenes an array of scene_t's representing the scenes in the game
+ * @param level a pointer to an integer representing the level of the game
  * @return true if the window was closed, false otherwise
  */
-bool sdl_is_done(scene_t *scene, void *body, bool *play, scene_t **scenes);
+bool sdl_is_done(scene_t *scene, void *body, bool *play, scene_t **scenes, int *level);
 
 /**
  * Clears the screen. Should be called before drawing polygons in each frame.
@@ -105,7 +107,7 @@ void sdl_draw_polygon(list_t *points, rgb_color_t color);
  * @param color the color of the text
  * @param text the text that will be written on the screen
  */
-void sdl_write(int x, int y, int width, int height, char *font, int font_size, SDL_Color color,
+void sdl_write(double x, double y, int width, int height, char *font, int font_size, SDL_Color color,
                char *text);
 
 /**

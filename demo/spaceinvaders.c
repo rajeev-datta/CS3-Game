@@ -151,12 +151,12 @@ int main(int argc, char *argv[]) {
     sdl_on_key((key_handler_t)on_key_press);
     double time_passed = 0;
     while (*(char *)body_get_info(scene_get_body(scene, 0)) == SPACESHIP_INFO && 
-            !sdl_is_done(scene, scene_get_body(scene, 0), NULL, NULL)) {
+            !sdl_is_done(scene, scene_get_body(scene, 0), NULL, NULL, NULL)) {
         double dt = time_since_last_tick();
         wrapping_boundary(scene, TOP_RIGHT_COORD, INVADER_RADIUS, SPACING);
         stop_boundary(scene, TOP_RIGHT_COORD, BOTTOM_LEFT_COORD, SPACESHIP_MAJOR);
-        sdl_clear();
         sdl_render_scene(scene);
+        sdl_show();
         time_passed += dt;
         if (time_passed > INVADER_BULLET_TIME && scene_get_body(scene, 0) != NULL
             && *(char *)body_get_info(scene_get_body(scene, 0)) == SPACESHIP_INFO) {

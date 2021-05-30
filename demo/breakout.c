@@ -203,7 +203,7 @@ int main(int argc, char *argv[]) {
 
     sdl_on_key((key_handler_t)on_key_tap);
     double time_passed = 0;
-    while (!sdl_is_done(scene, scene_get_body(scene, 0), NULL, NULL)) {
+    while (!sdl_is_done(scene, scene_get_body(scene, 0), NULL, NULL, NULL)) {
         double dt = time_since_last_tick();
 
         stop_boundary(scene, TOP_RIGHT_COORD, BOTTOM_LEFT_COORD, BUFFER);
@@ -213,8 +213,8 @@ int main(int argc, char *argv[]) {
             set_up_board(scene);
             time_passed = 0;
         }
-        sdl_clear();
         sdl_render_scene(scene);
+        sdl_show();
         time_passed += dt;
 
         // Shoot a power-up at an interval of time.

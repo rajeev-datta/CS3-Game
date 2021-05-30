@@ -56,11 +56,11 @@ int main(int argc, char *argv[]) {
     }
     
 
-    while (!sdl_is_done(NULL, NULL, NULL, NULL)) {
+    while (!sdl_is_done(NULL, NULL, NULL, NULL, NULL)) {
         double dt = time_since_last_tick();
         scene_tick(scene, dt);
-        sdl_clear();
         sdl_render_scene(scene);
+        sdl_show();
     }
     
     scene_free(scene);

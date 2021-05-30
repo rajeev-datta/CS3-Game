@@ -91,6 +91,17 @@ vector_t get_window_position(vector_t scene_pos, vector_t window_center) {
     return pixel;
 }
 
+/** Maps a window coordinate to a scene coordinate */
+vector_t get_scene_position(vector_t win_pos) {
+    vector_t window_center = get_window_center();
+    double scale = get_scene_scale(window_center);
+    vector_t pixel = {
+        .x = (win_pos.x - window_center.x) / scale + center.x,
+        .y = (window_center.y - win_pos.y) / scale + center.y
+    };
+    return pixel;
+}
+
 /**
  * Converts an SDL key code to a char.
  * 7-bit ASCII characters are just returned
@@ -128,7 +139,7 @@ void sdl_init(vector_t min, vector_t max) {
     TTF_Init();
 }
 
-bool sdl_is_done(scene_t *scene, void *object, bool *play, scene_t **scenes) {
+bool sdl_is_done(scene_t *scene, void *object, bool *play, scene_t **scenes, int *level) {
     SDL_Event *event = malloc(sizeof(*event));
     assert(event != NULL);
 
@@ -145,7 +156,7 @@ bool sdl_is_done(scene_t *scene, void *object, bool *play, scene_t **scenes) {
                 double y = event->motion.y;
                 vector_t window_center = get_window_center();
                 vector_t pixel = get_window_position((vector_t){x, y}, window_center);
-                mouse_handler(scene, pixel, play, scenes);
+                mouse_handler(scene, pixel, play, scenes, level);
             case SDL_KEYDOWN:
             case SDL_KEYUP:
                 // Skip the keypress if no handler is configured
@@ -208,7 +219,7 @@ void sdl_draw_polygon(list_t *points, rgb_color_t color) {
     free(y_points);
 }
 
-void sdl_write(int x, int y, int width, int height, char *chosen_font, int font_size,
+void sdl_write(double x, double y, int width, int height, char *chosen_font, int font_size,
                SDL_Color color, char *text) {
     TTF_Font *font = TTF_OpenFont((const char *)chosen_font, font_size);
     if (!font) {
@@ -224,9 +235,11 @@ void sdl_write(int x, int y, int width, int height, char *chosen_font, int font_
         printf("SDL_CreateTextureFromSurfaceRW: %s\n", SDL_GetError());
     }
 
+    vector_t pixel = get_scene_position((vector_t){x,y});
+
     SDL_Rect message_rect;
-    message_rect.x = x;
-    message_rect.y = y;
+    message_rect.x = (int) pixel.x;
+    message_rect.y = (int) pixel.y;
     message_rect.w = width;
     message_rect.h = height;
 
@@ -234,6 +247,7 @@ void sdl_write(int x, int y, int width, int height, char *chosen_font, int font_
 
     SDL_FreeSurface(surfaceMessage);
     SDL_DestroyTexture(message);
+    TTF_CloseFont(font);
 }
 
 void sdl_show(void) {
@@ -256,6 +270,7 @@ void sdl_show(void) {
 }
 
 void sdl_render_scene(scene_t *scene) {
+    sdl_clear();
     size_t body_count = scene_bodies(scene);
     for (size_t i = 0; i < body_count; i++) {
         body_t *body = scene_get_body(scene, i);
@@ -263,7 +278,6 @@ void sdl_render_scene(scene_t *scene) {
         sdl_draw_polygon(shape, body_get_color(body));
         list_free(shape);
     }
-    sdl_show();
 }
 
 void sdl_on_key(key_handler_t handler) {

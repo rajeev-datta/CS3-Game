@@ -4,10 +4,8 @@
 #include "vector.h"
 #include "color.h"
 #include "polygon.h"
-#include "scene.h"
 #include <math.h>
 #include <stdbool.h>
-#include "tank.h"
 
 typedef struct body {
     list_t *shape;

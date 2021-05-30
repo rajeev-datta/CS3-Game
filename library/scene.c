@@ -5,7 +5,6 @@
 #include "color.h"
 #include "body.h"
 #include "scene.h"
-#include "tank.h"
 #include <math.h>
 #include "animate.h"
 #include "forces.h"
@@ -153,7 +152,7 @@ void scene_body_detonate(scene_t *scene, body_t *body) {
             if (*(body_type_t *) body_get_info(scene_get_body(scene, i)) == TANK_1 || *(body_type_t *) body_get_info(scene_get_body(scene, i)) == TANK_2) {
                 create_destructive_collision(scene, frag_body, scene_get_body(scene, i));
             }
-            if (*(body_type_t *) body_get_info(scene_get_body(scene, i)) == WALL) {
+            if (*(body_type_t *)body_get_info(scene_get_body(scene, i)) == WALL) {
                 create_physics_collision(scene, FRAG_ELASTICITY, frag_body, scene_get_body(scene, i));
             }
         }

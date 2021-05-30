@@ -4,6 +4,17 @@
 #include "body.h"
 #include "list.h"
 
+typedef enum body_type {
+    TANK_1,
+    TANK_2,
+    ENEMY_TANK,
+    TANK_FRAG_BOMB,
+    BULLET,
+    WALL,
+    TANK_LAND_MINE,
+    TANK_FORCE_FIELD,
+} body_type_t;
+
 /**
  * A collection of bodies and force creators.
  * The scene automatically resizes to store

@@ -418,8 +418,8 @@ int main(int argc, char *argv[]) {
             time_passed = 0;
         }
 
-        sdl_clear();
         sdl_render_scene(temp_scene);
+        sdl_show();
 
         // Shoot a power-up at an interval of time.
         if (time_passed > TANK_POWER_UP_TIME) {

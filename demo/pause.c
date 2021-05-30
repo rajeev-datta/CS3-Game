@@ -113,6 +113,56 @@ void level_1(vector_t top_right, double wall_length, double wall_height, scene_t
     create_physics_collision(scene, ELASTICITY, tank_body, right_bottom_wall_body);
 }
 
+void level_2(vector_t top_right, double wall_length, double wall_height, scene_t *scene) {
+    char *tank_info = malloc(sizeof(char *));
+    tank_info = TANK_INFO;
+    list_t *tank = animate_rectangle((vector_t) {100, TOP_RIGHT_COORD.y/2}, 50, 50);
+    body_t *tank_body = body_init_with_info(tank, 50, RED, tank_info, free);
+    scene_add_body(scene, tank_body);
+    
+    char *wall_info = malloc(sizeof(char *));
+    wall_info = WALL_INFO;
+    list_t *center_top_wall = animate_rectangle((vector_t) {top_right.x/2, (top_right.y*3.5)/10}, wall_height, wall_length);
+    body_t *center_top_wall_body = body_init_with_info(center_top_wall, INFINITY, RED, wall_info, free);
+    scene_add_body(scene, center_top_wall_body);
+    create_physics_collision(scene, ELASTICITY, tank_body, center_top_wall_body);
+
+    list_t *center_bottom_wall = animate_rectangle((vector_t) {top_right.x/2, (top_right.y*6.5)/10}, wall_height, wall_length);
+    body_t *center_bottom_wall_body = body_init_with_info(center_bottom_wall, INFINITY, RED, wall_info, free);
+    scene_add_body(scene, center_bottom_wall_body);
+    create_physics_collision(scene, ELASTICITY, tank_body, center_bottom_wall_body);
+
+    list_t *left_top_wall = animate_rectangle((vector_t) {(top_right.x*3)/10, (top_right.y*4)/5}, wall_height, wall_length);
+    body_t *left_top_wall_body = body_init_with_info(left_top_wall, INFINITY, RED, wall_info, free);
+    scene_add_body(scene, left_top_wall_body);
+    create_physics_collision(scene, ELASTICITY, tank_body, left_top_wall_body);
+
+    list_t *left_center_wall = animate_rectangle((vector_t) {(top_right.x*3)/10, (top_right.y)/2}, wall_length, wall_height);
+    body_t *left_center_wall_body = body_init_with_info(left_center_wall, INFINITY, RED, wall_info, free);
+    scene_add_body(scene, left_center_wall_body);
+    create_physics_collision(scene, ELASTICITY, tank_body, left_center_wall_body);
+
+    list_t *left_bottom_wall = animate_rectangle((vector_t) {(top_right.x*3)/10, (top_right.y)/5}, wall_height, wall_length);
+    body_t *left_bottom_wall_body = body_init_with_info(left_bottom_wall, INFINITY, RED, wall_info, free);
+    scene_add_body(scene, left_bottom_wall_body);
+    create_physics_collision(scene, ELASTICITY, tank_body, left_bottom_wall_body);
+
+    list_t *right_top_wall = animate_rectangle((vector_t) {(top_right.x*7)/10, (top_right.y*4)/5}, wall_height, wall_length);
+    body_t *right_top_wall_body = body_init_with_info(right_top_wall, INFINITY, RED, wall_info, free);
+    scene_add_body(scene, right_top_wall_body);
+    create_physics_collision(scene, ELASTICITY, tank_body, right_top_wall_body);
+
+    list_t *right_center_wall = animate_rectangle((vector_t) {(top_right.x*7)/10, (top_right.y)/2}, wall_length, wall_height);
+    body_t *right_center_wall_body = body_init_with_info(right_center_wall, INFINITY, RED, wall_info, free);
+    scene_add_body(scene, right_center_wall_body);
+    create_physics_collision(scene, ELASTICITY, tank_body, right_center_wall_body);
+
+    list_t *right_bottom_wall = animate_rectangle((vector_t) {(top_right.x*7)/10, (top_right.y)/5}, wall_height, wall_length);
+    body_t *right_bottom_wall_body = body_init_with_info(right_bottom_wall, INFINITY, RED, wall_info, free);
+    scene_add_body(scene, right_bottom_wall_body);
+    create_physics_collision(scene, ELASTICITY, tank_body, right_bottom_wall_body);
+}
+
 void on_key_push(char key, key_event_type_t type, double held_time,
                  void *object, scene_t *scene, bool *play) {
     if (*play) {
@@ -167,9 +217,6 @@ void add_pause_screen_text(scene_t *scene) {
     y = ((vector_t *)list_get(restart_shape, 1))->y;
     char *restart_text = "Restart";
     sdl_write(x, y, width, height, font, FONT_SIZE, BLACK_TEXT, restart_text);
-
-    char *test_text = "Testing";
-    sdl_write(100, 100, width, height, font, FONT_SIZE, BLACK_TEXT, test_text);
 
     list_free(resume_shape);
     list_free(restart_shape);
@@ -231,13 +278,14 @@ int main(int argc, char *argv[]) {
             temp_scene = pause_scene;
             time_passed = 0;
         }
-        sdl_clear();
+
+        sdl_render_scene(temp_scene);
 
         if (!*play) {
             add_pause_screen_text(temp_scene);
         }
 
-        sdl_render_scene(temp_scene);
+        sdl_show();
         
         scene_tick(temp_scene, dt);
     }

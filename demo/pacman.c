@@ -93,8 +93,8 @@ int main(int argc, char *argv[]) {
         remove_pellets(pacman_body, PACMAN_RADIUS, PELLET_RADIUS, scene);
         scene_tick(scene, dt);
         continuous_boundary(pacman_body, TOP_RIGHT_COORD);
-        sdl_clear();
         sdl_render_scene(scene);
+        sdl_show();
         // generate new pellets
         time_passed += dt;
         if (time_passed > PELLET_TIME) {

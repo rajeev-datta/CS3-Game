@@ -105,7 +105,7 @@ void sdl_draw_polygon(list_t *points, rgb_color_t color);
  * @param color the color of the text
  * @param text the text that will be written on the screen
  */
-void sdl_write(int x, int y, int width, int height, char *font, int font_size, SDL_Color color,
+void sdl_write(double x, double y, int width, int height, char *font, int font_size, SDL_Color color,
                char *text);
 
 /**

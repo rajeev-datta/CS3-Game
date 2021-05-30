@@ -213,8 +213,8 @@ int main(int argc, char *argv[]) {
             set_up_board(scene);
             time_passed = 0;
         }
-        sdl_clear();
         sdl_render_scene(scene);
+        sdl_show();
         time_passed += dt;
 
         // Shoot a power-up at an interval of time.

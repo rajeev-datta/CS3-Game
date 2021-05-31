@@ -88,7 +88,7 @@ rgb_color_t body_get_color(body_t *body) {
 }
 
 void *body_get_info(body_t *body) {
-    assert(body->info != NULL);
+    // assert(body->info != NULL);
     return body->info;
 }
 

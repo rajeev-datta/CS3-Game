@@ -142,14 +142,14 @@ void level_1(vector_t top_right, double wall_length, double wall_height, scene_t
 }
 
 void level_2(vector_t top_right, double wall_length, double wall_height, scene_t *scene) {
-    char *tank_info = malloc(sizeof(char *));
-    tank_info = TANK_INFO;
+    body_types_t *tank_info = malloc(sizeof(body_types_t *));
+    tank_info = TANK_1;
     list_t *tank = animate_rectangle((vector_t) {100, TOP_RIGHT_COORD.y/2}, 50, 50);
     body_t *tank_body = body_init_with_info(tank, 50, color_get_red(), tank_info, free);
     scene_add_body(scene, tank_body);
     
-    char *wall_info = malloc(sizeof(char *));
-    wall_info = WALL_INFO;
+    body_types_t *wall_info = malloc(sizeof(body_types_t *));
+    wall_info = WALL;
     list_t *center_top_wall = animate_rectangle((vector_t) {top_right.x/2, (top_right.y*3.5)/10}, wall_height, wall_length);
     body_t *center_top_wall_body = body_init_with_info(center_top_wall, INFINITY, color_get_red(), wall_info, free);
     scene_add_body(scene, center_top_wall_body);

@@ -151,6 +151,7 @@ int main(int argc, char *argv[]) {
         double dt = time_since_last_tick();
         wall_boundary(scene);
         sdl_render_scene(scene);
+        sdl_show();
         scene_tick(scene, dt);
     }
     

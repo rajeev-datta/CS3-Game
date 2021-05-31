@@ -46,16 +46,16 @@ collision_overlap_t is_overlap(list_t *shape1, list_t *shape2) {
         if (proj1.y < proj2.x) {
             collision.collided = false;
         }
-        if (fabs(proj2.x - proj1.y) < min_overlap) {
+        if ((fabs(proj2.x - proj1.y) < min_overlap) || (fabs(proj1.x - proj2.y) < min_overlap)) {
             min_overlap = fabs(proj2.x - proj1.y);
             collision_axis = vec_perp;
             collision.overlap = min_overlap;
         } 
-        if (fabs(proj1.x - proj2.y) < min_overlap) {
-            min_overlap = fabs(proj1.x - proj2.y);
-            collision_axis = vec_perp;
-            collision.overlap = min_overlap;
-        }
+        // if (fabs(proj1.x - proj2.y) < min_overlap) {
+        //     min_overlap = fabs(proj1.x - proj2.y);
+        //     collision_axis = vec_perp;
+        //     collision.overlap = min_overlap;
+        // }
         if (proj1.x > proj2.x && proj1.y < proj2.y) {
             if (fabs(proj1.y - proj1.x) < min_overlap) {
                 min_overlap = fabs(proj1.y - proj1.x);

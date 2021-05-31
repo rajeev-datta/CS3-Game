@@ -324,11 +324,14 @@ void wall_boundary(scene_t *scene) {
                 if (collision.axis.x < 0.0 && collision.axis.y == 0.0) {
                     body_set_centroid(tank_body, (vector_t) {body_get_centroid(tank_body).x - 10, body_get_centroid(tank_body).y});
                 }
+                if (collision.axis.x > 0.0 && collision.axis.y == 0.0) {
+                    body_set_centroid(tank_body, (vector_t) {body_get_centroid(tank_body).x + 10, body_get_centroid(tank_body).y});
+                }
                 if (collision.axis.y > 0.0) {
-                    body_set_centroid(tank_body, (vector_t) {body_get_centroid(tank_body).x, body_get_centroid(tank_body).y - 20});
+                    body_set_centroid(tank_body, (vector_t) {body_get_centroid(tank_body).x, body_get_centroid(tank_body).y - 10});
                 }
                 if (collision.axis.y < 0.0) {
-                    body_set_centroid(tank_body, (vector_t) {body_get_centroid(tank_body).x, body_get_centroid(tank_body).y + 20});
+                    body_set_centroid(tank_body, (vector_t) {body_get_centroid(tank_body).x, body_get_centroid(tank_body).y + 10});
                 }
             }
         }

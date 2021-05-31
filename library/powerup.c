@@ -30,8 +30,10 @@ const double LAND_MINE_RELOAD_TIME = 7;
 const double LAND_MINE_TIME_LIMIT = 10;
 const double LAND_MINE_SIDE_LENGTH = 7;
 
-const rgb_color_t GREEN = {0, 1, 0};
-const rgb_color_t PURPLE = {0.5, 0, 0.5};
+typedef struct tank_powerup_aux {
+    tank_t *tank;
+    char type;
+} tank_powerup_aux_t;
 
 powerup_aux_t *powerup_aux_init(tank_t *tank, char type) {
     tank_powerup_aux_t *tank_pow_aux_obj = malloc(sizeof(tank_powerup_aux_t));

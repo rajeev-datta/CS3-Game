@@ -5,8 +5,6 @@
 #include "scene.h"
 
 const double FORCE_FIELD_TIME_LIMIT = 5;
-const rgb_color_t RED = {1, 0, 0};
-const rgb_color_t BLACK = {0, 0, 0};
 
 typedef struct tank tank_t;
 

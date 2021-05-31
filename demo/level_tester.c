@@ -25,6 +25,11 @@ double const INIT_VEL = 200;
 double const ANGLE_OFFSET = (10 * M_PI)/180;
 const double ELASTICITY = 1;
 
+void level_1_images(vector_t top_right, double wall_length, double wall_height) {
+    char *wall_image = "images/wall.png";
+    sdl_image(wall_image, top_right.x / 2.0 - wall_length / 2.0, top_right.y / 2.0 - wall_height, wall_length, 2 * wall_height);
+}
+
 void level_1(vector_t top_right, double wall_length, double wall_height, scene_t *scene) {
     char *tank_info = malloc(sizeof(char *));
     tank_info = TANK_INFO;
@@ -194,13 +199,14 @@ void on_key_press(char key, key_event_type_t type, double held_time,
 int main(int argc, char *argv[]) {
     sdl_init(BOTTOM_LEFT_COORD, TOP_RIGHT_COORD);
     scene_t *scene = scene_init();
-    level_2(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scene);
+    level_1(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scene);
     sdl_on_key((key_handler_t)on_key_press);
 
     while (!sdl_is_done(scene, scene_get_body(scene, 0), NULL, NULL, NULL)) {
         double dt = time_since_last_tick();
         wall_boundary(scene);
         sdl_render_scene(scene);
+        level_1_images(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT);
         sdl_show();
         scene_tick(scene, dt);
     }

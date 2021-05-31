@@ -223,12 +223,12 @@ void sdl_draw_polygon(list_t *points, rgb_color_t color) {
     free(y_points);
 }
 
-void sdl_write(double x, double y, int width, int height, char *chosen_font, int font_size,
+void sdl_write(double x, double y, int width, int height, TTF_Font *font,
                SDL_Color color, char *text) {
-    TTF_Font *font = TTF_OpenFont((const char *)chosen_font, font_size);
-    if (!font) {
-        printf("TTF_OpenFontRW: %s\n", TTF_GetError());
-    }
+    // TTF_Font *font = TTF_OpenFont((const char *)chosen_font, font_size);
+    // if (!font) {
+    //     printf("TTF_OpenFontRW: %s\n", TTF_GetError());
+    // }
     
     SDL_Surface *surfaceMessage = TTF_RenderText_Solid(font, (const char *)text, color);
     if (!surfaceMessage) {
@@ -251,7 +251,7 @@ void sdl_write(double x, double y, int width, int height, char *chosen_font, int
 
     SDL_FreeSurface(surfaceMessage);
     SDL_DestroyTexture(message);
-    TTF_CloseFont(font);
+    // TTF_CloseFont(font);
 }
 
 void sdl_image(const char* file, int x, int y, int width, int height) {

@@ -109,12 +109,11 @@ void sdl_draw_polygon(list_t *points, rgb_color_t color);
  * @param y an integer representing the y-coordinate of the upper-left corner of the text box
  * @param width an integer representing the width of the text box
  * @param height an integer representing the height of the text box
- * @param font the name of the font file
- * @param font_size the size of the font
+ * @param font the font
  * @param color the color of the text
  * @param text the text that will be written on the screen
  */
-void sdl_write(double x, double y, int width, int height, char *font, int font_size, SDL_Color color,
+void sdl_write(double x, double y, int width, int height, TTF_Font *font, SDL_Color color,
                char *text);
 
 /**

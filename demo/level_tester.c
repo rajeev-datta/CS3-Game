@@ -273,7 +273,7 @@ int main(int argc, char *argv[]) {
         side_boundary(scene, TOP_RIGHT_COORD, BOTTOM_LEFT_COORD, 25.0);
         wall_boundary(scene);
         sdl_render_scene(scene);
-        //level_1_images(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT);
+        level_1_images(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT);
         sdl_show();
         scene_tick(scene, dt);
     }

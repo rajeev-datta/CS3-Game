@@ -99,7 +99,6 @@ void put_forces(scene_t *scene) { //should work for different levels because sce
             }
         }
     }
-
 }
 
 void add_rect_to_scene(scene_t *scene, vector_t center, int width, int height,

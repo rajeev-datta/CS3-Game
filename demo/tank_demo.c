@@ -72,13 +72,6 @@ typedef enum scene_indices{
     PAUSE_BUTTON
 };
 
-typedef enum body_types {
-    TANK_1,
-    TANK_2,
-    ENEMY_TANK,
-    WALL
-} body_types_t;
-
 void put_forces(scene_t *scene) { //should work for different levels because scene is argument
     for(size_t i = 0; i < scene_bodies(scene); i++) {
         for(size_t j = 0; j < scene_bodies(scene); j++) {
@@ -206,33 +199,67 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                  void *object, scene_t *scene, bool *play) {
     if (*play) {
         double curr_rot = 0;
-        if (type == KEY_RELEASED) {
-            body_set_velocity(object, (vector_t){0, 0});
-        } else if (type == KEY_PRESSED) {
-            vector_t speed = {0, 0};
-        switch (key) {
-            case LEFT_ARROW:
-                speed.x = -INIT_VEL * cos(body_get_orientation(object));
-                speed.y = -INIT_VEL * sin(body_get_orientation(object));
-                break;
-            case RIGHT_ARROW:
-                speed.x = INIT_VEL * cos(body_get_orientation(object));
-                speed.y = INIT_VEL * sin(body_get_orientation(object));
-                break;
-            case UP_ARROW:
-                body_set_rotation(object, body_get_orientation(object) + ANGLE_OFFSET);
-                break;
-            case DOWN_ARROW:
-                body_set_rotation(object, body_get_orientation(object) - ANGLE_OFFSET);
-                break;
-            case ' ':
-                if (body_get_time(tank_get_body((tank_t *) object)) > tank_get_curr_reload((tank_t *) object)) {
-                    tank_shoot(scene, (tank_t *) object);
-                    body_set_time(tank_get_body((tank_t *) object), 0);
+        if (tank_get_weapon((tank_t *)object) == (shooting_handler_t) remote_missile_shoot) {
+            
+            for (size_t i=0; scene_bodies(scene); i++) {
+                if ((body_types_t) body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE) {
+                    body_t *missile = scene_get_body(scene, i);
+
+                    if (type == KEY_RELEASED) {
+                        body_set_velocity(object, (vector_t){0, 0});
+                    } else if (type == KEY_PRESSED) {
+                        vector_t speed = {0, 0};
+                    switch (key) {
+                        case LEFT_ARROW:
+                            speed.x = -INIT_VEL * cos(body_get_orientation(missile));
+                            speed.y = -INIT_VEL * sin(body_get_orientation(missile));
+                            break;
+                        case RIGHT_ARROW:
+                            speed.x = INIT_VEL * cos(body_get_orientation(missile));
+                            speed.y = INIT_VEL * sin(body_get_orientation(missile));
+                            break;
+                        case UP_ARROW:
+                            body_set_rotation(missile, body_get_orientation(missile) + ANGLE_OFFSET);
+                            break;
+                        case DOWN_ARROW:
+                            body_set_rotation(missile, body_get_orientation(missile) - ANGLE_OFFSET);
+                            break;
+                    }
+                    body_set_velocity(missile, speed);
+                    }
                 }
-                break;
+            }
         }
-        body_set_velocity(object, speed);
+
+        else {
+            if (type == KEY_RELEASED) {
+                body_set_velocity(object, (vector_t){0, 0});
+            } else if (type == KEY_PRESSED) {
+                vector_t speed = {0, 0};
+            switch (key) {
+                case LEFT_ARROW:
+                    speed.x = -INIT_VEL * cos(body_get_orientation(object));
+                    speed.y = -INIT_VEL * sin(body_get_orientation(object));
+                    break;
+                case RIGHT_ARROW:
+                    speed.x = INIT_VEL * cos(body_get_orientation(object));
+                    speed.y = INIT_VEL * sin(body_get_orientation(object));
+                    break;
+                case UP_ARROW:
+                    body_set_rotation(object, body_get_orientation(object) + ANGLE_OFFSET);
+                    break;
+                case DOWN_ARROW:
+                    body_set_rotation(object, body_get_orientation(object) - ANGLE_OFFSET);
+                    break;
+                case ' ':
+                    if (body_get_time(tank_get_body((tank_t *) object)) > tank_get_curr_reload((tank_t *) object)) {
+                        tank_shoot(scene, (tank_t *) object);
+                        body_set_time(tank_get_body((tank_t *) object), 0);
+                    }
+                    break;
+            }
+            body_set_velocity(object, speed);
+            }
         }
     }
 }
@@ -653,7 +680,7 @@ int main(int argc, char *argv[]) {
     *tank_center = center;
 
     list_t *tank_pts = animate_tank(tank_center);
-    tank_t *tank1 = tank_init(tank_pts);
+    tank_t *tank1 = tank_init(tank_pts, NULL);
 
     scene_add_body(scene, tank_get_body(tank1));
 

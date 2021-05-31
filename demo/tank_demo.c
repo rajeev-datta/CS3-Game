@@ -47,13 +47,17 @@ static const double FORCE_FIELD_MASS = 50;
 static const double IMG_X_SCALE = 0.9;
 static const double IMG_Y_SCALE = 0.8;
 const char *FONT = "fonts/AnticSlab-Regular.ttf";
+const int CHOOSE_LEVEL_WIDTH = 500;
+const int CHOOSE_LEVEL_HEIGHT = 100;
 
 typedef enum pause_scene{
     RESUME_BUT,
     RESTART_BUT,
     MEDIUM_BUT,
     EASY_BUT,
-    HARD_BUT
+    HARD_BUT,
+    CHOOSE_PLAYER_BOX,
+    WHITE_SCREEN
 } pause_scene_t;
 
 typedef enum info{
@@ -63,7 +67,7 @@ typedef enum info{
 } info_t;
 
 typedef enum scene_indices{
-    PAUSE_BUTTON,
+    PAUSE_BUTTON
 };
 
 void put_forces(scene_t *scene) { //should work for different levels because scene is argument
@@ -247,15 +251,16 @@ void erase_old_scene(scene_t **scenes) {
     }
 }
 
-void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int *level) {
+void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int *level,
+              bool *multi, bool *choosing_level) {
     if (*play) {
         if (within_rect(scene_get_body(scene, PAUSE_BUTTON), point)){
             *play = false;
         }
     } else {
-        if (within_rect(scene_get_body(scene, RESUME_BUT), point)) {
+        if (within_rect(scene_get_body(scene, RESUME_BUT), point) && !(*choosing_level)) {
             *play = true;
-        } else if (within_rect(scene_get_body(scene, RESTART_BUT), point)) {
+        } else if (within_rect(scene_get_body(scene, RESTART_BUT), point) && !(*choosing_level)) {
             printf("clicked restart\n");
             erase_scene(scenes[0]);
             make_pause_button(scenes[0]);
@@ -264,12 +269,15 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
             } else if (*level == 2) {
                 level_2(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[0]);
             } else if (*level == 3) {
-                printf("imagine level 3 is here\n");
-                level_1(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[0]);
+                level_3(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[0]);
             }
             *play = true;
         } else if (within_rect(scene_get_body(scene, EASY_BUT), point)) {
             printf("clicked easy\n");
+            if (*choosing_level) {
+                scene_remove_body(scene, WHITE_SCREEN);
+                *choosing_level = false;
+            }
             erase_scene(scenes[0]);
             make_pause_button(scenes[0]);
             level_1(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[0]);
@@ -277,6 +285,10 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
             *play = true;
         } else if (within_rect(scene_get_body(scene, MEDIUM_BUT), point)) {
             printf("clicked medium\n");
+            if (*choosing_level) {
+                scene_remove_body(scene, WHITE_SCREEN);
+                *choosing_level = false;
+            }
             erase_scene(scenes[0]);
             make_pause_button(scenes[0]);
             level_2(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[0]);
@@ -284,7 +296,21 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
             *play = true;
         } else if (within_rect(scene_get_body(scene, HARD_BUT), point)) {
             printf("clicked hard\n");
+            if (*choosing_level) {
+                scene_remove_body(scene, WHITE_SCREEN);
+                *choosing_level = false;
+            }
+            erase_scene(scenes[0]);
+            make_pause_button(scenes[0]);
+            level_3(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[0]);
             *level = 3;
+            *play = true;
+        } else if (within_rect(scene_get_body(scene, CHOOSE_PLAYER_BOX), point) && !(*choosing_level)) {
+            *multi = !(*multi);
+            *choosing_level = true;
+            vector_t center = {TOP_RIGHT_COORD.x/2.0, 3*TOP_RIGHT_COORD.y/4.0};
+            add_rect_to_scene(scene, center, TOP_RIGHT_COORD.x,
+                              TOP_RIGHT_COORD.y/2, WHITE_SCREEN, color_get_white());
         }
     }
 }
@@ -295,13 +321,13 @@ void set_up_pause_screen(scene_t *scene) {
     add_rect_to_scene(scene, resume_center, BUTTON_LENGTH, BUTTON_HEIGHT, RESUME,
                       color_get_maroon());
     vector_t restart_center = {resume_center.x,
-                              resume_center.y - 2 * BUTTON_HEIGHT};
+                              resume_center.y - 1.5 * BUTTON_HEIGHT};
     add_rect_to_scene(scene, restart_center, BUTTON_LENGTH, BUTTON_HEIGHT, RESTART,
                       color_get_maroon());
 
     double level_width = TOP_RIGHT_COORD.x / 3.0 - LEVEL_BUFFER;
     double level_height = level_width/2;
-    vector_t medium_center = {TOP_RIGHT_COORD.x / 2, TOP_RIGHT_COORD.y/2 - 2.5 * BUTTON_HEIGHT};
+    vector_t medium_center = {TOP_RIGHT_COORD.x / 2.0, TOP_RIGHT_COORD.y/2 - 2.5 * BUTTON_HEIGHT};
     add_rect_to_scene(scene, medium_center, level_width, level_height, MEDIUM_BUT,
                       color_get_maroon());
     vector_t easy_center = {medium_center.x - LEVEL_BUFFER - level_width, medium_center.y};
@@ -310,11 +336,15 @@ void set_up_pause_screen(scene_t *scene) {
     vector_t hard_center = {medium_center.x + LEVEL_BUFFER + level_width, medium_center.y};
     add_rect_to_scene(scene, hard_center, level_width, level_height, HARD_BUT,
                       color_get_maroon());
-    
+
+    vector_t player_selection_center = {TOP_RIGHT_COORD.x / 2.0,
+                                    restart_center.y - 1.5 * BUTTON_HEIGHT};
+    add_rect_to_scene(scene, player_selection_center, CHOOSE_PLAYER_BOX_WIDTH,
+                      CHOOSE_PLAYER_BOX_HEIGHT, CHOOSE_PLAYER_BOX, color_get_maroon());
 }
 
-void add_pause_screen_text(scene_t *scene) {
-list_t *resume_shape = body_get_shape(scene_get_body(scene, RESUME_BUT));
+void add_pause_screen_text(scene_t *scene, bool *multi) {
+    list_t *resume_shape = body_get_shape(scene_get_body(scene, RESUME_BUT));
     assert(list_size(resume_shape) == 4);
     int x = ((vector_t *)list_get(resume_shape, 0))->x + BUTTON_LENGTH * (1 - TEXT_SCALE)/2;
     int y = ((vector_t *)list_get(resume_shape, 1))->y - BUTTON_HEIGHT * (1 - TEXT_SCALE)/2;
@@ -329,11 +359,42 @@ list_t *resume_shape = body_get_shape(scene_get_body(scene, RESUME_BUT));
     char *restart_text = "Restart";
     sdl_write(x, y, width, height, FONT, FONT_SIZE, WHITE_TEXT, restart_text);
 
+    char *medium_text = "MEDIUM";
+    int medium_x = (TOP_RIGHT_COORD.x - MEDIUM_TEXT_WIDTH) / 2.0;
+    int levels_y = (TOP_RIGHT_COORD.y - BUTTON_HEIGHT) / 2.0;
+    sdl_write(medium_x,levels_y, MEDIUM_TEXT_WIDTH, LEVEL_TEXT_HEIGHT, FONT, FONT_SIZE,
+              BLACK_TEXT, medium_text);
+
+    char *easy_text = "EASY";
+    int easy_x = medium_x - (TOP_RIGHT_COORD.x - LEVEL_BUFFER)/3.0;
+    sdl_write(easy_x,levels_y, EASY_TEXT_WIDTH, LEVEL_TEXT_HEIGHT, FONT, FONT_SIZE,
+              BLACK_TEXT, easy_text);
+
+    char *hard_text = "HARD";
+    int hard_x = medium_x + (TOP_RIGHT_COORD.x + HARD_TEXT_WIDTH)/3.0;
+    sdl_write(hard_x,levels_y, HARD_TEXT_WIDTH, LEVEL_TEXT_HEIGHT, FONT, FONT_SIZE,
+              BLACK_TEXT, hard_text);
+
+    list_t *choose_players_shape = body_get_shape(scene_get_body(scene, CHOOSE_PLAYER_BOX));
+    assert(list_size(restart_shape) == 4);
+    double cp_x = ((vector_t *)list_get(choose_players_shape, 0))->x + BUFFER;
+    double cp_y = ((vector_t *)list_get(choose_players_shape, 1))->y;
+    if (*multi) {
+        char *cp_text = "Switch to Single Player";
+        sdl_write(cp_x, cp_y, CHOOSE_PLAYER_BOX_WIDTH - 2* BUFFER, CHOOSE_PLAYER_BOX_HEIGHT,
+                  FONT, FONT_SIZE, WHITE_TEXT, cp_text);
+    } else {
+        char *cp_text = "Switch to Multiplayer";
+        sdl_write(cp_x, cp_y, CHOOSE_PLAYER_BOX_WIDTH - 2* BUFFER, CHOOSE_PLAYER_BOX_HEIGHT,
+                  FONT, FONT_SIZE, WHITE_TEXT, cp_text);
+    }
+
     list_free(resume_shape);
     list_free(restart_shape);
+    list_free(choose_players_shape);
 }
 
-void add_pause_screen_images(scene_t *scene) {
+void add_pause_screen_images(scene_t *scene, bool *choosing_level) {
     double level_width = TOP_RIGHT_COORD.x / 3.0 - LEVEL_BUFFER;
     double level_height = level_width/2;
     double image_width = level_width * IMG_X_SCALE;
@@ -352,6 +413,24 @@ void add_pause_screen_images(scene_t *scene) {
     int medium_y = ((vector_t *)list_get(medium_shape, 1))->y - level_height * (1 - IMG_Y_SCALE)/2;
     char *medium_image = "images/level2.png";
     sdl_image(medium_image, medium_x, medium_y, image_width, image_height);
+
+    list_t *hard_shape = body_get_shape(scene_get_body(scene, HARD_BUT));
+    assert(list_size(hard_shape) == 4);
+    int hard_x = ((vector_t *)list_get(hard_shape, 0))->x + level_width * (1 - IMG_X_SCALE)/2;
+    int hard_y = ((vector_t *)list_get(hard_shape, 1))->y - level_height * (1 - IMG_Y_SCALE)/2;
+    char *hard_image = "images/level3.png";
+    sdl_image(hard_image, hard_x, hard_y, image_width, image_height);
+
+    if (*choosing_level) {
+        char *text = "Choose Your Level:";
+        sdl_write(TOP_RIGHT_COORD.x/2 - CHOOSE_LEVEL_WIDTH/2, TOP_RIGHT_COORD.y - CHOOSE_LEVEL_HEIGHT/2,
+                  CHOOSE_LEVEL_WIDTH, CHOOSE_LEVEL_HEIGHT, FONT, FONT_SIZE,
+                  MAROON_TEXT, text);
+    }
+
+    list_free(easy_shape);
+    list_free(medium_shape);
+    list_free(hard_shape);
 }
 
 void make_tank_power_up(scene_t *scene, powerups_t type, tank_t * tank) {
@@ -532,6 +611,8 @@ int main(int argc, char *argv[]) {
     *play = true;
     bool *multi = malloc(sizeof(bool));
     *multi = false;
+    bool *choosing_level = malloc(sizeof(bool));
+    *choosing_level = false;
 
     sdl_on_key((key_handler_t)on_key_push);
     sdl_on_mouse((mouse_handler_t)on_mouse);
@@ -552,7 +633,8 @@ int main(int argc, char *argv[]) {
 
     scene_add_body(scene, tank_get_body(tank1));
 
-    while (!sdl_is_done(scene, scene_get_body(scene, 0), play, scenes, level, multi, NULL)) {
+    while (!sdl_is_done(scene, scene_get_body(scene, 0), play, scenes, level, multi,
+                        choosing_level)) {
         double dt = time_since_last_tick();
         time_passed += dt;
 
@@ -577,8 +659,8 @@ int main(int argc, char *argv[]) {
 
         sdl_render_scene(temp_scene);
         if (!*play) {
-            add_pause_screen_text(temp_scene);
-            add_pause_screen_images(temp_scene);
+            add_pause_screen_text(temp_scene, multi);
+            add_pause_screen_images(temp_scene, choosing_level);
         }
         sdl_show();
 

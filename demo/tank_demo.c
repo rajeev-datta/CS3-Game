@@ -70,6 +70,13 @@ typedef enum scene_indices{
     PAUSE_BUTTON
 };
 
+typedef enum body_types {
+    TANK_1,
+    TANK_2,
+    ENEMY_TANK,
+    WALL
+} body_types_t;
+
 void put_forces(scene_t *scene) { //should work for different levels because scene is argument
     for(size_t i = 0; i < scene_bodies(scene); i++) {
         for(size_t j = 0; j < scene_bodies(scene); j++) {

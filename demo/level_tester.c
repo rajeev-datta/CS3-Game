@@ -22,7 +22,7 @@ const double LEVEL_1_WALL_HEIGHT = 100;
 const rgb_color_t RED = {1, 0, 0};
 const char WALL_INFO = 'w';
 const char TANK_INFO = 't';
-double const INIT_VEL = 400;
+double const INIT_VEL = 200;
 double const ANGLE_OFFSET = (10 * M_PI)/180;
 const double ELASTICITY = 1;
 

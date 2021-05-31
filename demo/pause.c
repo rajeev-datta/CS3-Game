@@ -50,13 +50,20 @@ const int HARD_TEXT_WIDTH = 50;
 const int LEVEL_TEXT_HEIGHT = 20;
 const double IMG_X_SCALE = 0.9;
 const double IMG_Y_SCALE = 0.8;
+const int PLAYER_BUT_WIDTH = 30;
+const int PLAYER_BUT_HEIGHT = 40;
+const int CHOOSE_PLAYER_BOX_WIDTH = 340;
+const int CHOOSE_PLAYER_BOX_HEIGHT = 30;
 
 typedef enum pause_scene{
     RESUME_BUT,
     RESTART_BUT,
     MEDIUM_BUT,
     EASY_BUT,
-    HARD_BUT
+    HARD_BUT,
+    SINGLE_BUT,
+    MULTI_BUT,
+    CHOOSE_PLAYER_BOX
 } pause_scene_t;
 
 typedef enum info{
@@ -237,6 +244,10 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
         } else if (within_rect(scene_get_body(scene, HARD_BUT), point)) {
             printf("clicked hard\n");
             *level = 3;
+        } else if (within_rect(scene_get_body(scene, SINGLE_BUT), point)) {
+            printf("Single player\n");
+        } else if (within_rect(scene_get_body(scene, MULTI_BUT), point)) {
+            printf("Multiplayer\n");
         }
     }
 }
@@ -275,8 +286,35 @@ void add_pause_screen_text(scene_t *scene) {
     sdl_write(hard_x,levels_y, HARD_TEXT_WIDTH, LEVEL_TEXT_HEIGHT, font, FONT_SIZE,
               BLACK_TEXT, hard_text);
 
+    list_t *choose_players_shape = body_get_shape(scene_get_body(scene, CHOOSE_PLAYER_BOX));
+    assert(list_size(restart_shape) == 4);
+    double cp_x = ((vector_t *)list_get(choose_players_shape, 0))->x + BUFFER;
+    double cp_y = ((vector_t *)list_get(choose_players_shape, 1))->y;
+    char *cp_text = "Choose Single or Multiplayer:";
+    sdl_write(cp_x, cp_y, CHOOSE_PLAYER_BOX_WIDTH - 2* BUFFER, CHOOSE_PLAYER_BOX_HEIGHT,
+              font, FONT_SIZE, WHITE_TEXT, cp_text);
+
+    // list_t *single_shape = body_get_shape(scene_get_body(scene, SINGLE_BUT));
+    // assert(list_size(restart_shape) == 4);
+    // double s_x = ((vector_t *)list_get(single_shape, 0))->x;
+    // double s_y = ((vector_t *)list_get(single_shape, 1))->y;
+    // char *s_text = "1";
+    // sdl_write(s_x, s_y, PLAYER_BUT_WIDTH, PLAYER_BUT_HEIGHT,
+    //           font, FONT_SIZE, WHITE_TEXT, s_text);
+
+    // list_t *multi_shape = body_get_shape(scene_get_body(scene, MULTI_BUT));
+    // assert(list_size(restart_shape) == 4);
+    // double m_x = ((vector_t *)list_get(multi_shape, 0))->x;
+    // double m_y = ((vector_t *)list_get(multi_shape, 1))->y;
+    // char *m_text = "2";
+    // sdl_write(m_x, m_y, PLAYER_BUT_WIDTH, PLAYER_BUT_HEIGHT,
+    //           font, FONT_SIZE, WHITE_TEXT, m_text);
+
     list_free(resume_shape);
     list_free(restart_shape);
+    list_free(choose_players_shape);
+    // list_free(single_shape);
+    // list_free(multi_shape);
 }
 
 void add_pause_screen_images(scene_t *scene) {
@@ -298,11 +336,14 @@ void add_pause_screen_images(scene_t *scene) {
     int medium_y = ((vector_t *)list_get(medium_shape, 1))->y - level_height * (1 - IMG_Y_SCALE)/2;
     char *medium_image = "images/level2.png";
     sdl_image(medium_image, medium_x, medium_y, image_width, image_height);
+
+    list_free(easy_shape);
+    list_free(medium_shape);
 }
 
 void set_up_pause_screen(scene_t *scene) {
     vector_t resume_center = {TOP_RIGHT_COORD.x / 2.0,
-                              TOP_RIGHT_COORD.y - 1.5 * BUTTON_HEIGHT};
+                              TOP_RIGHT_COORD.y - BUTTON_HEIGHT};
     add_rect_to_scene(scene, resume_center, BUTTON_LENGTH, BUTTON_HEIGHT, RESUME,
                       MAROON);
     vector_t restart_center = {resume_center.x,
@@ -312,7 +353,7 @@ void set_up_pause_screen(scene_t *scene) {
 
     double level_width = TOP_RIGHT_COORD.x / 3.0 - LEVEL_BUFFER;
     double level_height = level_width/2;
-    vector_t medium_center = {TOP_RIGHT_COORD.x / 2, TOP_RIGHT_COORD.y/2 - 2.5 * BUTTON_HEIGHT};
+    vector_t medium_center = {TOP_RIGHT_COORD.x / 2.0, TOP_RIGHT_COORD.y/2 - 2.5 * BUTTON_HEIGHT};
     add_rect_to_scene(scene, medium_center, level_width, level_height, MEDIUM_BUT,
                       MAROON);
     vector_t easy_center = {medium_center.x - LEVEL_BUFFER - level_width, medium_center.y};
@@ -321,6 +362,21 @@ void set_up_pause_screen(scene_t *scene) {
     vector_t hard_center = {medium_center.x + LEVEL_BUFFER + level_width, medium_center.y};
     add_rect_to_scene(scene, hard_center, level_width, level_height, HARD_BUT,
                       MAROON);
+
+    vector_t single_center = {TOP_RIGHT_COORD.x / 2.0 - (PLAYER_BUT_WIDTH + BUFFER)/2.0,
+                              restart_center.y - 2.25 * BUTTON_HEIGHT};
+    add_rect_to_scene(scene, single_center, PLAYER_BUT_WIDTH, PLAYER_BUT_HEIGHT,
+                      SINGLE_BUT, (rgb_color_t){0.0, 0.0, 1.0});
+    vector_t multi_center = {TOP_RIGHT_COORD.x / 2.0 + (PLAYER_BUT_WIDTH + BUFFER)/2.0,
+                              single_center.y};
+    add_rect_to_scene(scene, multi_center, PLAYER_BUT_WIDTH, PLAYER_BUT_HEIGHT,
+                      MULTI_BUT, (rgb_color_t){0.0, 1.0, 0.0});
+
+    vector_t player_selection_center = {TOP_RIGHT_COORD.x / 2.0,
+                                    multi_center.y + 2 * BUFFER + CHOOSE_PLAYER_BOX_HEIGHT};
+    add_rect_to_scene(scene, player_selection_center, CHOOSE_PLAYER_BOX_WIDTH,
+                      CHOOSE_PLAYER_BOX_HEIGHT, CHOOSE_PLAYER_BOX, MAROON);
+
 }
 
 void make_tank_power_up(scene_t *scene, int type) {

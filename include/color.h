@@ -24,4 +24,6 @@ rgb_color_t color_get_maroon();
 
 rgb_color_t color_get_blue();
 
+rgb_color_t color_get_white();
+
 #endif // #ifndef __COLOR_H__

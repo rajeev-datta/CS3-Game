@@ -46,6 +46,7 @@ static const double FORCE_FIELD_OUTER_RADIUS = 8;
 static const double FORCE_FIELD_MASS = 50;
 static const double IMG_X_SCALE = 0.9;
 static const double IMG_Y_SCALE = 0.8;
+const char *FONT = "fonts/AnticSlab-Regular.ttf";
 
 typedef enum pause_scene{
     RESUME_BUT,
@@ -313,22 +314,20 @@ void set_up_pause_screen(scene_t *scene) {
 }
 
 void add_pause_screen_text(scene_t *scene) {
-    char *font = "fonts/AnticSlab-Regular.ttf";
-
-    list_t *resume_shape = body_get_shape(scene_get_body(scene, RESUME_BUT));
+list_t *resume_shape = body_get_shape(scene_get_body(scene, RESUME_BUT));
     assert(list_size(resume_shape) == 4);
     int x = ((vector_t *)list_get(resume_shape, 0))->x + BUTTON_LENGTH * (1 - TEXT_SCALE)/2;
     int y = ((vector_t *)list_get(resume_shape, 1))->y - BUTTON_HEIGHT * (1 - TEXT_SCALE)/2;
     int width = BUTTON_LENGTH * TEXT_SCALE;
     int height = BUTTON_HEIGHT * TEXT_SCALE;
     char *resume_text = "Resume";
-    sdl_write(x, y, width, height, font, FONT_SIZE, WHITE_TEXT, resume_text);
+    sdl_write(x, y, width, height, FONT, FONT_SIZE, WHITE_TEXT, resume_text);
 
     list_t *restart_shape = body_get_shape(scene_get_body(scene, RESTART_BUT));
     assert(list_size(restart_shape) == 4);
     y = ((vector_t *)list_get(restart_shape, 1))->y - BUTTON_HEIGHT * (1 - TEXT_SCALE)/2;
     char *restart_text = "Restart";
-    sdl_write(x, y, width, height, font, FONT_SIZE, WHITE_TEXT, restart_text);
+    sdl_write(x, y, width, height, FONT, FONT_SIZE, WHITE_TEXT, restart_text);
 
     list_free(resume_shape);
     list_free(restart_shape);

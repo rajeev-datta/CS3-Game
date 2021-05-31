@@ -41,8 +41,8 @@
 typedef enum {
     BALL,
     FROZEN,
-    WALL, // or peg
-    GRAVITY
+    PEG_WALL, // or peg
+    GRAVITY,
 } body_type_t;
 
 body_type_t *make_type_info(body_type_t type) {
@@ -179,7 +179,7 @@ void add_ball(scene_t *scene) {
                 // Bounce off other balls
                 create_physics_collision(scene, BALL_ELASTICITY, ball, body);
                 break;
-            case WALL:
+            case PEG_WALL:
                 // Bounce off walls and pegs
                 create_physics_collision(scene, PEG_ELASTICITY, ball, body);
                 break;
@@ -204,7 +204,7 @@ void add_pegs(scene_t *scene) {
                 polygon,
                 INFINITY,
                 PEG_COLOR,
-                make_type_info(WALL),
+                make_type_info(PEG_WALL),
                 free
             );
             body_set_centroid(body, get_peg_center(i, j));
@@ -223,7 +223,7 @@ void add_walls(scene_t *scene) {
         rect,
         INFINITY,
         WALL_COLOR,
-        make_type_info(WALL),
+        make_type_info(PEG_WALL),
         free
     );
     scene_add_body(scene, body);

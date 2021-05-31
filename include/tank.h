@@ -1,20 +1,12 @@
+#ifndef __TANK_H__
+#define __TANK_H__
+
 #include "body.h"
 #include "scene.h"
 
-typedef enum body_type {
-    TANK_1,
-    TANK_2,
-    ENEMY_TANK,
-    TANK_FRAG_BOMB,
-    BULLET,
-    WALL,
-    TANK_LAND_MINE,
-    TANK_FORCE_FIELD,
-} body_type_t;
-
 const double FORCE_FIELD_TIME_LIMIT = 5;
-const rgb_color_t BLACK = {0, 0, 0}; 
 const rgb_color_t RED = {1, 0, 0};
+const rgb_color_t BLACK = {0, 0, 0};
 
 typedef struct tank tank_t;
 
@@ -52,3 +44,5 @@ double tank_get_total_powerup_time(tank_t *tank);
 double tank_get_curr_powerup_time(tank_t *tank);
 
 void tank_set_powerup_time(tank_t *tank, double time);
+
+#endif // #ifndef __TANK_H__

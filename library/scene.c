@@ -138,7 +138,7 @@ void scene_body_detonate(scene_t *scene, body_t *body) {
     for (int i = 0; i < NUM_OF_BOMB_FRAGS; i++) {
         list_t *bullet = animate_circle(body_get_centroid(body), FRAG_RADIUS,
                                        CIRC_PTS);
-        body_type_t *tank_bullet_info = malloc(sizeof(body_type_t *));
+        body_types_t *tank_bullet_info = malloc(sizeof(body_types_t *));
         *tank_bullet_info = BULLET;
         body_t *frag_body = body_init_with_info(bullet, FRAG_MASS,
                                                 GREY, tank_bullet_info, free);
@@ -149,10 +149,10 @@ void scene_body_detonate(scene_t *scene, body_t *body) {
         body_set_velocity(frag_body, frag_init_velocity);
 
         for (size_t i = 0; i < scene_bodies(scene); i++) {
-            if (*(body_type_t *) body_get_info(scene_get_body(scene, i)) == TANK_1 || *(body_type_t *) body_get_info(scene_get_body(scene, i)) == TANK_2) {
+            if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_1 || *(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_2) {
                 create_destructive_collision(scene, frag_body, scene_get_body(scene, i));
             }
-            if (*(body_type_t *)body_get_info(scene_get_body(scene, i)) == WALL) {
+            if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == WALL) {
                 create_physics_collision(scene, FRAG_ELASTICITY, frag_body, scene_get_body(scene, i));
             }
         }

@@ -106,7 +106,7 @@ void make_pause_button(scene_t *scene) {
 }
 
 void level_1(vector_t top_right, double wall_length, double wall_height, scene_t *scene) {
-    body_type_t *tank_info = malloc(sizeof(body_type_t *));
+    body_types_t *tank_info = malloc(sizeof(body_types_t *));
     tank_info = TANK_1;
     vector_t *tank_center = malloc(sizeof(vector_t));
     vector_t center = {100, (int) TOP_RIGHT_COORD.y/2};
@@ -115,7 +115,7 @@ void level_1(vector_t top_right, double wall_length, double wall_height, scene_t
     body_t *tank_body = body_init_with_info(tank, 50, RED, tank_info, free);
     scene_add_body(scene, tank_body);
 
-    body_type_t *wall_info = malloc(sizeof(body_type_t *));
+    body_types_t *wall_info = malloc(sizeof(body_types_t *));
     wall_info = WALL;
     list_t *center_wall = animate_rectangle((vector_t) {top_right.x/2, top_right.y/2}, wall_length, wall_height*2);
     body_t *center_wall_body = body_init_with_info(center_wall, INFINITY, RED, wall_info, free);
@@ -393,7 +393,7 @@ void check_bullet_ranges(scene_t *scene, tank_t *tank) {
     double curr_range = tank_get_curr_range(tank);
     
     for (size_t i=0; i < scene_bodies(scene); i++) {
-        if (*(body_type_t *)body_get_info(scene_get_body(scene, i)) == BULLET) {
+        if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == BULLET) {
             double curr_time = body_get_time(scene_get_body(scene, i));
 
             if (curr_time > curr_range) {
@@ -405,7 +405,7 @@ void check_bullet_ranges(scene_t *scene, tank_t *tank) {
 
 void update_bullet_times(scene_t *scene, double dt) {
     for (size_t i=0; i < scene_bodies(scene); i++) {
-        if (*(body_type_t *)body_get_info(scene_get_body(scene, i)) == BULLET) {
+        if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == BULLET) {
             body_increase_time(scene_get_body(scene, i), dt);
         }
     }
@@ -413,8 +413,8 @@ void update_bullet_times(scene_t *scene, double dt) {
 
 void update_tank_times(scene_t *scene, double dt) {
     for (size_t i=0; i < scene_bodies(scene); i++) {
-        if (*(body_type_t *)body_get_info(scene_get_body(scene, i)) == TANK_1 ||
-            *(body_type_t *)body_get_info(scene_get_body(scene, i)) == TANK_2) {
+        if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_1 ||
+            *(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_2) {
             body_increase_time(scene_get_body(scene, i), dt);
         }
     }
@@ -436,12 +436,12 @@ void check_detonation(scene_t *scene, tank_t *tank, double dt) {
     double curr_range = tank_get_curr_range(tank);
     
     for (size_t i=0; i < scene_bodies(scene); i++) {
-        if (*(body_type_t *)body_get_info(scene_get_body(scene, i)) == FRAG_BOMB) {
+        if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == FRAG_BOMB) {
             body_increase_time(scene_get_body(scene, i), dt);
             double curr_time = body_get_time(scene_get_body(scene, i));
 
             if (curr_time > curr_range) {
-                body_detonate(scene, scene_get_body(scene, i));
+                scene_body_detonate(scene, scene_get_body(scene, i));
             }
         }
     }
@@ -449,7 +449,7 @@ void check_detonation(scene_t *scene, tank_t *tank, double dt) {
 
 void update_land_mine_times(scene_t *scene, double dt) {
     for (size_t i=0; i < scene_bodies(scene); i++) {
-        if (*(body_type_t *)body_get_info(scene_get_body(scene, i)) == LAND_MINE) {
+        if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == LAND_MINE) {
             body_increase_time(scene_get_body(scene, i), dt);
         }
     }
@@ -459,7 +459,7 @@ void check_land_mine_times(scene_t *scene, tank_t *tank) {
     double curr_range = tank_get_curr_range(tank);
     
     for (size_t i=0; i < scene_bodies(scene); i++) {
-        if (*(body_type_t *)body_get_info(scene_get_body(scene, i)) == LAND_MINE) {
+        if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == LAND_MINE) {
             double curr_time = body_get_time(scene_get_body(scene, i));
 
             if (curr_time > curr_range) {
@@ -471,7 +471,7 @@ void check_land_mine_times(scene_t *scene, tank_t *tank) {
 
 bool check_for_force_field(scene_t *scene) {
     for (size_t i=0; i < scene_bodies(scene); i++) {
-        if (*(body_type_t *)body_get_info(scene_get_body(scene, i)) == TANK_FORCE_FIELD) {
+        if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_FORCE_FIELD) {
             return true;
         }
     }
@@ -482,7 +482,7 @@ body_t *create_new_force_field(scene_t *scene, tank_t *tank) {
     body_t *tank_body = tank_get_body(tank);
     list_t *force_field_pts = animate_ring(body_get_centroid(tank_body), FORCE_FIELD_INNER_RADIUS, FORCE_FIELD_OUTER_RADIUS, CIRC_PTS);
 
-    body_type_t *tank_force_field_info = malloc(sizeof(body_type_t *));
+    body_types_t *tank_force_field_info = malloc(sizeof(body_types_t *));
     *tank_force_field_info = TANK_FORCE_FIELD;
 
     body_t *force_field_body = body_init_with_info(force_field_pts, FORCE_FIELD_MASS,
@@ -490,7 +490,7 @@ body_t *create_new_force_field(scene_t *scene, tank_t *tank) {
 
     body_set_velocity(force_field_body, (vector_t) {0, 0});
     for (size_t i = 0; i < scene_bodies(scene); i++) {
-        if (*(body_type_t *) body_get_info(scene_get_body(scene, i)) == BULLET) {
+        if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == BULLET) {
             create_partial_destructive_collision(scene, force_field_body, scene_get_body(scene, i));
         }
     }
@@ -503,7 +503,7 @@ void handle_force_field(scene_t *scene, tank_t *tank, double dt) {
     if (tank_get_weapon(tank) == (shooting_handler_t) force_field_shoot) {
         if (check_for_force_field(scene)) {
             for (size_t i=0; i < scene_bodies(scene); i++) {
-                if (*(body_type_t *)body_get_info(scene_get_body(scene, i)) == TANK_FORCE_FIELD) {
+                if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_FORCE_FIELD) {
                     body_t *force_field = scene_get_body(scene, i);
                     body_increase_time(force_field, dt);
                     double curr_time = body_get_time(force_field);

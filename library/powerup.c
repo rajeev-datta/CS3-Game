@@ -58,7 +58,7 @@ void default_gun_shoot(scene_t *scene, body_t *body) {
     // method to handle the shooting of normal gun
     list_t *bullet = animate_circle(body_get_centroid(body), BULLET_RADIUS,
                                        CIRCLE_PTS);
-    body_type_t *tank_bullet_info = malloc(sizeof(body_type_t *));
+    body_types_t *tank_bullet_info = malloc(sizeof(body_types_t *));
     *tank_bullet_info = BULLET;
     body_t *bullet_body = body_init_with_info(bullet, BULLET_MASS,
                                               GREEN, tank_bullet_info, free);
@@ -68,10 +68,10 @@ void default_gun_shoot(scene_t *scene, body_t *body) {
     body_set_velocity(bullet_body, tank_bullet_init_velocity);
 
     for (size_t i = 0; i < scene_bodies(scene); i++) {
-        if (*(body_type_t *) body_get_info(scene_get_body(scene, i)) == TANK_1 || *(body_type_t *) body_get_info(scene_get_body(scene, i)) == TANK_2) {
+        if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_1 || *(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_2) {
             create_destructive_collision(scene, bullet_body, scene_get_body(scene, i));
         }
-        if (*(body_type_t *) body_get_info(scene_get_body(scene, i)) == WALL) {
+        if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == WALL) {
             create_physics_collision(scene, BULLET_ELASTICITY, bullet_body, scene_get_body(scene, i));
         }
     }
@@ -82,7 +82,7 @@ void machine_gun_shoot(scene_t *scene, body_t *body) {
     // method to handle the shooting of machine gun
     list_t *bullet = animate_circle(body_get_centroid(body), FRAG_BOMB_RADIUS,
                                        CIRCLE_PTS);
-    body_type_t *tank_bullet_info = malloc(sizeof(body_type_t *));
+    body_types_t *tank_bullet_info = malloc(sizeof(body_types_t *));
     *tank_bullet_info = BULLET;
     body_t *bullet_body = body_init_with_info(bullet, BULLET_MASS,
                                               RED, tank_bullet_info, free);
@@ -93,10 +93,10 @@ void machine_gun_shoot(scene_t *scene, body_t *body) {
     body_set_velocity(bullet_body, tank_bullet_init_velocity);
 
     for (size_t i = 0; i < scene_bodies(scene); i++) {
-        if (*(body_type_t *) body_get_info(scene_get_body(scene, i)) == TANK_1 || *(body_type_t *) body_get_info(scene_get_body(scene, i)) == TANK_2) {
+        if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_1 || *(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_2) {
             create_destructive_collision(scene, bullet_body, scene_get_body(scene, i));
         }
-        if (*(body_type_t *) body_get_info(scene_get_body(scene, i)) == WALL) {
+        if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == WALL) {
             create_physics_collision(scene, BULLET_ELASTICITY, bullet_body, scene_get_body(scene, i));
         }
     }
@@ -108,7 +108,7 @@ void frag_bomb_shoot(scene_t *scene, body_t *body) {
 
     list_t *bullet = animate_circle(body_get_centroid(body), MACHINE_GUN_BULLET_RADIUS,
                                        CIRCLE_PTS);
-    body_type_t *tank_frag_bomb_info = malloc(sizeof(body_type_t *));
+    body_types_t *tank_frag_bomb_info = malloc(sizeof(body_types_t *));
     *tank_frag_bomb_info = TANK_FRAG_BOMB;
     body_t *frag_bomb_body = body_init_with_info(bullet, BULLET_MASS,
                                               BLACK, tank_frag_bomb_info, free);
@@ -118,10 +118,10 @@ void frag_bomb_shoot(scene_t *scene, body_t *body) {
 
     body_set_velocity(frag_bomb_body, tank_bullet_init_velocity);
     for (size_t i = 0; i < scene_bodies(scene); i++) {
-        if (*(body_type_t *) body_get_info(scene_get_body(scene, i)) == TANK_1 || *(body_type_t *) body_get_info(scene_get_body(scene, i)) == TANK_2) {
+        if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_1 || *(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_2) {
             create_destructive_collision(scene, frag_bomb_body, scene_get_body(scene, i));
         }
-        if (*(body_type_t *) body_get_info(scene_get_body(scene, i)) == WALL) {
+        if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == WALL) {
             create_physics_collision(scene, BULLET_ELASTICITY, frag_bomb_body, scene_get_body(scene, i));
         }
     }
@@ -133,14 +133,14 @@ void land_mine_shoot(scene_t *scene, body_t *body) {
 
     list_t *mine = animate_rectangle(body_get_centroid(body), LAND_MINE_SIDE_LENGTH,
                                        LAND_MINE_SIDE_LENGTH);
-    body_type_t *tank_land_mine_info = malloc(sizeof(body_type_t *));
+    body_types_t *tank_land_mine_info = malloc(sizeof(body_types_t *));
     *tank_land_mine_info = TANK_LAND_MINE;
     body_t *land_mine_body = body_init_with_info(mine, BULLET_MASS,
                                               PURPLE, tank_land_mine_info, free);
 
     body_set_velocity(land_mine_body, (vector_t) {0, 0});
     for (size_t i = 0; i < scene_bodies(scene); i++) {
-        if (*(body_type_t *) body_get_info(scene_get_body(scene, i)) == TANK_1 || *(body_type_t *) body_get_info(scene_get_body(scene, i)) == TANK_2) {
+        if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_1 || *(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_2) {
             create_destructive_collision(scene, land_mine_body, scene_get_body(scene, i));
         }
     }

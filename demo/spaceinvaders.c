@@ -20,7 +20,7 @@ const int NUM_PELLETS = 14;
 const double PELLET_RADIUS = 10;
 const int CIRCLE_PTS = 16;
 const double BULLET_MASS = 10;
-const rgb_color_t GREY = {128.0/255, 128.0/255, 128.0/255};
+const rgb_color_t GREY_COLOR = {128.0/255, 128.0/255, 128.0/255};
 const rgb_color_t GREEN = {0.0/255, 255.0/255, 0.0/255};
 const double INVADER_MASS = 100;
 const double SPACESHIP_MASS = 100;
@@ -61,7 +61,7 @@ void invader_shoot(scene_t *scene, void *body) {
                                        BULLET_WIDTH, BULLET_LENGTH);
     char *invader_bullet_info = malloc(sizeof(char *));
     *invader_bullet_info = INVADER_BULLET;
-    body_t *bullet_body = body_init_with_info(bullet, BULLET_MASS, GREY,
+    body_t *bullet_body = body_init_with_info(bullet, BULLET_MASS, GREY_COLOR,
                                               invader_bullet_info, free);
     body_set_velocity(bullet_body, vec_negate(BULLET_INIT_VEL));
     scene_add_body(scene, bullet_body);
@@ -142,7 +142,7 @@ int main(int argc, char *argv[]) {
         list_t *invader = animate_invader(invader_center, INVADER_RADIUS, CIRCLE_PTS);
         char *invader_info = malloc(sizeof(char *));
         *invader_info = INVADER_INFO;
-        body_t *invader_body = body_init_with_info(invader, INVADER_MASS, GREY, invader_info, free);
+        body_t *invader_body = body_init_with_info(invader, INVADER_MASS, GREY_COLOR, invader_info, free);
         body_set_velocity(invader_body, (vector_t) {100, 0});
         scene_add_body(scene, invader_body);
         create_destructive_collision(scene, invader_body, scene_get_body(scene, 0));

@@ -142,7 +142,7 @@ void sdl_init(vector_t min, vector_t max) {
 
 }
 
-bool sdl_is_done(scene_t *scene, void *object, bool *play, scene_t **scenes, int *level) {
+bool sdl_is_done(scene_t *scene, void *object, bool *play, scene_t **scenes, int *level, bool *multi) {
     SDL_Event *event = malloc(sizeof(*event));
     assert(event != NULL);
 
@@ -176,7 +176,7 @@ bool sdl_is_done(scene_t *scene, void *object, bool *play, scene_t **scenes, int
                     event->type == SDL_KEYDOWN ? KEY_PRESSED : KEY_RELEASED;
                 double held_time = (timestamp - key_start_timestamp) / MS_PER_S;
                 if (object != NULL && !body_is_removed(object)) {
-                    key_handler(key, type, held_time, object, scene, play);
+                    key_handler(key, type, held_time, object, scene, play, multi);
                 }
                 break;
         }

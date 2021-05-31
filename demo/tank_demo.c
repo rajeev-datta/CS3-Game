@@ -533,6 +533,8 @@ int main(int argc, char *argv[]) {
     set_up_pause_screen(pause_scene);
     bool *play = malloc(sizeof(bool));
     *play = true;
+    bool *multi = malloc(sizeof(bool));
+    *multi = false;
 
     sdl_on_key((key_handler_t)on_key_push);
     sdl_on_mouse((mouse_handler_t)on_mouse);
@@ -553,7 +555,7 @@ int main(int argc, char *argv[]) {
 
     scene_add_body(scene, tank_get_body(tank1));
 
-    while (!sdl_is_done(scene, scene_get_body(scene, 0), play, scenes, level)) {
+    while (!sdl_is_done(scene, scene_get_body(scene, 0), play, scenes, level, multi)) {
         double dt = time_since_last_tick();
         time_passed += dt;
 

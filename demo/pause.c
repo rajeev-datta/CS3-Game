@@ -186,10 +186,13 @@ void level_2(vector_t top_right, double wall_length, double wall_height, scene_t
 }
 
 void on_key_press(char key, key_event_type_t type, double held_time,
-                void *object, scene_t *scene, bool *play) {
+                void *object, scene_t *scene, bool *play, bool *multi) {
     if (*play) {
         double curr_rot = 0;
         body_t *tank_1 = scene_get_body(scene, 2);
+        if (*multi) {
+            body_t *tank_2 = scene_get_body(scene, 3);
+        }
 
         if (type == KEY_RELEASED) {
             body_set_velocity(tank_1, (vector_t){0, 0});
@@ -420,6 +423,8 @@ int main(int argc, char *argv[]) {
     set_up_pause_screen(pause_scene);
     bool *play = malloc(sizeof(bool));
     *play = true;
+    bool *multi = malloc(sizeof(bool));
+    *multi = false;
 
     sdl_on_key((key_handler_t)on_key_press);
     sdl_on_mouse((mouse_handler_t)on_mouse);
@@ -432,7 +437,7 @@ int main(int argc, char *argv[]) {
     scenes[1] = pause_scene;
 
 
-    while (!sdl_is_done(temp_scene, scene_get_body(scene, 0), play, scenes, level)) {
+    while (!sdl_is_done(temp_scene, scene_get_body(scene, 0), play, scenes, level, multi)) {
         double dt = time_since_last_tick();
         time_passed += dt;
 

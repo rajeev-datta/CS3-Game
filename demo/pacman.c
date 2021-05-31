@@ -88,7 +88,7 @@ int main(int argc, char *argv[]) {
 
     sdl_on_key((key_handler_t)on_key);
     double time_passed = 0;
-    while (!sdl_is_done(scene, pacman_body, NULL, NULL, NULL, NULL)) {
+    while (!sdl_is_done(scene, pacman_body, NULL, NULL, NULL, NULL, NULL)) {
         double dt = time_since_last_tick();
         remove_pellets(pacman_body, PACMAN_RADIUS, PELLET_RADIUS, scene);
         scene_tick(scene, dt);

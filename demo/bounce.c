@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
     star_get_velocity(star)->x = VELOCITY;
     star_get_velocity(star)->y = VELOCITY;
 
-    while(!sdl_is_done(NULL, NULL, NULL, NULL, NULL, NULL)) {
+    while(!sdl_is_done(NULL, NULL, NULL, NULL, NULL, NULL, NULL)) {
         double dt = time_since_last_tick();
         hit_boundary_check(star, BOTTOM_LEFT_COORD, TOP_RIGHT_COORD, dt);
         vector_t translation = {star_get_velocity(star)->x * dt,

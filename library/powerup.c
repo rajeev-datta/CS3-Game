@@ -33,15 +33,6 @@ const double LAND_MINE_SIDE_LENGTH = 7;
 const rgb_color_t GREEN = {0, 1, 0};
 const rgb_color_t PURPLE = {0.5, 0, 0.5};
 
-// will need to give bullets a time component so we can keep track of when bullets should be removed?
-// how should I do this though? Cuz I can only add bodies to scene and so I'm not sure how I would keep track of these additional
-// bullet structs. Should I just give body another parameter for time?
-
-typedef struct tank_powerup_aux {
-    tank_t *tank;
-    char type;
-} tank_powerup_aux_t;
-
 powerup_aux_t *powerup_aux_init(tank_t *tank, char type) {
     tank_powerup_aux_t *tank_pow_aux_obj = malloc(sizeof(tank_powerup_aux_t));
     tank_pow_aux_obj->tank = tank;

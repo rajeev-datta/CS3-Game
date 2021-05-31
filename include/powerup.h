@@ -4,6 +4,11 @@
 #include "scene.h"
 #include "tank.h"
 
+typedef struct tank_powerup_aux {
+    tank_t *tank;
+    char type;
+} tank_powerup_aux_t;
+
 typedef enum powerups{
     MACHINE_GUN,
     FRAG_BOMB,

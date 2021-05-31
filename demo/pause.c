@@ -413,7 +413,8 @@ void add_pause_screen_text(scene_t *scene, bool *multi, TTF_Font *font,
     list_free(choose_players_shape);
 }
 
-void add_pause_screen_images(scene_t *scene) {
+void add_pause_screen_images(scene_t *scene, SDL_Surface *level1, SDL_Surface *level2,
+                             SDL_Surface *level3) {
     double level_width = TOP_RIGHT_COORD.x / 3.0 - LEVEL_BUFFER;
     double level_height = level_width/2;
     double image_width = level_width * IMG_X_SCALE;
@@ -423,22 +424,19 @@ void add_pause_screen_images(scene_t *scene) {
     assert(list_size(easy_shape) == 4);
     int easy_x = ((vector_t *)list_get(easy_shape, 0))->x + level_width * (1 - IMG_X_SCALE)/2;
     int easy_y = ((vector_t *)list_get(easy_shape, 1))->y - level_height * (1 - IMG_Y_SCALE)/2;
-    char *easy_image = "images/level1.png";
-    sdl_image(easy_image, easy_x, easy_y, image_width, image_height);
+    sdl_image(level1, easy_x, easy_y, image_width, image_height);
 
     list_t *medium_shape = body_get_shape(scene_get_body(scene, MEDIUM_BUT));
     assert(list_size(medium_shape) == 4);
     int medium_x = ((vector_t *)list_get(medium_shape, 0))->x + level_width * (1 - IMG_X_SCALE)/2;
     int medium_y = ((vector_t *)list_get(medium_shape, 1))->y - level_height * (1 - IMG_Y_SCALE)/2;
-    char *medium_image = "images/level2.png";
-    sdl_image(medium_image, medium_x, medium_y, image_width, image_height);
+    sdl_image(level2, medium_x, medium_y, image_width, image_height);
 
     list_t *hard_shape = body_get_shape(scene_get_body(scene, HARD_BUT));
     assert(list_size(hard_shape) == 4);
     int hard_x = ((vector_t *)list_get(hard_shape, 0))->x + level_width * (1 - IMG_X_SCALE)/2;
     int hard_y = ((vector_t *)list_get(hard_shape, 1))->y - level_height * (1 - IMG_Y_SCALE)/2;
-    char *hard_image = "images/level3.png";
-    sdl_image(hard_image, hard_x, hard_y, image_width, image_height);
+    sdl_image(level3, hard_x, hard_y, image_width, image_height);
 
     list_free(easy_shape);
     list_free(medium_shape);
@@ -497,6 +495,22 @@ int main(int argc, char *argv[]) {
     if (!font) {
         printf("TTF_OpenFontRW: %s\n", TTF_GetError());
     }
+    SDL_Surface *level1 = IMG_Load("images/level1.png");
+    if (!level1) {
+        printf("IMG_LoadRW: %s\n", IMG_GetError());
+    }
+    SDL_Surface *level2 = IMG_Load("images/level2.png");
+    if (!level2) {
+        printf("IMG_LoadRW: %s\n", IMG_GetError());
+    }
+    SDL_Surface *level3 = IMG_Load("images/level3.png");
+    if (!level3) {
+        printf("IMG_LoadRW: %s\n", IMG_GetError());
+    }
+    SDL_Surface *wall = IMG_Load("images/wall.png");
+    if (!wall) {
+        printf("IMG_LoadRW: %s\n", IMG_GetError());
+    }
 
     sdl_on_key((key_handler_t)on_key_press);
     sdl_on_mouse((mouse_handler_t)on_mouse);
@@ -524,12 +538,16 @@ int main(int argc, char *argv[]) {
         sdl_render_scene(temp_scene);
         if (!*play) {
             add_pause_screen_text(temp_scene, multi, font, choosing_level);
-            add_pause_screen_images(temp_scene);
+            add_pause_screen_images(temp_scene, level1, level2, level3);
         }
         sdl_show();
         scene_tick(temp_scene, dt);
     }
 
+    SDL_FreeSurface(level1);
+    SDL_FreeSurface(level2);
+    SDL_FreeSurface(level3);
+    SDL_FreeSurface(wall);
     TTF_CloseFont(font);
     free(play);
     scene_free(pause_scene);

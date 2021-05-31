@@ -118,13 +118,13 @@ void sdl_write(double x, double y, int width, int height, TTF_Font *font, SDL_Co
 
 /**
  * Puts an image on the screen
- * @param file the path of the file
+ * @param image the SDL_Surface of the image
  * @param x an integer representing the x-coordinate of the upper-left corner of the image
  * @param y an integer representing the y-coordinate of the upper-left corner of the image
  * @param width an integer representing the width of the image
  * @param height an integer representing the height of the image
  */
-void sdl_image(const char* file, int x, int y, int width, int height);
+void sdl_image(SDL_Surface *image, int x, int y, int width, int height);
 
 /**
  * Displays the rendered frame on the SDL window.

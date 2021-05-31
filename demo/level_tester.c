@@ -3,6 +3,8 @@
 #include <time.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
+#include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_image.h>
 #include <math.h>
 #include "sdl_wrapper.h"
 #include "animate.h"
@@ -25,10 +27,9 @@ double const INIT_VEL = 200;
 double const ANGLE_OFFSET = (10 * M_PI)/180;
 const double ELASTICITY = 1;
 
-void level_1_images(vector_t top_right, double wall_length, double wall_height) {
-    char *wall_image = "images/wall.png";
-    sdl_image(wall_image, top_right.x / 2.0 - wall_length / 2.0, top_right.y / 2.0 + wall_height, wall_length, 2 * wall_height);
-    sdl_image(wall_image, top_right.x / 4.0 - wall_length / 2.0, top_right.y, wall_length, wall_height);
+void level_1_images(vector_t top_right, double wall_length, double wall_height, SDL_Surface *wall) {
+    sdl_image(wall, top_right.x / 2.0 - wall_length / 2.0, top_right.y / 2.0 + wall_height, wall_length, 2 * wall_height);
+    sdl_image(wall, top_right.x / 4.0 - wall_length / 2.0, top_right.y, wall_length, wall_height);
 }
 
 void level_1(vector_t top_right, double wall_length, double wall_height, scene_t *scene) {
@@ -232,6 +233,7 @@ void level_2_horizontals(vector_t top_right, double wall_length, double wall_hei
 void on_key_press(char key, key_event_type_t type, double held_time,
                 void *object, scene_t *scene, bool *play) {
     double curr_rot = 0;
+
     if (type == KEY_RELEASED) {
         body_set_velocity(object, (vector_t){0, 0});
     } else if (type == KEY_PRESSED) {
@@ -267,16 +269,21 @@ int main(int argc, char *argv[]) {
 
     bool *multi = malloc(sizeof(bool));
     *multi = false;
+    SDL_Surface *wall = IMG_Load("images/wall.png");
+    if (!wall) {
+        printf("IMG_LoadRW: %s\n", IMG_GetError());
+    }
 
     while (!sdl_is_done(scene, scene_get_body(scene, 0), NULL, NULL, NULL, multi, NULL)) {
         double dt = time_since_last_tick();
         side_boundary(scene, TOP_RIGHT_COORD, BOTTOM_LEFT_COORD, 25.0);
         wall_boundary(scene);
         sdl_render_scene(scene);
-        level_1_images(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT);
+        level_1_images(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, wall);
         sdl_show();
         scene_tick(scene, dt);
     }
     
-   scene_free(scene);
+    SDL_FreeSurface(wall);
+    scene_free(scene);
 }

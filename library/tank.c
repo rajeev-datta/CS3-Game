@@ -52,7 +52,7 @@ tank_t *enemy_tank_init(list_t *points, vector_t speed) {
     tank_obj->curr_powerup_time = 0;
     return tank_obj;
 }
-
+ 
 body_t *tank_get_body(tank_t *tank) {
     return tank->shape;
 }

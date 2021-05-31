@@ -18,10 +18,10 @@ typedef struct tank {
     double total_powerup_time;
 } tank_t;
 
-tank_t *tank_init(list_t *points) {
+tank_t *tank_init(list_t *points, void* info) {
     tank_t *tank_obj = malloc(sizeof(tank_t));
     
-    body_t *shape = body_init(points, MASS, color_get_red());
+    body_t *shape = body_init_with_info(points, MASS, color_get_red(), info, free);
     tank_obj->shape = shape;
     
     tank_obj->weapon = NULL;
@@ -35,10 +35,10 @@ tank_t *tank_init(list_t *points) {
     return tank_obj;
 }
 
-tank_t *enemy_tank_init(list_t *points, vector_t speed) {
+tank_t *enemy_tank_init(list_t *points, vector_t speed, void* info) {
     tank_t *tank_obj = malloc(sizeof(tank_t));
     
-    body_t *shape = body_init(points, MASS, color_get_black());
+    body_t *shape = body_init_with_info(points, MASS, color_get_black(), info, free);
     body_set_velocity(shape, speed);
     tank_obj->shape = shape;
 
@@ -52,7 +52,7 @@ tank_t *enemy_tank_init(list_t *points, vector_t speed) {
     tank_obj->curr_powerup_time = 0;
     return tank_obj;
 }
- 
+
 body_t *tank_get_body(tank_t *tank) {
     return tank->shape;
 }

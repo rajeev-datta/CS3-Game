@@ -15,14 +15,13 @@
 #include "list.h"
 #include "forces.h"
 #include <string.h>
+#include <stdbool.h>
 
 const vector_t BOTTOM_LEFT_COORD = {0, 0};
 const vector_t TOP_RIGHT_COORD = {1000, 500};
 const double LEVEL_1_WALL_LENGTH = 10;
 const double LEVEL_1_WALL_HEIGHT = 100;
 const rgb_color_t BACKGROUND = {1, 1, 1};
-const char WALL_INFO = 'w';
-const char TANK_INFO = 't';
 const double BUFFER = 10;
 const double PAUSE_SCALE = 2.0/3;
 const double PAUSE_HEIGHT = 40;
@@ -59,8 +58,6 @@ typedef enum pause_scene{
     MEDIUM_BUT,
     EASY_BUT,
     HARD_BUT,
-    SINGLE_BUT,
-    MULTI_BUT,
     CHOOSE_PLAYER_BOX
 } pause_scene_t;
 
@@ -101,14 +98,17 @@ void make_pause_button(scene_t *scene) {
 }
 
 void level_1(vector_t top_right, double wall_length, double wall_height, scene_t *scene) {
-    char *tank_info = malloc(sizeof(char *));
-    tank_info = TANK_INFO;
-    list_t *tank = animate_rectangle((vector_t) {100, TOP_RIGHT_COORD.y/2}, 50, 50);
+    body_types_t *tank_info = malloc(sizeof(body_types_t *));
+    tank_info = TANK_1;
+    vector_t *tank_center = malloc(sizeof(vector_t));
+    vector_t center = {100, (int) TOP_RIGHT_COORD.y/2};
+    *tank_center = center;
+    list_t *tank = animate_tank(tank_center);
     body_t *tank_body = body_init_with_info(tank, 50, color_get_red(), tank_info, free);
     scene_add_body(scene, tank_body);
 
-    char *wall_info = malloc(sizeof(char *));
-    wall_info = WALL_INFO;
+    body_types_t *wall_info = malloc(sizeof(body_types_t *));
+    wall_info = WALL;
     list_t *center_wall = animate_rectangle((vector_t) {top_right.x/2, top_right.y/2}, wall_length, wall_height*2);
     body_t *center_wall_body = body_init_with_info(center_wall, INFINITY, color_get_red(), wall_info, free);
     scene_add_body(scene, center_wall_body);
@@ -136,14 +136,14 @@ void level_1(vector_t top_right, double wall_length, double wall_height, scene_t
 }
 
 void level_2(vector_t top_right, double wall_length, double wall_height, scene_t *scene) {
-    char *tank_info = malloc(sizeof(char *));
-    tank_info = TANK_INFO;
+    body_types_t *tank_info = malloc(sizeof(body_types_t *));
+    tank_info = TANK_1;
     list_t *tank = animate_rectangle((vector_t) {100, TOP_RIGHT_COORD.y/2}, 50, 50);
     body_t *tank_body = body_init_with_info(tank, 50, color_get_red(), tank_info, free);
     scene_add_body(scene, tank_body);
     
-    char *wall_info = malloc(sizeof(char *));
-    wall_info = WALL_INFO;
+    body_types_t *wall_info = malloc(sizeof(body_types_t *));
+    wall_info = WALL;
     list_t *center_top_wall = animate_rectangle((vector_t) {top_right.x/2, (top_right.y*3.5)/10}, wall_height, wall_length);
     body_t *center_top_wall_body = body_init_with_info(center_top_wall, INFINITY, color_get_red(), wall_info, free);
     scene_add_body(scene, center_top_wall_body);
@@ -234,7 +234,7 @@ bool within_rect(body_t *body, vector_t point) {
     return within;
 }
 
-void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int *level) {
+void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int *level, bool *multi) {
     if (*play) {
         if (within_rect(scene_get_body(scene, PAUSE_BUTTON), point)){
             *play = false;
@@ -272,15 +272,13 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
         } else if (within_rect(scene_get_body(scene, HARD_BUT), point)) {
             printf("clicked hard\n");
             *level = 3;
-        } else if (within_rect(scene_get_body(scene, SINGLE_BUT), point)) {
-            printf("Single player\n");
-        } else if (within_rect(scene_get_body(scene, MULTI_BUT), point)) {
-            printf("Multiplayer\n");
+        } else if (within_rect(scene_get_body(scene, CHOOSE_PLAYER_BOX), point)) {
+            *multi = !(*multi);
         }
     }
 }
 
-void add_pause_screen_text(scene_t *scene) {
+void add_pause_screen_text(scene_t *scene, bool *multi) {
     char *font = "fonts/AnticSlab-Regular.ttf";
 
     list_t *resume_shape = body_get_shape(scene_get_body(scene, RESUME_BUT));
@@ -318,31 +316,19 @@ void add_pause_screen_text(scene_t *scene) {
     assert(list_size(restart_shape) == 4);
     double cp_x = ((vector_t *)list_get(choose_players_shape, 0))->x + BUFFER;
     double cp_y = ((vector_t *)list_get(choose_players_shape, 1))->y;
-    char *cp_text = "Choose Single or Multiplayer:";
-    sdl_write(cp_x, cp_y, CHOOSE_PLAYER_BOX_WIDTH - 2* BUFFER, CHOOSE_PLAYER_BOX_HEIGHT,
-              font, FONT_SIZE, WHITE_TEXT, cp_text);
-
-    // list_t *single_shape = body_get_shape(scene_get_body(scene, SINGLE_BUT));
-    // assert(list_size(restart_shape) == 4);
-    // double s_x = ((vector_t *)list_get(single_shape, 0))->x;
-    // double s_y = ((vector_t *)list_get(single_shape, 1))->y;
-    // char *s_text = "1";
-    // sdl_write(s_x, s_y, PLAYER_BUT_WIDTH, PLAYER_BUT_HEIGHT,
-    //           font, FONT_SIZE, WHITE_TEXT, s_text);
-
-    // list_t *multi_shape = body_get_shape(scene_get_body(scene, MULTI_BUT));
-    // assert(list_size(restart_shape) == 4);
-    // double m_x = ((vector_t *)list_get(multi_shape, 0))->x;
-    // double m_y = ((vector_t *)list_get(multi_shape, 1))->y;
-    // char *m_text = "2";
-    // sdl_write(m_x, m_y, PLAYER_BUT_WIDTH, PLAYER_BUT_HEIGHT,
-    //           font, FONT_SIZE, WHITE_TEXT, m_text);
+    if (*multi) {
+        char *cp_text = "Switch to Single Player";
+        sdl_write(cp_x, cp_y, CHOOSE_PLAYER_BOX_WIDTH - 2* BUFFER, CHOOSE_PLAYER_BOX_HEIGHT,
+                  font, FONT_SIZE, WHITE_TEXT, cp_text);
+    } else {
+        char *cp_text = "Switch to Multiplayer";
+        sdl_write(cp_x, cp_y, CHOOSE_PLAYER_BOX_WIDTH - 2* BUFFER, CHOOSE_PLAYER_BOX_HEIGHT,
+                  font, FONT_SIZE, WHITE_TEXT, cp_text);
+    }
 
     list_free(resume_shape);
     list_free(restart_shape);
     list_free(choose_players_shape);
-    // list_free(single_shape);
-    // list_free(multi_shape);
 }
 
 void add_pause_screen_images(scene_t *scene) {
@@ -371,11 +357,11 @@ void add_pause_screen_images(scene_t *scene) {
 
 void set_up_pause_screen(scene_t *scene) {
     vector_t resume_center = {TOP_RIGHT_COORD.x / 2.0,
-                              TOP_RIGHT_COORD.y - BUTTON_HEIGHT};
+                              TOP_RIGHT_COORD.y - 1.5 * BUTTON_HEIGHT};
     add_rect_to_scene(scene, resume_center, BUTTON_LENGTH, BUTTON_HEIGHT, RESUME,
                       color_get_maroon());
     vector_t restart_center = {resume_center.x,
-                              resume_center.y - 2 * BUTTON_HEIGHT};
+                              resume_center.y - 1.5 * BUTTON_HEIGHT};
     add_rect_to_scene(scene, restart_center, BUTTON_LENGTH, BUTTON_HEIGHT, RESTART,
                       color_get_maroon());
 
@@ -391,20 +377,10 @@ void set_up_pause_screen(scene_t *scene) {
     add_rect_to_scene(scene, hard_center, level_width, level_height, HARD_BUT,
                       color_get_maroon());
 
-    vector_t single_center = {TOP_RIGHT_COORD.x / 2.0 - (PLAYER_BUT_WIDTH + BUFFER)/2.0,
-                              restart_center.y - 2.25 * BUTTON_HEIGHT};
-    add_rect_to_scene(scene, single_center, PLAYER_BUT_WIDTH, PLAYER_BUT_HEIGHT,
-                      SINGLE_BUT, (rgb_color_t){0.0, 0.0, 1.0});
-    vector_t multi_center = {TOP_RIGHT_COORD.x / 2.0 + (PLAYER_BUT_WIDTH + BUFFER)/2.0,
-                              single_center.y};
-    add_rect_to_scene(scene, multi_center, PLAYER_BUT_WIDTH, PLAYER_BUT_HEIGHT,
-                      MULTI_BUT, (rgb_color_t){0.0, 1.0, 0.0});
-
     vector_t player_selection_center = {TOP_RIGHT_COORD.x / 2.0,
-                                    multi_center.y + 2 * BUFFER + CHOOSE_PLAYER_BOX_HEIGHT};
+                                    restart_center.y - 1.5 * BUTTON_HEIGHT};
     add_rect_to_scene(scene, player_selection_center, CHOOSE_PLAYER_BOX_WIDTH,
                       CHOOSE_PLAYER_BOX_HEIGHT, CHOOSE_PLAYER_BOX, color_get_maroon());
-
 }
 
 void make_tank_power_up(scene_t *scene, int type) {
@@ -425,6 +401,8 @@ int main(int argc, char *argv[]) {
     *play = true;
     bool *multi = malloc(sizeof(bool));
     *multi = false;
+    bool *choosing_level = malloc(sizeof(bool));
+    *choosing_level = false;
 
     sdl_on_key((key_handler_t)on_key_press);
     sdl_on_mouse((mouse_handler_t)on_mouse);
@@ -437,7 +415,8 @@ int main(int argc, char *argv[]) {
     scenes[1] = pause_scene;
 
 
-    while (!sdl_is_done(temp_scene, scene_get_body(scene, 0), play, scenes, level, multi)) {
+    while (!sdl_is_done(temp_scene, scene_get_body(scene, 0), play, scenes, level, multi,
+                        choosing_level)) {
         double dt = time_since_last_tick();
         time_passed += dt;
 
@@ -450,7 +429,7 @@ int main(int argc, char *argv[]) {
 
         sdl_render_scene(temp_scene);
         if (!*play) {
-            add_pause_screen_text(temp_scene);
+            add_pause_screen_text(temp_scene, multi);
             add_pause_screen_images(temp_scene);
         }
         sdl_show();

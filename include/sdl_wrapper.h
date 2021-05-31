@@ -42,6 +42,7 @@ typedef enum {
  * @param body a void * that could be a body
  * @param scene a scene_t representing the scene
  * @param play a bool representing if the game is playing or not
+ * @param multi a pointer to a boolean representing if the game is multiplayer
  */
 typedef void (*key_handler_t)(char key, key_event_type_t type, double held_time,
                               void *body, scene_t *scene, bool *play, bool * multi);
@@ -57,9 +58,12 @@ typedef void (*key_handler_t)(char key, key_event_type_t type, double held_time,
  * @param play a bool representing if the game is playing or not
  * @param scenes an array of scene_t's representing the scenes in the game
  * @param level a pointer to an int representing the level of the game
+ * @param multi a pointer to a boolean representing if the game is multiplayer
+ * @param choosing_level a pointer to a boolean indicating if the level is being chosen
  */
 typedef void (*mouse_handler_t)(scene_t *scene, vector_t point, bool *play,
-                                scene_t **scenes, int *level);
+                                scene_t **scenes, int *level, bool * multi,
+                                bool *choosing_level);
 
 /**
  * Initializes the SDL window and renderer.
@@ -80,9 +84,11 @@ void sdl_init(vector_t min, vector_t max);
  * @param scenes an array of scene_t's representing the scenes in the game
  * @param level a pointer to an integer representing the level of the game
  * @param multi a pointer to a boolean indicating multiplayer
+ * @param choosing_level a pointer to a boolean indicating if the level is being chosen
  * @return true if the window was closed, false otherwise
  */
-bool sdl_is_done(scene_t *scene, void *body, bool *play, scene_t **scenes, int *level, bool *multi);
+bool sdl_is_done(scene_t *scene, void *body, bool *play, scene_t **scenes, int *level,
+                 bool *multi, bool *choosing_level);
 
 /**
  * Clears the screen. Should be called before drawing polygons in each frame.

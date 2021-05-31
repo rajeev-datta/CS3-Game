@@ -1,10 +1,10 @@
 #include "tank.h"
 #include "powerup.h"
 
-const int MASS = 100;
-const double default_reload_time = 2;
-const double default_bullet_range = 10;
-const double POWERUP_TIME = 10;
+static const int MASS = 100;
+static const double default_reload_time = 2;
+static const double default_bullet_range = 10;
+static const double POWERUP_TIME = 10;
 
 typedef struct tank {
     body_t *shape;
@@ -21,7 +21,7 @@ typedef struct tank {
 tank_t *tank_init(list_t *points) {
     tank_t *tank_obj = malloc(sizeof(tank_t));
     
-    body_t *shape = body_init(points, MASS, RED);
+    body_t *shape = body_init(points, MASS, color_get_red());
     tank_obj->shape = shape;
     
     tank_obj->weapon = NULL;
@@ -38,7 +38,7 @@ tank_t *tank_init(list_t *points) {
 tank_t *enemy_tank_init(list_t *points, vector_t speed) {
     tank_t *tank_obj = malloc(sizeof(tank_t));
     
-    body_t *shape = body_init(points, MASS, BLACK);
+    body_t *shape = body_init(points, MASS, color_get_black());
     body_set_velocity(shape, speed);
     tank_obj->shape = shape;
 

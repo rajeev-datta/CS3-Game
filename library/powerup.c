@@ -14,28 +14,29 @@
 #include "tank.h"
 #include "powerup.h"
 
-const int CIRCLE_PTS = 16;
-const double BULLET_RADIUS = 5;
-const double MACHINE_GUN_BULLET_RADIUS = 2.5;
-const double TANK_BULLET_INIT_VEL = 100;
-const double BULLET_ELASTICITY = 0.9;
-const double MACHINE_GUN_RELOAD_TIME = 0.5;
-const double MACHINE_GUN_RANGE = 5;
-const double FRAG_BOMB_RELOAD_TIME = 4;
-const double FRAG_BUMB_RANGE = 7;
-const double FRAG_BOMB_RADIUS = 7;
-const double BULLET_MASS = 100;
-const double FRAG_BOMB_RANGE = 6;
-const double LAND_MINE_RELOAD_TIME = 7;
-const double LAND_MINE_TIME_LIMIT = 10;
-const double LAND_MINE_SIDE_LENGTH = 7;
+static const int CIRCLE_PTS = 16;
+static const double BULLET_RADIUS = 5;
+static const double MACHINE_GUN_BULLET_RADIUS = 2.5;
+static const double TANK_BULLET_INIT_VEL = 100;
+static const double BULLET_ELASTICITY = 0.9;
+static const double MACHINE_GUN_RELOAD_TIME = 0.5;
+static const double MACHINE_GUN_RANGE = 5;
+static const double FRAG_BOMB_RELOAD_TIME = 4;
+static const double FRAG_BOMB_RADIUS = 7;
+static const double BULLET_MASS = 100;
+static const double FRAG_BOMB_RANGE = 6;
+static const double LAND_MINE_RELOAD_TIME = 7;
+static const double LAND_MINE_TIME_LIMIT = 10;
+static const double LAND_MINE_SIDE_LENGTH = 7;
+static const double FORCE_FIELD_TIME_LIMIT = 5;
+
 
 typedef struct tank_powerup_aux {
     tank_t *tank;
-    char type;
+    powerups_t type;
 } tank_powerup_aux_t;
 
-powerup_aux_t *powerup_aux_init(tank_t *tank, char type) {
+tank_powerup_aux_t *tank_powerup_aux_init(tank_t *tank, powerups_t type) {
     tank_powerup_aux_t *tank_pow_aux_obj = malloc(sizeof(tank_powerup_aux_t));
     tank_pow_aux_obj->tank = tank;
     tank_pow_aux_obj->type = type;
@@ -54,7 +55,7 @@ void default_gun_shoot(scene_t *scene, body_t *body) {
     body_types_t *tank_bullet_info = malloc(sizeof(body_types_t *));
     *tank_bullet_info = BULLET;
     body_t *bullet_body = body_init_with_info(bullet, BULLET_MASS,
-                                              GREEN, tank_bullet_info, free);
+                                              color_get_green(), tank_bullet_info, free);
     vector_t tank_bullet_init_velocity;
     tank_bullet_init_velocity.x = TANK_BULLET_INIT_VEL * cos(body_get_orientation(body));
     tank_bullet_init_velocity.y = TANK_BULLET_INIT_VEL * sin(body_get_orientation(body));
@@ -78,7 +79,7 @@ void machine_gun_shoot(scene_t *scene, body_t *body) {
     body_types_t *tank_bullet_info = malloc(sizeof(body_types_t *));
     *tank_bullet_info = BULLET;
     body_t *bullet_body = body_init_with_info(bullet, BULLET_MASS,
-                                              RED, tank_bullet_info, free);
+                                              color_get_red(), tank_bullet_info, free);
 
     vector_t tank_bullet_init_velocity;
     tank_bullet_init_velocity.x = TANK_BULLET_INIT_VEL * cos(body_get_orientation(body));
@@ -104,7 +105,7 @@ void frag_bomb_shoot(scene_t *scene, body_t *body) {
     body_types_t *tank_frag_bomb_info = malloc(sizeof(body_types_t *));
     *tank_frag_bomb_info = TANK_FRAG_BOMB;
     body_t *frag_bomb_body = body_init_with_info(bullet, BULLET_MASS,
-                                              BLACK, tank_frag_bomb_info, free);
+                                              color_get_black(), tank_frag_bomb_info, free);
     vector_t tank_bullet_init_velocity;
     tank_bullet_init_velocity.x = TANK_BULLET_INIT_VEL * cos(body_get_orientation(body));
     tank_bullet_init_velocity.y = TANK_BULLET_INIT_VEL * sin(body_get_orientation(body));
@@ -129,7 +130,7 @@ void land_mine_shoot(scene_t *scene, body_t *body) {
     body_types_t *tank_land_mine_info = malloc(sizeof(body_types_t *));
     *tank_land_mine_info = TANK_LAND_MINE;
     body_t *land_mine_body = body_init_with_info(mine, BULLET_MASS,
-                                              PURPLE, tank_land_mine_info, free);
+                                              color_get_purple(), tank_land_mine_info, free);
 
     body_set_velocity(land_mine_body, (vector_t) {0, 0});
     for (size_t i = 0; i < scene_bodies(scene); i++) {

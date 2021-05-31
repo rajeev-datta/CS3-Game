@@ -17,37 +17,37 @@
 #include "vector.h"
 #include "scene.h"
 
-const vector_t BOTTOM_LEFT_COORD = {0, 0};
-const vector_t TOP_RIGHT_COORD = {1000, 500};
-const double LEVEL_1_WALL_LENGTH = 10;
-const double LEVEL_1_WALL_HEIGHT = 100;
-const rgb_color_t BACKGROUND = {1, 1, 1};
-const char WALL_INFO = 'w';
-const char TANK_INFO = 't';
-const double BUFFER = 10;
-const double PAUSE_SCALE = 2.0/3;
-const double PAUSE_HEIGHT = 40;
-const double BUTTON_LENGTH = 500;
-const double BUTTON_HEIGHT = 100;
-const double INIT_POWERUP_LENGTH = 10;
-const double INIT_POWERUP_HEIGHT = 10;
-const double POWERUP_MASS = 50;
-const int NUM_POWERUPS = 5;
-const int TANK_POWER_UP_TIME = 10;
-double const INIT_VEL = 400;
-double const ANGLE_OFFSET = (10 * M_PI)/180;
-const double ELASTICITY = 1;
-const int NUM_SCENES = 2;
-const int FONT_SIZE = 100;
-const double TEXT_SCALE = 0.8;
-const SDL_Color WHITE_TEXT = {255, 255, 255};
-const int LEVEL_BUFFER = 50;
-const int CIRC_PTS = 16;
-const double FORCE_FIELD_INNER_RADIUS = 7;
-const double FORCE_FIELD_OUTER_RADIUS = 8;
-const double FORCE_FIELD_MASS = 50;
-const double IMG_X_SCALE = 0.9;
-const double IMG_Y_SCALE = 0.8;
+static const vector_t BOTTOM_LEFT_COORD = {0, 0};
+static const vector_t TOP_RIGHT_COORD = {1000, 500};
+static const double LEVEL_1_WALL_LENGTH = 10;
+static const double LEVEL_1_WALL_HEIGHT = 100;
+static const rgb_color_t BACKGROUND = {1, 1, 1};
+static const char WALL_INFO = 'w';
+static const char TANK_INFO = 't';
+static const double BUFFER = 10;
+static const double PAUSE_SCALE = 2.0/3;
+static const double PAUSE_HEIGHT = 40;
+static const double BUTTON_LENGTH = 500;
+static const double BUTTON_HEIGHT = 100;
+static const double INIT_POWERUP_LENGTH = 10;
+static const double INIT_POWERUP_HEIGHT = 10;
+static const double POWERUP_MASS = 50;
+static const int NUM_POWERUPS = 5;
+static const int TANK_POWER_UP_TIME = 10;
+static double const INIT_VEL = 400;
+static double const ANGLE_OFFSET = (10 * M_PI)/180;
+static const double ELASTICITY = 1;
+static const int NUM_SCENES = 2;
+static const int FONT_SIZE = 100;
+static const double TEXT_SCALE = 0.8;
+static const SDL_Color WHITE_TEXT = {255, 255, 255};
+static const int LEVEL_BUFFER = 50;
+static const int CIRC_PTS = 16;
+static const double FORCE_FIELD_INNER_RADIUS = 7;
+static const double FORCE_FIELD_OUTER_RADIUS = 8;
+static const double FORCE_FIELD_MASS = 50;
+static const double IMG_X_SCALE = 0.9;
+static const double IMG_Y_SCALE = 0.8;
 
 typedef enum pause_scene{
     RESUME_BUT,
@@ -99,7 +99,7 @@ void make_pause_button(scene_t *scene) {
     double width = PAUSE_SCALE * PAUSE_HEIGHT;
     vector_t pause_center = {BOTTOM_LEFT_COORD.x + width/2.0 + 3 * BUFFER,
                              TOP_RIGHT_COORD.y - PAUSE_HEIGHT/2.0 - 3 * BUFFER};
-    add_rect_to_scene(scene, pause_center, width, PAUSE_HEIGHT, PAUSE, RED);
+    add_rect_to_scene(scene, pause_center, width, PAUSE_HEIGHT, PAUSE, color_get_red());
     add_rect_to_scene(scene, pause_center, width/3.0, PAUSE_HEIGHT, PAUSE, BACKGROUND);
 }
 
@@ -110,33 +110,33 @@ void level_1(vector_t top_right, double wall_length, double wall_height, scene_t
     vector_t center = {100, (int) TOP_RIGHT_COORD.y/2};
     *tank_center = center;
     list_t *tank = animate_tank(tank_center);
-    body_t *tank_body = body_init_with_info(tank, 50, RED, tank_info, free);
+    body_t *tank_body = body_init_with_info(tank, 50, color_get_red(), tank_info, free);
     scene_add_body(scene, tank_body);
 
     body_types_t *wall_info = malloc(sizeof(body_types_t *));
     wall_info = WALL;
     list_t *center_wall = animate_rectangle((vector_t) {top_right.x/2, top_right.y/2}, wall_length, wall_height*2);
-    body_t *center_wall_body = body_init_with_info(center_wall, INFINITY, RED, wall_info, free);
+    body_t *center_wall_body = body_init_with_info(center_wall, INFINITY, color_get_red(), wall_info, free);
     scene_add_body(scene, center_wall_body);
     create_physics_collision(scene, ELASTICITY, tank_body, center_wall_body);
 
     list_t *left_top_wall = animate_rectangle((vector_t) {top_right.x/4, top_right.y - (wall_height/2)}, wall_length, wall_height);
-    body_t *left_top_wall_body = body_init_with_info(left_top_wall, INFINITY, RED, wall_info, free);
+    body_t *left_top_wall_body = body_init_with_info(left_top_wall, INFINITY, color_get_red(), wall_info, free);
     scene_add_body(scene, left_top_wall_body);
     create_physics_collision(scene, ELASTICITY, tank_body, left_top_wall_body);
 
     list_t *left_bottom_wall = animate_rectangle((vector_t) {top_right.x/4, wall_height/2}, wall_length, wall_height);
-    body_t *left_bottom_wall_body = body_init_with_info(left_bottom_wall, INFINITY, RED, wall_info, free);
+    body_t *left_bottom_wall_body = body_init_with_info(left_bottom_wall, INFINITY, color_get_red(), wall_info, free);
     scene_add_body(scene, left_bottom_wall_body);
     create_physics_collision(scene, ELASTICITY, tank_body, left_bottom_wall_body);
 
     list_t *right_top_wall = animate_rectangle((vector_t) {(top_right.x*3)/4, top_right.y - (wall_height/2)}, wall_length, wall_height);
-    body_t *right_top_wall_body = body_init_with_info(right_top_wall, INFINITY, RED, wall_info, free);
+    body_t *right_top_wall_body = body_init_with_info(right_top_wall, INFINITY, color_get_red(), wall_info, free);
     scene_add_body(scene, right_top_wall_body);
     create_physics_collision(scene, ELASTICITY, tank_body, right_top_wall_body);
 
     list_t *right_bottom_wall = animate_rectangle((vector_t) {(top_right.x*3)/4, wall_height/2}, wall_length, wall_height);
-    body_t *right_bottom_wall_body = body_init_with_info(right_bottom_wall, INFINITY, RED, wall_info, free);
+    body_t *right_bottom_wall_body = body_init_with_info(right_bottom_wall, INFINITY, color_get_red(), wall_info, free);
     scene_add_body(scene, right_bottom_wall_body);
     create_physics_collision(scene, ELASTICITY, tank_body, right_bottom_wall_body);
 }
@@ -145,48 +145,48 @@ void level_2(vector_t top_right, double wall_length, double wall_height, scene_t
     char *tank_info = malloc(sizeof(char *));
     tank_info = TANK_INFO;
     list_t *tank = animate_rectangle((vector_t) {100, TOP_RIGHT_COORD.y/2}, 50, 50);
-    body_t *tank_body = body_init_with_info(tank, 50, RED, tank_info, free);
+    body_t *tank_body = body_init_with_info(tank, 50, color_get_red(), tank_info, free);
     scene_add_body(scene, tank_body);
     
     char *wall_info = malloc(sizeof(char *));
     wall_info = WALL_INFO;
     list_t *center_top_wall = animate_rectangle((vector_t) {top_right.x/2, (top_right.y*3.5)/10}, wall_height, wall_length);
-    body_t *center_top_wall_body = body_init_with_info(center_top_wall, INFINITY, RED, wall_info, free);
+    body_t *center_top_wall_body = body_init_with_info(center_top_wall, INFINITY, color_get_red(), wall_info, free);
     scene_add_body(scene, center_top_wall_body);
     create_physics_collision(scene, ELASTICITY, tank_body, center_top_wall_body);
 
     list_t *center_bottom_wall = animate_rectangle((vector_t) {top_right.x/2, (top_right.y*6.5)/10}, wall_height, wall_length);
-    body_t *center_bottom_wall_body = body_init_with_info(center_bottom_wall, INFINITY, RED, wall_info, free);
+    body_t *center_bottom_wall_body = body_init_with_info(center_bottom_wall, INFINITY, color_get_red(), wall_info, free);
     scene_add_body(scene, center_bottom_wall_body);
     create_physics_collision(scene, ELASTICITY, tank_body, center_bottom_wall_body);
 
     list_t *left_top_wall = animate_rectangle((vector_t) {(top_right.x*3)/10, (top_right.y*4)/5}, wall_height, wall_length);
-    body_t *left_top_wall_body = body_init_with_info(left_top_wall, INFINITY, RED, wall_info, free);
+    body_t *left_top_wall_body = body_init_with_info(left_top_wall, INFINITY, color_get_red(), wall_info, free);
     scene_add_body(scene, left_top_wall_body);
     create_physics_collision(scene, ELASTICITY, tank_body, left_top_wall_body);
 
     list_t *left_center_wall = animate_rectangle((vector_t) {(top_right.x*3)/10, (top_right.y)/2}, wall_length, wall_height);
-    body_t *left_center_wall_body = body_init_with_info(left_center_wall, INFINITY, RED, wall_info, free);
+    body_t *left_center_wall_body = body_init_with_info(left_center_wall, INFINITY, color_get_red(), wall_info, free);
     scene_add_body(scene, left_center_wall_body);
     create_physics_collision(scene, ELASTICITY, tank_body, left_center_wall_body);
 
     list_t *left_bottom_wall = animate_rectangle((vector_t) {(top_right.x*3)/10, (top_right.y)/5}, wall_height, wall_length);
-    body_t *left_bottom_wall_body = body_init_with_info(left_bottom_wall, INFINITY, RED, wall_info, free);
+    body_t *left_bottom_wall_body = body_init_with_info(left_bottom_wall, INFINITY, color_get_red(), wall_info, free);
     scene_add_body(scene, left_bottom_wall_body);
     create_physics_collision(scene, ELASTICITY, tank_body, left_bottom_wall_body);
 
     list_t *right_top_wall = animate_rectangle((vector_t) {(top_right.x*7)/10, (top_right.y*4)/5}, wall_height, wall_length);
-    body_t *right_top_wall_body = body_init_with_info(right_top_wall, INFINITY, RED, wall_info, free);
+    body_t *right_top_wall_body = body_init_with_info(right_top_wall, INFINITY, color_get_red(), wall_info, free);
     scene_add_body(scene, right_top_wall_body);
     create_physics_collision(scene, ELASTICITY, tank_body, right_top_wall_body);
 
     list_t *right_center_wall = animate_rectangle((vector_t) {(top_right.x*7)/10, (top_right.y)/2}, wall_length, wall_height);
-    body_t *right_center_wall_body = body_init_with_info(right_center_wall, INFINITY, RED, wall_info, free);
+    body_t *right_center_wall_body = body_init_with_info(right_center_wall, INFINITY, color_get_red(), wall_info, free);
     scene_add_body(scene, right_center_wall_body);
     create_physics_collision(scene, ELASTICITY, tank_body, right_center_wall_body);
 
     list_t *right_bottom_wall = animate_rectangle((vector_t) {(top_right.x*7)/10, (top_right.y)/5}, wall_height, wall_length);
-    body_t *right_bottom_wall_body = body_init_with_info(right_bottom_wall, INFINITY, RED, wall_info, free);
+    body_t *right_bottom_wall_body = body_init_with_info(right_bottom_wall, INFINITY, color_get_red(), wall_info, free);
     scene_add_body(scene, right_bottom_wall_body);
     create_physics_collision(scene, ELASTICITY, tank_body, right_bottom_wall_body);
 }
@@ -294,23 +294,23 @@ void set_up_pause_screen(scene_t *scene) {
     vector_t resume_center = {TOP_RIGHT_COORD.x / 2.0,
                               TOP_RIGHT_COORD.y - 1.5 * BUTTON_HEIGHT};
     add_rect_to_scene(scene, resume_center, BUTTON_LENGTH, BUTTON_HEIGHT, RESUME,
-                      MAROON);
+                      color_get_maroon());
     vector_t restart_center = {resume_center.x,
                               resume_center.y - 2 * BUTTON_HEIGHT};
     add_rect_to_scene(scene, restart_center, BUTTON_LENGTH, BUTTON_HEIGHT, RESTART,
-                      MAROON);
+                      color_get_maroon());
 
     double level_width = TOP_RIGHT_COORD.x / 3.0 - LEVEL_BUFFER;
     double level_height = level_width/2;
     vector_t medium_center = {TOP_RIGHT_COORD.x / 2, TOP_RIGHT_COORD.y/2 - 2.5 * BUTTON_HEIGHT};
     add_rect_to_scene(scene, medium_center, level_width, level_height, MEDIUM_BUT,
-                      MAROON);
+                      color_get_maroon());
     vector_t easy_center = {medium_center.x - LEVEL_BUFFER - level_width, medium_center.y};
     add_rect_to_scene(scene, easy_center, level_width, level_height, EASY_BUT,
-                      MAROON);
+                      color_get_maroon());
     vector_t hard_center = {medium_center.x + LEVEL_BUFFER + level_width, medium_center.y};
     add_rect_to_scene(scene, hard_center, level_width, level_height, HARD_BUT,
-                      MAROON);
+                      color_get_maroon());
     
 }
 
@@ -484,7 +484,7 @@ body_t *create_new_force_field(scene_t *scene, tank_t *tank) {
     *tank_force_field_info = TANK_FORCE_FIELD;
 
     body_t *force_field_body = body_init_with_info(force_field_pts, FORCE_FIELD_MASS,
-                                              BLUE, tank_force_field_info, free);
+                                              color_get_blue(), tank_force_field_info, free);
 
     body_set_velocity(force_field_body, (vector_t) {0, 0});
     for (size_t i = 0; i < scene_bodies(scene); i++) {

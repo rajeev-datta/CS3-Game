@@ -14,6 +14,8 @@ typedef enum powerups{
     REMOTE_MISSILE,
 } powerups_t;
 
+tank_powerup_aux_t *tank_powerup_aux_init(tank_t *tank, powerups_t type);
+
 void default_gun_shoot(scene_t *scene, body_t *body);
 
 void machine_gun_shoot(scene_t *scene, body_t *body);

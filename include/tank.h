@@ -4,8 +4,6 @@
 #include "body.h"
 #include "scene.h"
 
-const double FORCE_FIELD_TIME_LIMIT = 5;
-
 typedef struct tank tank_t;
 
 typedef void (*shooting_handler_t)

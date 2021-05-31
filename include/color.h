@@ -12,11 +12,16 @@ typedef struct {
     float b;
 } rgb_color_t;
 
-const rgb_color_t RED = {1, 0, 0};
-const rgb_color_t BLACK = {0, 0, 0};
-const rgb_color_t GREEN = {0, 1, 0};
-const rgb_color_t PURPLE = {0.5, 0, 0.5};
-const rgb_color_t MAROON = {128.0/255, 0, 0};
-const rgb_color_t BLUE = {0, 0, 1};
+rgb_color_t color_get_red();
+
+rgb_color_t color_get_black();
+
+rgb_color_t color_get_green();
+
+rgb_color_t color_get_purple();
+
+rgb_color_t color_get_maroon();
+
+rgb_color_t color_get_blue();
 
 #endif // #ifndef __COLOR_H__

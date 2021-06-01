@@ -205,9 +205,6 @@ void level_2(vector_t top_right, double wall_length, double wall_height, scene_t
     put_forces(scene);
 }
 
-// how to include a time constraint on how often space can be used to shoot
-// can find the reload time from tank, but not sure how to get the time between key pushes
-
 void on_key_push(char key, key_event_type_t type, double held_time,
                  void *object, scene_t *scene, bool *play) {
     if (*play) {

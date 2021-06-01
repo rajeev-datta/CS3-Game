@@ -545,16 +545,16 @@ void add_pause_screen_images(scene_t *scene, SDL_Surface *level1, SDL_Surface *l
 void make_tank_power_up(scene_t *scene, int type, tank_t * tank) {
     rgb_color_t color;
     powerups_t powerup_type;
-    if (type == MACHINE_GUN) {
+    if (type == 0) {
         powerup_type = MACHINE_GUN;
         color = (rgb_color_t) {0.0, 0.0, 0.0};
-    } else if (type == FRAG_BOMB) {
+    } else if (type == 1) {
         powerup_type = FRAG_BOMB;
         color = (rgb_color_t) {0.0, 0.5, 0.0};
-    } else if (type == LAND_MINE) {
+    } else if (type == 2) {
         powerup_type = LAND_MINE;
         color = (rgb_color_t) {0.0, 0.0, 0.5};
-    } else if (type == FORCE_FIELD) {
+    } else if (type == 3) {
         powerup_type = FORCE_FIELD;
         color = (rgb_color_t) {0.3, 0.0, 0.4};
     }
@@ -755,7 +755,7 @@ int main(int argc, char *argv[]) {
     sdl_on_key((key_handler_t)on_key_push);
     sdl_on_mouse((mouse_handler_t)on_mouse);
 
-    int time_passed = 0;
+    double time_passed = 0;
     scene_t *temp_scene = malloc(sizeof(scene_t *));
     temp_scene = scene;
     scene_t **scenes = malloc(sizeof(scene_t *) * NUM_SCENES);
@@ -770,6 +770,7 @@ int main(int argc, char *argv[]) {
                         choosing_level, tank1, NULL)) {
         double dt = time_since_last_tick();
         time_passed += dt;
+        printf("%f\n", time_passed);
 
         check_powerup_time(tank1, dt);
 
@@ -798,6 +799,7 @@ int main(int argc, char *argv[]) {
             add_pause_screen_text(temp_scene, multi, font, choosing_level);
             add_pause_screen_images(temp_scene, level1, level2, level3);
         }
+
         sdl_show();
 
         // Shoot a power-up at an interval of time.

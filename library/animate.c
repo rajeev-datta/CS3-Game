@@ -337,7 +337,7 @@ void wall_boundary(scene_t *scene) {
     body_t *tank_body = scene_get_body(scene, 0);
     for (size_t i = 0; i < scene_bodies(scene); i++) {
         body_t *curr_body = scene_get_body(scene, i);
-        if (body_get_info(curr_body) == WALL_INFORMATION) {
+        if (*(body_types_t* )body_get_info(curr_body) == WALL) {
             collision_info_t collision = find_collision(body_get_real_shape(tank_body), body_get_real_shape(curr_body));
             if (collision.collided) {
                 // printf("(%f, %f)", collision.axis.x, collision.axis.y);

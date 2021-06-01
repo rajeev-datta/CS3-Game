@@ -20,7 +20,6 @@ double const NUM_BODIES = 50;
 double const RADIUS = 15;
 const int CIRCLE_PTS = 16;
 const double BODY_MASS = 100;
-const rgb_color_t WHITE = {1, 1, 1};
 
 rgb_color_t random_color() {
     float red = (float)rand()/RAND_MAX;
@@ -40,7 +39,7 @@ int main(int argc, char *argv[]) {
 
         vector_t invis_body_center = {RADIUS * offset, TOP_RIGHT_COORD.y / 2};
         list_t *invis_body_circle = animate_circle(invis_body_center, 1, CIRCLE_PTS);
-        body_t *invis_body = body_init(invis_body_circle, INFINITY, WHITE);
+        body_t *invis_body = body_init(invis_body_circle, INFINITY, color_get_white());
         scene_add_body(scene, invis_body);
 
         vector_t body_center = {RADIUS * offset,

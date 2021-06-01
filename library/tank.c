@@ -1,5 +1,7 @@
 #include "tank.h"
 #include "powerup.h"
+#include <stdlib.h>
+#include <stdio.h>
 
 static const int MASS = 100;
 static const double default_reload_time = 2;

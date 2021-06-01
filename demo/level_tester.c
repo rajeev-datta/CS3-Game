@@ -274,7 +274,7 @@ int main(int argc, char *argv[]) {
         printf("IMG_LoadRW: %s\n", IMG_GetError());
     }
 
-    while (!sdl_is_done(scene, scene_get_body(scene, 0), NULL, NULL, NULL, multi, NULL)) {
+    while (!sdl_is_done(scene, scene_get_body(scene, 0), NULL, NULL, NULL, multi, NULL, NULL, NULL)) {
         double dt = time_since_last_tick();
         side_boundary(scene, TOP_RIGHT_COORD, BOTTOM_LEFT_COORD, 25.0);
         wall_boundary(scene);

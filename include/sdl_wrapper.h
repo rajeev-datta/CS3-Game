@@ -9,6 +9,7 @@
 #include "scene.h"
 #include "vector.h"
 #include "body.h"
+#include "tank.h"
 
 // Values passed to a key handler when the given arrow key is pressed
 typedef enum {
@@ -45,7 +46,8 @@ typedef enum {
  * @param multi a pointer to a boolean representing if the game is multiplayer
  */
 typedef void (*key_handler_t)(char key, key_event_type_t type, double held_time,
-                              void *body, scene_t *scene, bool *play, bool * multi);
+                              void *body, scene_t *scene, bool *play, bool * multi,
+                              tank_t *tank1, tank_t *tank2);
 
 /**
  * A keypress handler.
@@ -88,7 +90,7 @@ void sdl_init(vector_t min, vector_t max);
  * @return true if the window was closed, false otherwise
  */
 bool sdl_is_done(scene_t *scene, void *body, bool *play, scene_t **scenes, int *level,
-                 bool *multi, bool *choosing_level);
+                 bool *multi, bool *choosing_level, tank_t *tank1, tank_t *tank2);
 
 /**
  * Clears the screen. Should be called before drawing polygons in each frame.

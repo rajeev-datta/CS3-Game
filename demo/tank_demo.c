@@ -125,9 +125,6 @@ void make_pause_button(scene_t *scene) {
     add_rect_to_scene(scene, pause_center, width/3.0, PAUSE_HEIGHT, PAUSE, BACKGROUND);
 }
 
-// how to include a time constraint on how often space can be used to shoot
-// can find the reload time from tank, but not sure how to get the time between key pushes
-
 void on_key_push(char key, key_event_type_t type, double held_time,
                  void *object, scene_t *scene, bool *play, bool *multi,
                  tank_t *tank1, tank_t *tank2) {
@@ -770,7 +767,6 @@ int main(int argc, char *argv[]) {
                         choosing_level, tank1, NULL)) {
         double dt = time_since_last_tick();
         time_passed += dt;
-        printf("%f\n", time_passed);
 
         check_powerup_time(tank1, dt);
 

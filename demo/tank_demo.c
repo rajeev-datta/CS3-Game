@@ -123,6 +123,19 @@ void level_1(vector_t top_right, double wall_length, double wall_height, scene_t
     tank_t *tank = tank_init(tank_points, info);
     scene_add_body(scene, tank_get_body(tank));
 
+    //enemy tank code, replicate for each level?
+    body_types_t *enemy_tank_info = malloc(sizeof(body_types_t *));
+    enemy_tank_info = ENEMY_TANK;
+    vector_t *tank_coord = malloc(sizeof(vector_t));
+    vector_t coord = {800, (int) TOP_RIGHT_COORD.y/2};
+    *tank_coord = coord;
+    vector_t *enemy_speed = malloc(sizeof(vector_t));
+    vector_t speed = {0, 150};
+    *enemy_speed = speed;
+    list_t *enemy_tank_points = animate_tank(tank_center);
+    tank_t *enemy_tank = enemy_tank_init(enemy_tank_points, enemy_speed, enemy_tank_info);
+    scene_add_body(scene, tank_get_body(tank));
+
     body_types_t *wall_info = malloc(sizeof(body_types_t *));
     wall_info = WALL;
     list_t *center_wall = animate_rectangle((vector_t) {top_right.x/2, top_right.y/2}, wall_length, wall_height*2);

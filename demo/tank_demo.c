@@ -282,17 +282,6 @@ void level_2(vector_t top_right, double wall_length, double wall_height, scene_t
     put_forces(scene);
 }
 
-<<<<<<< HEAD
-void on_key_push(char key, key_event_type_t type, double held_time,
-                 void *object, scene_t *scene, bool *play) {
-    if (*play) {
-        double curr_rot = 0;
-        if (tank_get_weapon((tank_t *)object) == (shooting_handler_t) remote_missile_shoot) {
-            
-            for (size_t i=0; scene_bodies(scene); i++) {
-                if ((body_types_t) body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE) {
-                    body_t *missile = scene_get_body(scene, i);
-=======
 void level_3(vector_t top_right, double wall_length, double wall_height, scene_t *scene) {
     body_types_t *wall_info = malloc(sizeof(body_types_t *));
     *wall_info = WALL;
@@ -322,7 +311,6 @@ void level_3(vector_t top_right, double wall_length, double wall_height, scene_t
     body_t *left_top_wall_body = body_init_with_info(left_top_wall, INFINITY, color_get_red(), wall_info, free);
     scene_add_body(scene, left_top_wall_body);
     // create_physics_collision(scene, ELASTICITY, tank_body, left_top_wall_body);
->>>>>>> ff8c2ee6d8cf6cfcfed8026a4610f8bca50b64db
 
     list_t *left_center_wall = animate_rectangle((vector_t) {(top_right.x*3)/20, (top_right.y)/2}, wall_length, wall_height);
     body_t *left_center_wall_body = body_init_with_info(left_center_wall, INFINITY, color_get_red(), wall_info, free);

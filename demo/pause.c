@@ -524,7 +524,7 @@ int main(int argc, char *argv[]) {
 
 
     while (!sdl_is_done(temp_scene, scene_get_body(scene, 0), play, scenes, level, multi,
-                        choosing_level)) {
+                        choosing_level, NULL, NULL)) {
         double dt = time_since_last_tick();
         time_passed += dt;
 

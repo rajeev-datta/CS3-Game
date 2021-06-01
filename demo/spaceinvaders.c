@@ -21,7 +21,6 @@ const double PELLET_RADIUS = 10;
 const int CIRCLE_PTS = 16;
 const double BULLET_MASS = 10;
 const rgb_color_t GREY_COLOR = {128.0/255, 128.0/255, 128.0/255};
-const rgb_color_t GREEN = {0.0/255, 255.0/255, 0.0/255};
 const double INVADER_MASS = 100;
 const double SPACESHIP_MASS = 100;
 double const ACCELERATION = 100;
@@ -46,7 +45,7 @@ void spaceship_shoot(scene_t *scene, void *body) {
     char *space_ship_bullet_info = malloc(sizeof(char *));
     *space_ship_bullet_info = SPACESHIP_BULLET;
     body_t *bullet_body = body_init_with_info(bullet, BULLET_MASS,
-                                              GREEN, space_ship_bullet_info, free);
+                                        color_get_green(), space_ship_bullet_info, free);
     body_set_velocity(bullet_body, BULLET_INIT_VEL);
     for (size_t i = 0; i < scene_bodies(scene); i++) {
         if (*(char *) body_get_info(scene_get_body(scene, i)) == INVADER_INFO) {
@@ -123,7 +122,7 @@ int main(int argc, char *argv[]) {
     char *spaceship_info = malloc(sizeof(char *));
     *spaceship_info = SPACESHIP_INFO;
     body_t *spaceship_body = body_init_with_info(spaceship,
-                                                SPACESHIP_MASS, GREEN, spaceship_info, free);
+                                SPACESHIP_MASS, color_get_green(), spaceship_info, free);
     scene_add_body(scene, spaceship_body);
 
     double invader_center_x = INVADER_RADIUS + SPACING;

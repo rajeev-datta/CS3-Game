@@ -23,7 +23,6 @@ const double BUFFER = 10;
 const double RECT_HEIGHT = 30;
 const double INIT_BALL_RADIUS = 10;
 const double INIT_PADDLE_LENGTH = 100;
-const rgb_color_t RED = {1, 0, 0};
 const rgb_color_t WHITE = {1, 1, 1};
 const int BALL_PTS = 16;
 const double BALL_MASS = 50;
@@ -41,7 +40,7 @@ const double ELASTICITY = 1;
 list_t *make_colors() {
     list_t *colors = list_init(NUM_BRICK_IN_ROW, free);
     rgb_color_t *red = malloc(sizeof(rgb_color_t));
-    *red = RED;
+    *red = color_get_red();
     list_add(colors, red);
     rgb_color_t *orange = malloc(sizeof(rgb_color_t));
     *orange = (rgb_color_t) {1.0, 127.0/255, 0};
@@ -80,7 +79,7 @@ void set_up_board(scene_t *scene) {
     list_t *paddle = animate_rectangle(paddle_center, INIT_PADDLE_LENGTH, RECT_HEIGHT);
     char *paddle_info = malloc(sizeof(char *));
     *paddle_info = PADDLE_INFO;
-    body_t *paddle_body = body_init_with_info(paddle, INFINITY, RED, paddle_info, free);
+    body_t *paddle_body = body_init_with_info(paddle, INFINITY, color_get_red(), paddle_info, free);
     scene_add_body(scene, paddle_body);
 
     // Create a ball right above the paddle with a diagonal, upward velocity.
@@ -89,7 +88,7 @@ void set_up_board(scene_t *scene) {
     list_t *ball = animate_circle(ball_center, INIT_BALL_RADIUS, BALL_PTS);
     char *ball_info = malloc(sizeof(char *));
     *ball_info = BALL_INFO;
-    body_t *ball_body = body_init_with_info(ball, BALL_MASS, RED, ball_info, free);
+    body_t *ball_body = body_init_with_info(ball, BALL_MASS, color_get_red(), ball_info, free);
     body_set_velocity(ball_body, INIT_BALL_VEL);
     scene_add_body(scene, ball_body);
     create_physics_collision(scene, ELASTICITY, ball_body, paddle_body);

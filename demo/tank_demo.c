@@ -923,6 +923,9 @@ int main(int argc, char *argv[]) {
     SDL_FreeSurface(wall);
     TTF_CloseFont(font);
     free(play);
+    free(play);
+    free(multi);
+    free(choosing_level);
     scene_free(pause_scene);
     scene_free(scene);
     free(scenes);

@@ -654,6 +654,28 @@ void check_land_mine_times(scene_t *scene, tank_t *tank) {
     }
 }
 
+void update_missile_times(scene_t *scene, double dt) {
+    for (size_t i=0; i < scene_bodies(scene); i++) {
+        if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE) {
+            body_increase_time(scene_get_body(scene, i), dt);
+        }
+    }
+}
+
+void check_missile_times(scene_t *scene, tank_t *tank) {
+    double curr_range = tank_get_curr_range(tank);
+    
+    for (size_t i=0; i < scene_bodies(scene); i++) {
+        if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE) {
+            double curr_time = body_get_time(scene_get_body(scene, i));
+
+            if (curr_time > curr_range) {
+                body_remove(scene_get_body(scene, i));
+            }
+        }
+    }
+}
+
 bool check_for_force_field(scene_t *scene) {
     for (size_t i=0; i < scene_bodies(scene); i++) {
         if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_FORCE_FIELD) {
@@ -778,9 +800,11 @@ int main(int argc, char *argv[]) {
 
             update_bullet_times(scene, dt);
             update_land_mine_times(scene, dt);
+            update_missile_times(scene, dt);
 
             check_bullet_ranges(scene, tank1);
             check_land_mine_times(scene, tank1);
+            check_missile_times(scene, tank1);
 
             check_detonation(scene, tank1, dt);
 

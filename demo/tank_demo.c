@@ -844,7 +844,7 @@ int main(int argc, char *argv[]) {
             handle_force_field(scene, tank1, dt);
             
             side_boundary(scene, TOP_RIGHT_COORD, BOTTOM_LEFT_COORD, 25.0);
-            wall_boundary(scene);
+            wall_boundary(scene, tank1);
 
             // Shoot a power-up at an interval of time.
             if (time_passed > TANK_POWER_UP_TIME) {

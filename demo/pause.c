@@ -107,13 +107,6 @@ void put_forces(scene_t *scene) { //should work for different levels because sce
                     create_physics_collision(scene, ELASTICITY, scene_get_body(scene, i), scene_get_body(scene, j));
                 }
             }
-            if(*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_1
-            || *(body_types_t *) body_get_info(scene_get_body(scene, j)) == TANK_2
-            || *(body_types_t *) body_get_info(scene_get_body(scene, j)) == ENEMY_TANK) {
-                if(*(body_types_t *) body_get_info(scene_get_body(scene, j)) == WALL) {
-                    create_physics_collision(scene, ELASTICITY, scene_get_body(scene, i), scene_get_body(scene, j));
-                }
-            }
         }
     }
 }
@@ -601,7 +594,7 @@ int main(int argc, char *argv[]) {
             temp_scene = pause_scene;
             time_passed = 0;
         }
-
+        wall_boundary(scene, tank1);
         sdl_render_scene(temp_scene);
         if (!*play) {
             add_pause_screen_text(temp_scene, multi, font, choosing_level);

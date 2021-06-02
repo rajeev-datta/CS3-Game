@@ -139,18 +139,18 @@ void on_key_push(char key, key_event_type_t type, double held_time,
         //             } else if (type == KEY_PRESSED) {
         //                 vector_t speed = {0, 0};
         //                 switch (key) {
-        //                     case LEFT_ARROW:
+        //                     case DOWN_ARROW:
         //                         speed.x = -INIT_VEL * cos(body_get_orientation(missile));
         //                         speed.y = -INIT_VEL * sin(body_get_orientation(missile));
         //                         break;
-        //                     case RIGHT_ARROW:
+        //                     case UP_ARROW:
         //                         speed.x = INIT_VEL * cos(body_get_orientation(missile));
         //                         speed.y = INIT_VEL * sin(body_get_orientation(missile));
         //                         break;
-        //                     case UP_ARROW:
+        //                     case RIGHT_ARROW:
         //                         body_set_rotation(missile, body_get_orientation(missile) + ANGLE_OFFSET);
         //                         break;
-        //                     case DOWN_ARROW:
+        //                     case LEFT_ARROW:
         //                         body_set_rotation(missile, body_get_orientation(missile) - ANGLE_OFFSET);
         //                         break;
         //                 }
@@ -165,18 +165,18 @@ void on_key_push(char key, key_event_type_t type, double held_time,
             } else if (type == KEY_PRESSED) {
                 vector_t speed = {0, 0};
                 switch (key) {
-                    case LEFT_ARROW:
+                    case DOWN_ARROW:
                         speed.x = -INIT_VEL * cos(body_get_orientation(tank1_body));
                         speed.y = -INIT_VEL * sin(body_get_orientation(tank1_body));
                         break;
-                    case RIGHT_ARROW:
+                    case UP_ARROW:
                         speed.x = INIT_VEL * cos(body_get_orientation(tank1_body));
                         speed.y = INIT_VEL * sin(body_get_orientation(tank1_body));
                         break;
-                    case UP_ARROW:
+                    case RIGHT_ARROW:
                         body_set_rotation(tank1_body, body_get_orientation(tank1_body) + ANGLE_OFFSET);
                         break;
-                    case DOWN_ARROW:
+                    case LEFT_ARROW:
                         body_set_rotation(tank1_body, body_get_orientation(tank1_body) - ANGLE_OFFSET);
                         break;
                     case ' ':

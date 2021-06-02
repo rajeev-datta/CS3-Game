@@ -264,7 +264,7 @@ void on_key_press(char key, key_event_type_t type, double held_time,
 int main(int argc, char *argv[]) {
     sdl_init(BOTTOM_LEFT_COORD, TOP_RIGHT_COORD);
     scene_t *scene = scene_init();
-    level_3(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scene);
+    level_2_horizontals(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scene);
     sdl_on_key((key_handler_t)on_key_press);
 
     bool *multi = malloc(sizeof(bool));
@@ -277,9 +277,8 @@ int main(int argc, char *argv[]) {
     while (!sdl_is_done(scene, scene_get_body(scene, 0), NULL, NULL, NULL, multi, NULL, NULL, NULL)) {
         double dt = time_since_last_tick();
         side_boundary(scene, TOP_RIGHT_COORD, BOTTOM_LEFT_COORD, 25.0);
-        wall_boundary(scene);
         sdl_render_scene(scene);
-        level_1_images(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, wall);
+        //level_1_images(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, wall);
         sdl_show();
         scene_tick(scene, dt);
     }

@@ -30,7 +30,9 @@ static const double LAND_MINE_TIME_LIMIT = 10;
 static const double LAND_MINE_SIDE_LENGTH = 7;
 static const double FORCE_FIELD_TIME_LIMIT = 5;
 static const double FACTOR = 42.0;
-
+static const double MACHINE_GUN_FACTOR = 40;
+static const double FRAG_BOMB_FACTOR = 45;
+static const double MINE_FACTOR = 45;
 
 typedef struct tank_powerup_aux {
     tank_t *tank;
@@ -74,7 +76,11 @@ void default_gun_shoot(scene_t *scene, body_t *body) {
 
 void machine_gun_shoot(scene_t *scene, body_t *body) {
     // method to handle the shooting of machine gun
-    list_t *bullet = animate_circle(body_get_centroid(body), FRAG_BOMB_RADIUS,
+    vector_t off_center;
+    off_center.x = MACHINE_GUN_FACTOR * cos(body_get_orientation(body));
+    off_center.y = MACHINE_GUN_FACTOR * sin(body_get_orientation(body));
+    vector_t bullet_center = vec_add(body_get_centroid(body), off_center);
+    list_t *bullet = animate_circle(bullet_center, FRAG_BOMB_RADIUS,
                                        CIRCLE_PTS);
     body_types_t *tank_bullet_info = malloc(sizeof(body_types_t *));
     *tank_bullet_info = BULLET;
@@ -99,8 +105,11 @@ void machine_gun_shoot(scene_t *scene, body_t *body) {
 
 void frag_bomb_shoot(scene_t *scene, body_t *body) {
     // method to handle the shooting of frag bomb
-
-    list_t *bullet = animate_circle(body_get_centroid(body), MACHINE_GUN_BULLET_RADIUS,
+    vector_t off_center;
+    off_center.x = FRAG_BOMB_FACTOR * cos(body_get_orientation(body));
+    off_center.y = FRAG_BOMB_FACTOR * sin(body_get_orientation(body));
+    vector_t bullet_center = vec_add(body_get_centroid(body), off_center);
+    list_t *bullet = animate_circle(bullet_center, MACHINE_GUN_BULLET_RADIUS,
                                        CIRCLE_PTS);
     body_types_t *tank_frag_bomb_info = malloc(sizeof(body_types_t *));
     *tank_frag_bomb_info = TANK_FRAG_BOMB;
@@ -124,8 +133,11 @@ void frag_bomb_shoot(scene_t *scene, body_t *body) {
 
 void land_mine_shoot(scene_t *scene, body_t *body) {
     // method to handle the shooting of land mine
-
-    list_t *mine = animate_rectangle(body_get_centroid(body), LAND_MINE_SIDE_LENGTH,
+    vector_t off_center;
+    off_center.x = MINE_FACTOR * cos(body_get_orientation(body));
+    off_center.y = MINE_FACTOR * sin(body_get_orientation(body));
+    vector_t bullet_center = vec_add(body_get_centroid(body), off_center);
+    list_t *mine = animate_rectangle(bullet_center, LAND_MINE_SIDE_LENGTH,
                                        LAND_MINE_SIDE_LENGTH);
     body_types_t *tank_land_mine_info = malloc(sizeof(body_types_t *));
     *tank_land_mine_info = TANK_LAND_MINE;

@@ -35,7 +35,7 @@ static const double INIT_POWERUP_HEIGHT = 10;
 static const double POWERUP_MASS = 50;
 static const int NUM_POWERUPS = 5;
 static const int TANK_POWER_UP_TIME = 5;
-static double const INIT_VEL = 400;
+static double const INIT_VEL = 200;
 static double const ANGLE_OFFSET = (10 * M_PI)/180;
 static const double ELASTICITY = 1;
 static const int NUM_SCENES = 2;
@@ -129,6 +129,12 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                  tank_t *tank1, tank_t *tank2) {
     if (*play) {
         body_t *tank1_body = tank_get_body(tank1);
+
+        // for (size_t i=0; i < scene_bodies(scene); i++) {
+        //     if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_1) {
+        //         tank1_body = scene_get_body(scene, i);
+        //     }
+        // }
         // if (tank_get_weapon(tank1) == (shooting_handler_t) remote_missile_shoot) {
         //     for (size_t i=7; scene_bodies(scene); i++) {
         //         if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE) {

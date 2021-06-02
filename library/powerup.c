@@ -29,6 +29,7 @@ static const double LAND_MINE_RELOAD_TIME = 7;
 static const double LAND_MINE_TIME_LIMIT = 10;
 static const double LAND_MINE_SIDE_LENGTH = 7;
 static const double FORCE_FIELD_TIME_LIMIT = 5;
+static const double FACTOR = 42.0;
 
 
 typedef struct tank_powerup_aux {
@@ -43,14 +44,13 @@ tank_powerup_aux_t *tank_powerup_aux_init(tank_t *tank, powerups_t type) {
     return tank_pow_aux_obj;
 }
 
-// give tank object a handler for shooting that is the current weapon
-// default handler must be saved in the object as well to make sure that once
-// the power up's time limit is over, the tank returns to old shooting style
-// tank should have a double field for reload speed
-
 void default_gun_shoot(scene_t *scene, body_t *body) {
     // method to handle the shooting of normal gun
-    list_t *bullet = animate_circle(body_get_centroid(body), BULLET_RADIUS,
+    vector_t off_center;
+    off_center.x = FACTOR * cos(body_get_orientation(body));
+    off_center.y = FACTOR * sin(body_get_orientation(body));
+    vector_t bullet_center = vec_add(body_get_centroid(body), off_center);
+    list_t *bullet = animate_circle(bullet_center, BULLET_RADIUS,
                                        CIRCLE_PTS);
     body_types_t *tank_bullet_info = malloc(sizeof(body_types_t *));
     *tank_bullet_info = BULLET;

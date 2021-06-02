@@ -239,7 +239,7 @@ void create_destructive_collision(scene_t *scene, body_t *body1, body_t *body2) 
 void create_partial_destructive_collision(scene_t *scene, body_t *body1, body_t *body_being_removed) {
     bool *partial_destruction = malloc(sizeof(bool));
     *partial_destruction = true;
-    create_collision(scene, body1, body2, (collision_handler_t) destructive_fxn,
+    create_collision(scene, body1, body_being_removed, (collision_handler_t) destructive_fxn,
                     partial_destruction, (free_func_t) free);
 }
 

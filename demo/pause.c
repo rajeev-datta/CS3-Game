@@ -16,6 +16,7 @@
 #include "forces.h"
 #include <string.h>
 #include <stdbool.h>
+#include <math.h>
 
 const vector_t BOTTOM_LEFT_COORD = {0, 0};
 const vector_t TOP_RIGHT_COORD = {1000, 500};
@@ -56,6 +57,9 @@ char *FONT = "fonts/AnticSlab-Regular.ttf";
 const int CHOOSE_LEVEL_WIDTH = 500;
 const int CHOOSE_LEVEL_HEIGHT = 100;
 static const vector_t TANK1_INIT_POS = {50, 250};
+static const vector_t TANK2_INIT_POS = {950, 250};
+static const vector_t TANK2_OFF_SCREEN = {1200, 700};
+static const int FIRST_REMOVABLE_INDEX = 4;
 
 typedef enum pause_scene{
     RESUME_BUT,
@@ -68,7 +72,10 @@ typedef enum pause_scene{
 } pause_scene_t;
 
 typedef enum scene_indices{
-    PAUSE_BUTTON
+    PAUSE_BUTTON,
+    PAUSE_BUTTON_WHITE,
+    TANK1,
+    TANK2
 } scene_indices_t;
 
 typedef enum powerups{
@@ -125,7 +132,7 @@ void make_pause_button(scene_t *scene) {
     vector_t pause_center = {BOTTOM_LEFT_COORD.x + width/2.0 + 3 * BUFFER,
                              TOP_RIGHT_COORD.y - PAUSE_HEIGHT/2.0 - 3 * BUFFER};
     add_rect_to_scene(scene, pause_center, width, PAUSE_HEIGHT, PAUSE_BUTTON, color_get_red());
-    add_rect_to_scene(scene, pause_center, width/3.0, PAUSE_HEIGHT, PAUSE_BUTTON, BACKGROUND);
+    add_rect_to_scene(scene, pause_center, width/3.0, PAUSE_HEIGHT, PAUSE_BUTTON_WHITE, BACKGROUND);
 }
 
 tank_t *add_tank_to_scene(scene_t *scene, body_types_t info, vector_t center) {
@@ -329,9 +336,15 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
             *play = true;
         } else if (!(*choosing_level) && within_rect(scene_get_body(scenes[PAUSE], RESTART_BUT), point)) {
             printf("clicked restart\n");
-            scene_erase(scenes[PLAY]);
-            make_pause_button(scenes[PLAY]);
-            add_tank_to_scene(scenes[PLAY], (body_types_t) TANK_1, TANK1_INIT_POS);
+            scene_erase_some(scenes[PLAY], FIRST_REMOVABLE_INDEX);
+            body_set_centroid(scene_get_body(scenes[PLAY], TANK1), TANK1_INIT_POS);
+            body_set_rotation(scene_get_body(scenes[PLAY], TANK1), 0);
+            if (*multi) {
+                body_set_centroid(scene_get_body(scenes[PLAY], TANK2), TANK2_INIT_POS);
+                body_set_rotation(scene_get_body(scenes[PLAY], TANK2), M_PI);
+            } else {
+                body_set_centroid(scene_get_body(scenes[PLAY], TANK2), TANK2_OFF_SCREEN);
+            }
             if (*level == 1) {
                 level_1(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY]);
             } else if (*level == 2) {
@@ -346,9 +359,15 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
                 scene_remove_body(scene, WHITE_SCREEN);
                 *choosing_level = false;
             }
-            scene_erase(scenes[PLAY]);
-            make_pause_button(scenes[PLAY]);
-            add_tank_to_scene(scenes[PLAY], (body_types_t) TANK_1, TANK1_INIT_POS);
+            scene_erase_some(scenes[PLAY], FIRST_REMOVABLE_INDEX);
+            body_set_centroid(scene_get_body(scenes[PLAY], TANK1), TANK1_INIT_POS);
+            body_set_rotation(scene_get_body(scenes[PLAY], TANK1), 0);
+            if (*multi) {
+                body_set_centroid(scene_get_body(scenes[PLAY], TANK2), TANK2_INIT_POS);
+                body_set_rotation(scene_get_body(scenes[PLAY], TANK2), M_PI);
+            } else {
+                body_set_centroid(scene_get_body(scenes[PLAY], TANK2), TANK2_OFF_SCREEN);
+            }
             level_1(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY]);
             *level = 1;
             *play = true;
@@ -358,9 +377,15 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
                 scene_remove_body(scene, WHITE_SCREEN);
                 *choosing_level = false;
             }
-            scene_erase(scenes[PLAY]);
-            make_pause_button(scenes[PLAY]);
-            add_tank_to_scene(scenes[PLAY], (body_types_t) TANK_1, TANK1_INIT_POS);
+            scene_erase_some(scenes[PLAY], FIRST_REMOVABLE_INDEX);
+            body_set_centroid(scene_get_body(scenes[PLAY], TANK1), TANK1_INIT_POS);
+            body_set_rotation(scene_get_body(scenes[PLAY], TANK1), 0);
+            if (*multi) {
+                body_set_centroid(scene_get_body(scenes[PLAY], TANK2), TANK2_INIT_POS);
+                body_set_rotation(scene_get_body(scenes[PLAY], TANK2), M_PI);
+            } else {
+                body_set_centroid(scene_get_body(scenes[PLAY], TANK2), TANK2_OFF_SCREEN);
+            }
             level_2(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY]);
             *level = 2;
             *play = true;
@@ -370,9 +395,15 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
                 scene_remove_body(scene, WHITE_SCREEN);
                 *choosing_level = false;
             }
-            scene_erase(scenes[PLAY]);
-            make_pause_button(scenes[PLAY]);
-            add_tank_to_scene(scenes[PLAY], (body_types_t) TANK_1, TANK1_INIT_POS);
+            scene_erase_some(scenes[PLAY], FIRST_REMOVABLE_INDEX);
+            body_set_centroid(scene_get_body(scenes[PLAY], TANK1), TANK1_INIT_POS);
+            body_set_rotation(scene_get_body(scenes[PLAY], TANK1), 0);
+            if (*multi) {
+                body_set_centroid(scene_get_body(scenes[PLAY], TANK2), TANK2_INIT_POS);
+                body_set_rotation(scene_get_body(scenes[PLAY], TANK2), M_PI);
+            } else {
+                body_set_centroid(scene_get_body(scenes[PLAY], TANK2), TANK2_OFF_SCREEN);
+            }
             level_3(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY]);
             *level = 3;
             *play = true;
@@ -513,6 +544,8 @@ int main(int argc, char *argv[]) {
     make_pause_button(scene);
     tank_t *tank1 = add_tank_to_scene(scene, (body_types_t) TANK_1,
                                     TANK1_INIT_POS);
+    tank_t *tank2 = add_tank_to_scene(scene, (body_types_t) TANK_2,
+                                    TANK2_OFF_SCREEN);
     level_1(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scene);
     int *level = malloc(sizeof(int));
     *level = 1;
@@ -558,7 +591,7 @@ int main(int argc, char *argv[]) {
 
 
     while (!sdl_is_done(temp_scene, scene_get_body(scene, 0), play, scenes, level, multi,
-                        choosing_level, tank1, NULL)) {
+                        choosing_level, tank1, tank2)) {
         double dt = time_since_last_tick();
         time_passed += dt;
 

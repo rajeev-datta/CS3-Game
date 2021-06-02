@@ -125,7 +125,11 @@ void scene_tick(scene_t *scene, double dt) {
 }
 
 void scene_erase(scene_t *scene) {
-    for (size_t i = 0; i < scene_bodies(scene); i++) {
+    scene_erase_some(scene, 0);
+}
+
+void scene_erase_some(scene_t *scene, int index) {
+    for (size_t i = index; i < scene_bodies(scene); i++) {
         scene_remove_body(scene, i);
     }
 }

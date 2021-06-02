@@ -150,6 +150,14 @@ void scene_tick(scene_t *scene, double dt);
  */
 void scene_erase(scene_t *scene);
 
+/**
+ * Removes the bodies in the scene starting at index i.
+ * Does not remove the scene itself.
+ * @param scene the scene that the bodies will be removed from
+ * @param index the index to start removal at
+ */
+void scene_erase_some(scene_t *scene, int index);
+
 void scene_body_detonate(scene_t *scene, body_t *body);
 
 #endif // #ifndef __SCENE_H__

@@ -136,3 +136,10 @@ double tank_get_new_weapon_range(tank_t *tank) {
     return tank->new_range;
 }
 
+void tank_increase_body_time(tank_t *tank, double time_increment) {
+    body_increase_time(tank_get_body(tank), time_increment);
+}
+
+void tank_set_body_time(tank_t *tank, double time) {
+    body_set_time(tank_get_body(tank), time);
+}

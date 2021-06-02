@@ -20,6 +20,7 @@ typedef struct body {
     free_func_t info_freer;
     bool remove;
     double time;
+    int lives;
 } body_t;
 
 body_t *body_init(list_t *shape, double mass, rgb_color_t color) {
@@ -39,6 +40,7 @@ body_t *body_init(list_t *shape, double mass, rgb_color_t color) {
     body_obj->remove = false;
     body_obj->info_freer = NULL;
     body_obj->time = 0;
+    body_obj->lives = 0;
     return body_obj;
 }
 
@@ -181,4 +183,12 @@ void body_increase_time(body_t *body, double time_increment) {
     double curr_time = body_get_time(body);
     curr_time += time_increment;
     body_set_time(body, curr_time);
+}
+
+void body_set_lives(body_t *body, int lives) {
+    body->lives = lives;
+}
+
+int body_get_lives(body_t *body) {
+    return body->lives;
 }

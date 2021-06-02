@@ -2,6 +2,7 @@
 #include "powerup.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 
 static const int MASS = 100;
 static const double default_reload_time = 2;
@@ -42,6 +43,7 @@ tank_t *enemy_tank_init(list_t *points, vector_t speed, void* info) {
     
     body_t *shape = body_init_with_info(points, MASS, color_get_black(), info, free);
     body_set_velocity(shape, speed);
+    body_set_rotation(shape, M_PI);
     tank_obj->shape = shape;
 
     tank_obj->weapon = NULL;

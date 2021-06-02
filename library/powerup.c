@@ -29,7 +29,15 @@ static const double LAND_MINE_RELOAD_TIME = 7;
 static const double LAND_MINE_TIME_LIMIT = 10;
 static const double LAND_MINE_SIDE_LENGTH = 7;
 static const double FORCE_FIELD_TIME_LIMIT = 5;
-
+static const double FACTOR = 42.0;
+static const double MACHINE_GUN_FACTOR = 40;
+static const double FRAG_BOMB_FACTOR = 45;
+static const double MINE_FACTOR = 45;
+static const double MISSILE_FACTOR = 60;
+static const double MISSILE_LENGTH = 20;
+static const double MISSILE_HEIGHT = 10;
+static const double MISSILE_RELOAD_TIME = 10;
+static const double MISSILE_RANGE = 10;
 
 typedef struct tank_powerup_aux {
     tank_t *tank;
@@ -43,14 +51,13 @@ tank_powerup_aux_t *tank_powerup_aux_init(tank_t *tank, powerups_t type) {
     return tank_pow_aux_obj;
 }
 
-// give tank object a handler for shooting that is the current weapon
-// default handler must be saved in the object as well to make sure that once
-// the power up's time limit is over, the tank returns to old shooting style
-// tank should have a double field for reload speed
-
 void default_gun_shoot(scene_t *scene, body_t *body) {
     // method to handle the shooting of normal gun
-    list_t *bullet = animate_circle(body_get_centroid(body), BULLET_RADIUS,
+    vector_t off_center;
+    off_center.x = FACTOR * cos(body_get_orientation(body));
+    off_center.y = FACTOR * sin(body_get_orientation(body));
+    vector_t bullet_center = vec_add(body_get_centroid(body), off_center);
+    list_t *bullet = animate_circle(bullet_center, BULLET_RADIUS,
                                        CIRCLE_PTS);
     body_types_t *tank_bullet_info = malloc(sizeof(body_types_t *));
     *tank_bullet_info = BULLET;
@@ -74,7 +81,11 @@ void default_gun_shoot(scene_t *scene, body_t *body) {
 
 void machine_gun_shoot(scene_t *scene, body_t *body) {
     // method to handle the shooting of machine gun
-    list_t *bullet = animate_circle(body_get_centroid(body), FRAG_BOMB_RADIUS,
+    vector_t off_center;
+    off_center.x = MACHINE_GUN_FACTOR * cos(body_get_orientation(body));
+    off_center.y = MACHINE_GUN_FACTOR * sin(body_get_orientation(body));
+    vector_t bullet_center = vec_add(body_get_centroid(body), off_center);
+    list_t *bullet = animate_circle(bullet_center, FRAG_BOMB_RADIUS,
                                        CIRCLE_PTS);
     body_types_t *tank_bullet_info = malloc(sizeof(body_types_t *));
     *tank_bullet_info = BULLET;
@@ -99,8 +110,11 @@ void machine_gun_shoot(scene_t *scene, body_t *body) {
 
 void frag_bomb_shoot(scene_t *scene, body_t *body) {
     // method to handle the shooting of frag bomb
-
-    list_t *bullet = animate_circle(body_get_centroid(body), MACHINE_GUN_BULLET_RADIUS,
+    vector_t off_center;
+    off_center.x = FRAG_BOMB_FACTOR * cos(body_get_orientation(body));
+    off_center.y = FRAG_BOMB_FACTOR * sin(body_get_orientation(body));
+    vector_t bullet_center = vec_add(body_get_centroid(body), off_center);
+    list_t *bullet = animate_circle(bullet_center, MACHINE_GUN_BULLET_RADIUS,
                                        CIRCLE_PTS);
     body_types_t *tank_frag_bomb_info = malloc(sizeof(body_types_t *));
     *tank_frag_bomb_info = TANK_FRAG_BOMB;
@@ -124,8 +138,11 @@ void frag_bomb_shoot(scene_t *scene, body_t *body) {
 
 void land_mine_shoot(scene_t *scene, body_t *body) {
     // method to handle the shooting of land mine
-
-    list_t *mine = animate_rectangle(body_get_centroid(body), LAND_MINE_SIDE_LENGTH,
+    vector_t off_center;
+    off_center.x = MINE_FACTOR * cos(body_get_orientation(body));
+    off_center.y = MINE_FACTOR * sin(body_get_orientation(body));
+    vector_t bullet_center = vec_add(body_get_centroid(body), off_center);
+    list_t *mine = animate_rectangle(bullet_center, LAND_MINE_SIDE_LENGTH,
                                        LAND_MINE_SIDE_LENGTH);
     body_types_t *tank_land_mine_info = malloc(sizeof(body_types_t *));
     *tank_land_mine_info = TANK_LAND_MINE;
@@ -148,6 +165,33 @@ void force_field_shoot(scene_t *scene, body_t *body) {
 
 void remote_missile_shoot(scene_t *scene, body_t *body) {
     // method to handle the shooting of remote missile
+
+    vector_t off_center;
+    off_center.x = MISSILE_FACTOR * cos(body_get_orientation(body));
+    off_center.y = MISSILE_FACTOR * sin(body_get_orientation(body));
+    vector_t bullet_center = vec_add(body_get_centroid(body), off_center);
+    list_t *missile = animate_rectangle(bullet_center, MISSILE_LENGTH,
+                                       MISSILE_HEIGHT);
+    body_types_t *tank_missile_info = malloc(sizeof(body_types_t *));
+    *tank_missile_info = TANK_REMOTE_MISSILE;
+    body_t *missile_body = body_init_with_info(missile, BULLET_MASS,
+                                              color_get_purple(), tank_missile_info, free);
+
+    vector_t tank_bullet_init_velocity;
+    tank_bullet_init_velocity.x = TANK_BULLET_INIT_VEL * cos(body_get_orientation(body));
+    tank_bullet_init_velocity.y = TANK_BULLET_INIT_VEL * sin(body_get_orientation(body));
+    body_set_velocity(missile_body, tank_bullet_init_velocity);
+
+    for (size_t i = 0; i < scene_bodies(scene); i++) {
+        if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_1 || *(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_2) {
+            create_destructive_collision(scene, missile_body, scene_get_body(scene, i));
+        }
+
+        if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == WALL) {
+            create_physics_collision(scene, BULLET_ELASTICITY, missile_body, scene_get_body(scene, i));
+        }
+    }
+    scene_add_body(scene, missile_body);
 }
 
 void tank_powerup_fxn(body_t *body1, body_t *body2, vector_t axis, void *aux) {
@@ -174,6 +218,8 @@ void tank_powerup_fxn(body_t *body1, body_t *body2, vector_t axis, void *aux) {
         tank_set_shooting_handler(((tank_powerup_aux_t *)aux)->tank, (shooting_handler_t) force_field_shoot);
     } else {
         // remote controlled missile power up
+        tank_set_new_reload_time(((tank_powerup_aux_t *)aux)->tank, MISSILE_RELOAD_TIME);
+        tank_set_new_range(((tank_powerup_aux_t *)aux)->tank, MISSILE_RANGE);
         tank_set_shooting_handler(((tank_powerup_aux_t *)aux)->tank, (shooting_handler_t) remote_missile_shoot);
     }
 }

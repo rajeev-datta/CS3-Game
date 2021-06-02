@@ -35,7 +35,7 @@ static const double INIT_POWERUP_HEIGHT = 10;
 static const double POWERUP_MASS = 50;
 static const int NUM_POWERUPS = 5;
 static const int TANK_POWER_UP_TIME = 5;
-static double const INIT_VEL = 400;
+static double const INIT_VEL = 200;
 static double const ANGLE_OFFSET = (10 * M_PI)/180;
 static const double ELASTICITY = 1;
 static const int NUM_SCENES = 2;
@@ -46,8 +46,8 @@ static const SDL_Color BLACK_TEXT = {0, 0, 0};
 static const SDL_Color MAROON_TEXT = {128, 0, 0};
 static const int LEVEL_BUFFER = 50;
 static const int CIRC_PTS = 16;
-static const double FORCE_FIELD_INNER_RADIUS = 7;
-static const double FORCE_FIELD_OUTER_RADIUS = 8;
+static const double FORCE_FIELD_INNER_RADIUS = 60;
+static const double FORCE_FIELD_OUTER_RADIUS = 70;
 static const double FORCE_FIELD_MASS = 50;
 static const double IMG_X_SCALE = 0.9;
 static const double IMG_Y_SCALE = 0.8;
@@ -135,37 +135,44 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                  tank_t *tank1, tank_t *tank2) {
     if (*play) {
         body_t *tank1_body = tank_get_body(tank1);
-        // if (tank_get_weapon(tank1) == (shooting_handler_t) remote_missile_shoot) {
-        //     for (size_t i=7; scene_bodies(scene); i++) {
-        //         if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE) {
-        //             body_t *missile = scene_get_body(scene, i);
 
-        //             if (type == KEY_RELEASED) {
-        //                 body_set_velocity(missile, (vector_t){0, 0});
-        //             } else if (type == KEY_PRESSED) {
-        //                 vector_t speed = {0, 0};
-        //                 switch (key) {
-        //                     case DOWN_ARROW:
-        //                         speed.x = -INIT_VEL * cos(body_get_orientation(missile));
-        //                         speed.y = -INIT_VEL * sin(body_get_orientation(missile));
-        //                         break;
-        //                     case UP_ARROW:
-        //                         speed.x = INIT_VEL * cos(body_get_orientation(missile));
-        //                         speed.y = INIT_VEL * sin(body_get_orientation(missile));
-        //                         break;
-        //                     case RIGHT_ARROW:
-        //                         body_set_rotation(missile, body_get_orientation(missile) + ANGLE_OFFSET);
-        //                         break;
-        //                     case LEFT_ARROW:
-        //                         body_set_rotation(missile, body_get_orientation(missile) - ANGLE_OFFSET);
-        //                         break;
-        //                 }
-        //                 body_set_velocity(missile, speed);
-        //             }
-        //         }
+        // for (size_t i=0; i < scene_bodies(scene); i++) {
+        //     if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_1) {
+        //         tank1_body = scene_get_body(scene, i);
         //     }
         // }
-        // else {
+
+        if (tank_get_weapon(tank1) == (shooting_handler_t) remote_missile_shoot) {
+            for (size_t i=0; scene_bodies(scene); i++) {
+                if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE) {
+                    body_t *missile = scene_get_body(scene, i);
+
+                    if (type == KEY_RELEASED) {
+                        body_set_velocity(missile, (vector_t){0, 0});
+                    } else if (type == KEY_PRESSED) {
+                        vector_t speed = {0, 0};
+                        switch (key) {
+                            case DOWN_ARROW:
+                                speed.x = -INIT_VEL * cos(body_get_orientation(missile));
+                                speed.y = -INIT_VEL * sin(body_get_orientation(missile));
+                                break;
+                            case UP_ARROW:
+                                speed.x = INIT_VEL * cos(body_get_orientation(missile));
+                                speed.y = INIT_VEL * sin(body_get_orientation(missile));
+                                break;
+                            case RIGHT_ARROW:
+                                body_set_rotation(missile, body_get_orientation(missile) + ANGLE_OFFSET);
+                                break;
+                            case LEFT_ARROW:
+                                body_set_rotation(missile, body_get_orientation(missile) - ANGLE_OFFSET);
+                                break;
+                        }
+                        body_set_velocity(missile, speed);
+                    }
+                }
+            }
+        }
+        else {
             if (type == KEY_RELEASED) {
                 body_set_velocity(tank1_body, (vector_t){0, 0});
             } else if (type == KEY_PRESSED) {
@@ -186,10 +193,7 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                         body_set_rotation(tank1_body, body_get_orientation(tank1_body) - ANGLE_OFFSET);
                         break;
                     case ' ':
-                        printf("tank time: %f\n", body_get_time(tank1_body));
-                        printf("tank reload time: %f\n", tank_get_curr_reload(tank1));
                         if (body_get_time(tank1_body) > tank_get_curr_reload(tank1)) {
-                            printf("shoots!\n");
                             tank_shoot(scene, tank1);
                             tank_set_body_time(tank1, 0);
                         }
@@ -197,7 +201,7 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                 }
                 body_set_velocity(tank1_body, speed);
             }
-        // }
+        }
     }
 }
 
@@ -680,6 +684,28 @@ void check_land_mine_times(scene_t *scene, tank_t *tank) {
     }
 }
 
+void update_missile_times(scene_t *scene, double dt) {
+    for (size_t i=0; i < scene_bodies(scene); i++) {
+        if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE) {
+            body_increase_time(scene_get_body(scene, i), dt);
+        }
+    }
+}
+
+void check_missile_times(scene_t *scene, tank_t *tank) {
+    double curr_range = tank_get_curr_range(tank);
+    
+    for (size_t i=0; i < scene_bodies(scene); i++) {
+        if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE) {
+            double curr_time = body_get_time(scene_get_body(scene, i));
+
+            if (curr_time > curr_range) {
+                body_remove(scene_get_body(scene, i));
+            }
+        }
+    }
+}
+
 bool check_for_force_field(scene_t *scene) {
     for (size_t i=0; i < scene_bodies(scene); i++) {
         if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_FORCE_FIELD) {
@@ -807,9 +833,11 @@ int main(int argc, char *argv[]) {
 
             update_bullet_times(scene, dt);
             update_land_mine_times(scene, dt);
+            update_missile_times(scene, dt);
 
             check_bullet_ranges(scene, tank1);
             check_land_mine_times(scene, tank1);
+            check_missile_times(scene, tank1);
 
             check_detonation(scene, tank1, dt);
 
@@ -820,7 +848,8 @@ int main(int argc, char *argv[]) {
 
             // Shoot a power-up at an interval of time.
             if (time_passed > TANK_POWER_UP_TIME) {
-                make_tank_power_up(temp_scene, rand() % NUM_POWERUPS, tank1);
+                // make_tank_power_up(temp_scene, rand() % NUM_POWERUPS, tank1);
+                make_tank_power_up(temp_scene, 1, tank1);
                 time_passed = 0;
             }
         } else {

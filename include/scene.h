@@ -148,7 +148,7 @@ void scene_tick(scene_t *scene, double dt);
  * Does not remove the scene itself.
  * @param scene the scene that the bodies will be removed from
  */
-void erase_scene(scene_t *scene);
+void scene_erase(scene_t *scene);
 
 void scene_body_detonate(scene_t *scene, body_t *body);
 

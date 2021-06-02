@@ -34,7 +34,7 @@ static const double INIT_POWERUP_LENGTH = 10;
 static const double INIT_POWERUP_HEIGHT = 10;
 static const double POWERUP_MASS = 50;
 static const int NUM_POWERUPS = 5;
-static const int TANK_POWER_UP_TIME = 1;
+static const int TANK_POWER_UP_TIME = 5;
 static double const INIT_VEL = 400;
 static double const ANGLE_OFFSET = (10 * M_PI)/180;
 static const double ELASTICITY = 1;
@@ -181,10 +181,12 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                         body_set_rotation(tank1_body, body_get_orientation(tank1_body) - ANGLE_OFFSET);
                         break;
                     case ' ':
+                        printf("tank time: %f\n", body_get_time(tank1_body));
+                        printf("tank reload time: %f\n", tank_get_curr_reload(tank1));
                         if (body_get_time(tank1_body) > tank_get_curr_reload(tank1)) {
                             printf("shoots!\n");
                             tank_shoot(scene, tank1);
-                            body_set_time(tank1_body, 0);
+                            tank_set_body_time(tank1, 0);
                         }
                         break;
                 }
@@ -767,6 +769,10 @@ int main(int argc, char *argv[]) {
                         choosing_level, tank1, NULL)) {
         double dt = time_since_last_tick();
         time_passed += dt;
+
+        // tank_increase_body_time(tank1, dt);
+
+        update_tank_times(scene, dt);
 
         check_powerup_time(tank1, dt);
 

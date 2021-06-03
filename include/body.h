@@ -206,4 +206,8 @@ void body_set_time(body_t *body, double time);
 
 void body_increase_time(body_t *body, double time_increment);
 
+void body_set_lives(body_t *body, int lives);
+
+int body_get_lives(body_t *body);
+
 #endif // #ifndef __BODY_H__

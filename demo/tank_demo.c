@@ -44,6 +44,8 @@ static const double TEXT_SCALE = 0.8;
 static const SDL_Color WHITE_TEXT = {255, 255, 255};
 static const SDL_Color BLACK_TEXT = {0, 0, 0};
 static const SDL_Color MAROON_TEXT = {128, 0, 0};
+static const SDL_Color RED_TEXT = {255, 0, 0};
+static const SDL_Color BLUE_TEXT = {0, 0, 255};
 static const int LEVEL_BUFFER = 50;
 static const int CIRC_PTS = 16;
 static const double FORCE_FIELD_INNER_RADIUS = 60;
@@ -64,6 +66,9 @@ static const vector_t TANK1_INIT_POS = {50, 250};
 static const vector_t TANK2_INIT_POS = {950, 250};
 static const vector_t TANK2_OFF_SCREEN = {1200, 700};
 static const int FIRST_REMOVABLE_INDEX = 4;
+static const int INIT_LIVES = 3;
+static const int LIVES_WIDTH = 100;
+static const int LIVES_HEIGHT = 50;
 
 typedef enum pause_scene{
     RESUME_BUT,
@@ -359,6 +364,19 @@ bool within_rect(body_t *body, vector_t point) {
     return within;
 }
 
+void place_tanks(scene_t *scene, bool *multi) {
+    body_set_centroid(scene_get_body(scene, TANK1), TANK1_INIT_POS);
+    body_set_rotation(scene_get_body(scene, TANK1), 0);
+    body_set_lives(scene_get_body(scene, TANK1), INIT_LIVES);
+    if (*multi) {
+        body_set_centroid(scene_get_body(scene, TANK2), TANK2_INIT_POS);
+        body_set_rotation(scene_get_body(scene, TANK2), M_PI);
+        body_set_lives(scene_get_body(scene, TANK2), INIT_LIVES);
+    } else {
+        body_set_centroid(scene_get_body(scene, TANK2), TANK2_OFF_SCREEN);
+    }
+}
+
 void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int *level,
               bool *multi, bool *choosing_level) {
     if (*play) {
@@ -371,14 +389,7 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
         } else if (!(*choosing_level) && within_rect(scene_get_body(scenes[PAUSE], RESTART_BUT), point)) {
             printf("clicked restart\n");
             scene_erase_some(scenes[PLAY], FIRST_REMOVABLE_INDEX);
-            body_set_centroid(scene_get_body(scenes[PLAY], TANK1), TANK1_INIT_POS);
-            body_set_rotation(scene_get_body(scenes[PLAY], TANK1), 0);
-            if (*multi) {
-                body_set_centroid(scene_get_body(scenes[PLAY], TANK2), TANK2_INIT_POS);
-                body_set_rotation(scene_get_body(scenes[PLAY], TANK2), M_PI);
-            } else {
-                body_set_centroid(scene_get_body(scenes[PLAY], TANK2), TANK2_OFF_SCREEN);
-            }
+            place_tanks(scenes[PLAY], multi);
             if (*level == 1) {
                 level_1(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY]);
             } else if (*level == 2) {
@@ -394,14 +405,7 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
                 *choosing_level = false;
             }
             scene_erase_some(scenes[PLAY], FIRST_REMOVABLE_INDEX);
-            body_set_centroid(scene_get_body(scenes[PLAY], TANK1), TANK1_INIT_POS);
-            body_set_rotation(scene_get_body(scenes[PLAY], TANK1), 0);
-            if (*multi) {
-                body_set_centroid(scene_get_body(scenes[PLAY], TANK2), TANK2_INIT_POS);
-                body_set_rotation(scene_get_body(scenes[PLAY], TANK2), M_PI);
-            } else {
-                body_set_centroid(scene_get_body(scenes[PLAY], TANK2), TANK2_OFF_SCREEN);
-            }
+            place_tanks(scenes[PLAY], multi);
             level_1(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY]);
             *level = 1;
             *play = true;
@@ -412,14 +416,7 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
                 *choosing_level = false;
             }
             scene_erase_some(scenes[PLAY], FIRST_REMOVABLE_INDEX);
-            body_set_centroid(scene_get_body(scenes[PLAY], TANK1), TANK1_INIT_POS);
-            body_set_rotation(scene_get_body(scenes[PLAY], TANK1), 0);
-            if (*multi) {
-                body_set_centroid(scene_get_body(scenes[PLAY], TANK2), TANK2_INIT_POS);
-                body_set_rotation(scene_get_body(scenes[PLAY], TANK2), M_PI);
-            } else {
-                body_set_centroid(scene_get_body(scenes[PLAY], TANK2), TANK2_OFF_SCREEN);
-            }
+            place_tanks(scenes[PLAY], multi);
             level_2(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY]);
             *level = 2;
             *play = true;
@@ -430,14 +427,7 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
                 *choosing_level = false;
             }
             scene_erase_some(scenes[PLAY], FIRST_REMOVABLE_INDEX);
-            body_set_centroid(scene_get_body(scenes[PLAY], TANK1), TANK1_INIT_POS);
-            body_set_rotation(scene_get_body(scenes[PLAY], TANK1), 0);
-            if (*multi) {
-                body_set_centroid(scene_get_body(scenes[PLAY], TANK2), TANK2_INIT_POS);
-                body_set_rotation(scene_get_body(scenes[PLAY], TANK2), M_PI);
-            } else {
-                body_set_centroid(scene_get_body(scenes[PLAY], TANK2), TANK2_OFF_SCREEN);
-            }
+            place_tanks(scenes[PLAY], multi);
             level_3(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY]);
             *level = 3;
             *play = true;
@@ -566,6 +556,42 @@ void add_pause_screen_images(scene_t *scene, SDL_Surface *level1, SDL_Surface *l
     list_free(easy_shape);
     list_free(medium_shape);
     list_free(hard_shape);
+}
+
+void add_play_screen_text(scene_t *scene, bool *multi, TTF_Font *font, tank_t *tank1,
+                          tank_t *tank2) {
+    char *tank1_lives_text;
+    int tank1_lives = body_get_lives(tank_get_body(tank1));
+    if (tank1_lives == 0) {
+        tank1_lives_text = "Lives: 0";
+    } else if (tank1_lives == 1) {
+        tank1_lives_text = "Lives: 1";
+    } else if (tank1_lives == 2) {
+        tank1_lives_text = "Lives: 2";
+    } else {
+        tank1_lives_text = "Lives: 3";
+    }
+    int x = TOP_RIGHT_COORD.x/2 - LIVES_WIDTH/2;
+    int y1 = TOP_RIGHT_COORD.y - BUFFER;
+    sdl_write(x, y1, LIVES_WIDTH, LIVES_HEIGHT, font,
+              RED_TEXT, tank1_lives_text);
+    
+    if (*multi) {
+        char *tank2_lives_text;
+        int tank2_lives = body_get_lives(tank_get_body(tank2));
+        if (tank2_lives == 0) {
+            tank2_lives_text = "Lives: 0";
+        } else if (tank2_lives == 1) {
+            tank2_lives_text = "Lives: 1";
+        } else if (tank2_lives == 2) {
+            tank2_lives_text = "Lives: 2";
+        } else {
+            tank2_lives_text = "Lives: 3";
+        }
+        int y2 = BOTTOM_LEFT_COORD.y + BUFFER + LIVES_HEIGHT;
+        sdl_write(x, y2, LIVES_WIDTH, LIVES_HEIGHT, font,
+                BLUE_TEXT, tank2_lives_text);
+    }
 }
 
 void make_tank_power_up(scene_t *scene, int type, tank_t * tank) {
@@ -815,7 +841,7 @@ int main(int argc, char *argv[]) {
     make_pause_button(scene);
     tank_t *tank1 = add_tank_to_scene(scene, (body_types_t) TANK_1,
                                     TANK1_INIT_POS);
-    
+    body_set_lives(tank_get_body(tank1), INIT_LIVES);
     tank_t *tank2 = add_tank_to_scene(scene, (body_types_t) TANK_2,
                                     TANK2_OFF_SCREEN);
     level_1(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scene);
@@ -865,7 +891,7 @@ int main(int argc, char *argv[]) {
     vector_t center = {rand() % (int)TOP_RIGHT_COORD.x, rand() % (int)TOP_RIGHT_COORD.y};
     *tank_center = center;
 
-    while (!sdl_is_done(temp_scene, scene_get_body(scene, 0), play, scenes, level, multi,
+    while (!sdl_is_done(temp_scene, scene_get_body(temp_scene, 0), play, scenes, level, multi,
                         choosing_level, tank1, tank2)) {
         double dt = time_since_last_tick();
         time_passed += dt;
@@ -911,6 +937,8 @@ int main(int argc, char *argv[]) {
         if (!*play) {
             add_pause_screen_text(temp_scene, multi, font, choosing_level);
             add_pause_screen_images(temp_scene, level1, level2, level3);
+        } else {
+            add_play_screen_text(temp_scene, multi, font, tank1, tank2);
         }
         sdl_show();
         

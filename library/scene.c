@@ -135,8 +135,6 @@ void scene_erase_some(scene_t *scene, int index) {
 }
 
 void scene_body_detonate(scene_t *scene, body_t *body) {
-    body_remove(body);
-
     double angle = 2 * M_PI / NUM_OF_BOMB_FRAGS;
 
     for (int i = 0; i < NUM_OF_BOMB_FRAGS; i++) {
@@ -161,7 +159,8 @@ void scene_body_detonate(scene_t *scene, body_t *body) {
             }
         }
         angle += 2 * M_PI / NUM_OF_BOMB_FRAGS;
-        scene_add_body(scene, body);
+        scene_add_body(scene, frag_body);
     }
+    body_remove(body);
 }
 

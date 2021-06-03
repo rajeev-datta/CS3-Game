@@ -24,7 +24,7 @@ static const double MACHINE_GUN_RANGE = 3;
 static const double FRAG_BOMB_RELOAD_TIME = 4;
 static const double FRAG_BOMB_RADIUS = 7;
 static const double BULLET_MASS = 100;
-static const double FRAG_BOMB_RANGE = 2.5;
+static const double FRAG_BOMB_RANGE = 1;
 static const double LAND_MINE_RELOAD_TIME = 7;
 static const double LAND_MINE_TIME_LIMIT = 10;
 static const double LAND_MINE_SIDE_LENGTH = 7;
@@ -85,7 +85,7 @@ void machine_gun_shoot(scene_t *scene, body_t *body) {
     off_center.x = MACHINE_GUN_FACTOR * cos(body_get_orientation(body));
     off_center.y = MACHINE_GUN_FACTOR * sin(body_get_orientation(body));
     vector_t bullet_center = vec_add(body_get_centroid(body), off_center);
-    list_t *bullet = animate_circle(bullet_center, FRAG_BOMB_RADIUS,
+    list_t *bullet = animate_circle(bullet_center, MACHINE_GUN_BULLET_RADIUS,
                                        CIRCLE_PTS);
     body_types_t *tank_bullet_info = malloc(sizeof(body_types_t *));
     *tank_bullet_info = BULLET;
@@ -114,7 +114,7 @@ void frag_bomb_shoot(scene_t *scene, body_t *body) {
     off_center.x = FRAG_BOMB_FACTOR * cos(body_get_orientation(body));
     off_center.y = FRAG_BOMB_FACTOR * sin(body_get_orientation(body));
     vector_t bullet_center = vec_add(body_get_centroid(body), off_center);
-    list_t *bullet = animate_circle(bullet_center, MACHINE_GUN_BULLET_RADIUS,
+    list_t *bullet = animate_circle(bullet_center, FRAG_BOMB_RADIUS,
                                        CIRCLE_PTS);
     body_types_t *tank_frag_bomb_info = malloc(sizeof(body_types_t *));
     *tank_frag_bomb_info = TANK_FRAG_BOMB;

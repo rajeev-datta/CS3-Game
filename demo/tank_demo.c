@@ -149,8 +149,11 @@ void on_key_push(char key, key_event_type_t type, double held_time,
         // }
 
         if (tank_get_weapon(tank1) == (shooting_handler_t) remote_missile_shoot) {
+            body_set_velocity(tank1_body, (vector_t){0, 0});
+            bool missile_exists = false;
             for (size_t i=0; i < scene_bodies(scene); i++) {
                 if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE) {
+                    missile_exists = true;
                     body_t *missile = scene_get_body(scene, i);
 
                     if (type == KEY_RELEASED) {
@@ -176,6 +179,10 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                         body_set_velocity(missile, speed);
                     }
                 }
+            }
+
+            if (!missile_exists) {
+                tank_shoot(scene, tank1);
             }
         }
         else {
@@ -966,6 +973,12 @@ int main(int argc, char *argv[]) {
             
             side_boundary(scene, TOP_RIGHT_COORD, BOTTOM_LEFT_COORD, 25.0);
             wall_boundary(scene, tank1);
+
+            for(size_t i = 0; i < scene_bodies(scene); i++) { 
+                if(*(body_types_t *)body_get_info(scene_get_body(scene, i)) == ENEMY_TANK) {
+                    hit_boundary_check(scene_get_body(scene, i), BOTTOM_LEFT_COORD, TOP_RIGHT_COORD, dt);
+                }
+            }
 
             // Shoot a power-up at an interval of time.
             if (time_passed > TANK_POWER_UP_TIME) {

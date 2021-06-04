@@ -238,6 +238,7 @@ void add_enemy_to_scene(scene_t *scene, vector_t *center) {
     list_t *enemy_tank_points = animate_tank(center);
     tank_t *enemy_tank = enemy_tank_init(enemy_tank_points, speed, enemy_tank_info);
     scene_add_body(scene, tank_get_body(enemy_tank));
+    
 }
 
 void level_1(vector_t top_right, double wall_length, double wall_height, scene_t *scene) {

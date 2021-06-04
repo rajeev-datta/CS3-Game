@@ -6,7 +6,7 @@
 
 static const int MASS = 100;
 static const double default_reload_time = 2;
-static const double default_bullet_range = 4;
+static const double default_bullet_range = 7;
 static const double POWERUP_TIME = 10;
 
 typedef struct tank {

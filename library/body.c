@@ -23,6 +23,7 @@ typedef struct body {
     int lives;
     bool is_powerup;
     bool is_pause_button;
+    bool is_tank;
 } body_t;
 
 body_t *body_init(list_t *shape, double mass, rgb_color_t color) {
@@ -45,6 +46,7 @@ body_t *body_init(list_t *shape, double mass, rgb_color_t color) {
     body_obj->lives = 0;
     body_obj->is_powerup = false;
     body_obj->is_pause_button = false;
+    body_obj->is_tank = false;
     return body_obj;
 }
 
@@ -213,4 +215,11 @@ void body_set_is_pause_button(body_t *body, bool bool_pause) {
     body->is_pause_button = bool_pause;
 }
 
+bool body_is_tank(body_t *body) {
+    return body->is_tank;
+}
+
+void body_set_is_tank(body_t *body, bool bool_tank) {
+    body->is_tank = bool_tank;
+}
 

@@ -218,4 +218,8 @@ bool body_is_pause_button(body_t *body);
 
 void body_set_is_pause_button(body_t *body, bool bool_pause);
 
+bool body_is_tank(body_t *body);
+
+void body_set_is_tank(body_t *body, bool bool_pause);
+
 #endif // #ifndef __BODY_H__

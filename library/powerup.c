@@ -18,7 +18,7 @@
 static const int CIRCLE_PTS = 16;
 static const double BULLET_RADIUS = 5;
 static const double MACHINE_GUN_BULLET_RADIUS = 2.5;
-static const double TANK_BULLET_INIT_VEL = 100;
+static const double TANK_BULLET_INIT_VEL = 300;
 static const double BULLET_ELASTICITY = 0.9;
 static const double MACHINE_GUN_RELOAD_TIME = 0.5;
 static const double MACHINE_GUN_RANGE = 3;

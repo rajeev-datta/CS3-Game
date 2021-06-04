@@ -152,6 +152,7 @@ void on_key_push(char key, key_event_type_t type, double held_time,
 
             if (tank_get_weapon(tank1) == (shooting_handler_t) remote_missile_shoot) {
                 for (size_t i=0; scene_bodies(scene); i++) {
+                    // marked for deletion but not deleted yet
                     if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE_1) {
                         body_t *missile = scene_get_body(scene, i);
 

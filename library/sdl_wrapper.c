@@ -143,7 +143,8 @@ void sdl_init(vector_t min, vector_t max) {
 }
 
 bool sdl_is_done(scene_t *scene, void *object, bool *play, scene_t **scenes, int *level,
-                 bool *multi, bool *choosing_level, tank_t *tank1, tank_t *tank2) {
+                 bool *multi, bool *choosing_level, tank_t *tank1, tank_t *tank2,
+                 bool *game_over) {
     SDL_Event *event = malloc(sizeof(*event));
     assert(event != NULL);
 
@@ -160,7 +161,8 @@ bool sdl_is_done(scene_t *scene, void *object, bool *play, scene_t **scenes, int
                 double y = event->motion.y;
                 vector_t window_center = get_window_center();
                 vector_t pixel = get_window_position((vector_t){x, y}, window_center);
-                mouse_handler(scene, pixel, play, scenes, level, multi, choosing_level);
+                mouse_handler(scene, pixel, play, scenes, level, multi, choosing_level,
+                              game_over);
             case SDL_KEYDOWN:
             case SDL_KEYUP:
                 // Skip the keypress if no handler is configured

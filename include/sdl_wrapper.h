@@ -62,10 +62,11 @@ typedef void (*key_handler_t)(char key, key_event_type_t type, double held_time,
  * @param level a pointer to an int representing the level of the game
  * @param multi a pointer to a boolean representing if the game is multiplayer
  * @param choosing_level a pointer to a boolean indicating if the level is being chosen
+ * @param game_over a pointer to a boolean indicating if the game is over
  */
 typedef void (*mouse_handler_t)(scene_t *scene, vector_t point, bool *play,
                                 scene_t **scenes, int *level, bool * multi,
-                                bool *choosing_level);
+                                bool *choosing_level, bool *game_over);
 
 /**
  * Initializes the SDL window and renderer.
@@ -87,10 +88,12 @@ void sdl_init(vector_t min, vector_t max);
  * @param level a pointer to an integer representing the level of the game
  * @param multi a pointer to a boolean indicating multiplayer
  * @param choosing_level a pointer to a boolean indicating if the level is being chosen
+ * @param game_over a pointer to a boolean indicating if the game is over
  * @return true if the window was closed, false otherwise
  */
 bool sdl_is_done(scene_t *scene, void *body, bool *play, scene_t **scenes, int *level,
-                 bool *multi, bool *choosing_level, tank_t *tank1, tank_t *tank2);
+                 bool *multi, bool *choosing_level, tank_t *tank1, tank_t *tank2,
+                 bool *game_over);
 
 /**
  * Clears the screen. Should be called before drawing polygons in each frame.

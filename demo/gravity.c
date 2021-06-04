@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
     star_get_velocity(star1)->y = INIT_Y_VEL;
     list_add(stars, star1);
 
-    while (!sdl_is_done(NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)) {
+    while (!sdl_is_done(NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)) {
         double dt = time_since_last_tick();
         star_t *last = list_get(stars, list_size(stars) - 1);
         if (polygon_centroid(star_get_vertices(last)).x >= NEXT) {

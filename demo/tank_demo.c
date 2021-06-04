@@ -1039,6 +1039,14 @@ void handle_force_field(scene_t *scene, tank_t *tank, double dt) {
         if (!force_field_exists) {
             create_new_force_field(scene, tank);
         }
+    } else {
+        for (size_t i=0; i < scene_bodies(scene); i++) {
+            if (!body_is_powerup(scene_get_body(scene, i))) {
+                if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_FORCE_FIELD) {
+                    body_remove(scene_get_body(scene, i));
+                }
+            }
+        }
     }
 }
 

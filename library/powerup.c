@@ -178,10 +178,12 @@ void remote_missile_shoot(scene_t *scene, body_t *body) {
     body_t *missile_body = body_init_with_info(missile, BULLET_MASS,
                                               color_get_purple(), tank_missile_info, free);
 
-    vector_t tank_bullet_init_velocity;
-    tank_bullet_init_velocity.x = TANK_BULLET_INIT_VEL * cos(body_get_orientation(body));
-    tank_bullet_init_velocity.y = TANK_BULLET_INIT_VEL * sin(body_get_orientation(body));
-    body_set_velocity(missile_body, tank_bullet_init_velocity);
+    // vector_t tank_bullet_init_velocity;
+    // tank_bullet_init_velocity.x = TANK_BULLET_INIT_VEL * cos(body_get_orientation(body));
+    // tank_bullet_init_velocity.y = TANK_BULLET_INIT_VEL * sin(body_get_orientation(body));
+    body_set_velocity(missile_body, (vector_t) {0, 0});
+    body_set_rotation(missile_body, body_get_orientation(body));
+
 
     for (size_t i = 0; i < scene_bodies(scene); i++) {
         if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_1 || *(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_2) {

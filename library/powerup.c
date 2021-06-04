@@ -13,6 +13,7 @@
 #include "animate.h"
 #include "tank.h"
 #include "powerup.h"
+#include "stdio.h"
 
 static const int CIRCLE_PTS = 16;
 static const double BULLET_RADIUS = 5;
@@ -195,8 +196,6 @@ void remote_missile_shoot(scene_t *scene, body_t *body) {
 }
 
 void tank_powerup_fxn(body_t *body1, body_t *body2, vector_t axis, void *aux) {
-    body_remove(body2);
-
     if (((tank_powerup_aux_t *)aux)->type == MACHINE_GUN) {
         // machine gun power up
         tank_set_new_reload_time(((tank_powerup_aux_t *)aux)->tank, MACHINE_GUN_RELOAD_TIME);
@@ -222,6 +221,8 @@ void tank_powerup_fxn(body_t *body1, body_t *body2, vector_t axis, void *aux) {
         tank_set_new_range(((tank_powerup_aux_t *)aux)->tank, MISSILE_RANGE);
         tank_set_shooting_handler(((tank_powerup_aux_t *)aux)->tank, (shooting_handler_t) remote_missile_shoot);
     }
+
+    body_remove(body2);
 }
 
 void create_tank_powerup_collision(scene_t *scene, tank_t *tank, body_t *powerup, powerups_t type) {

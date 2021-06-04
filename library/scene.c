@@ -114,6 +114,7 @@ void scene_tick(scene_t *scene, double dt) {
     for (size_t i = 0; i < scene_bodies(scene); i++) {
         body_t *body = list_get(scene->bodies, i);
         if(body_is_removed(body)) {
+            // printf("removed body\n");
             body_t *removed = list_remove(scene->bodies, i);
             body_free(removed);
             i--;

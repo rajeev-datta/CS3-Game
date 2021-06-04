@@ -67,6 +67,9 @@ list_t *make_star(vector_t center, double r1, double r2, int points);
  */
 void hit_boundary_check(star_t *star, vector_t min, vector_t max, double dt);
 
+//checks boundaries for enemy tanks, y velocity only
+void tank_hit_boundary_check(body_t *body, vector_t min, vector_t max, double dt);
+
 /**
  *  @brief Makes an object fall due to gravity
  *

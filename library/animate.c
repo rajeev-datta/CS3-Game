@@ -194,12 +194,12 @@ void hit_boundary_check(star_t *star, vector_t min, vector_t max, double dt) {
 void tank_hit_boundary_check(body_t *body, vector_t min, vector_t max, double dt) {
     list_t *points = body_get_real_shape(body);
     for (size_t i = 0; i < list_size(points); i++) {
-        vector_t *temp = list_get(body_get_real_shape(body)), i);
+        vector_t *temp = list_get(body_get_real_shape(body, i));
         vector_t curr_vel = body_get_velocity(body);
         //cases for boundaries and velocities (each case)
-        if ((temp->y > max.x && curr_vel->y > 0) ||
-            (temp->y < min.x && curr_vel->y < 0)) {
-            vector_t new_vel = {curr_vel->x, curr_vel->y} * -1;
+        if ((temp->y > max.x && curr_vel.y > 0) ||
+            (temp->y < min.x && curr_vel.y < 0)) {
+            vector_t new_vel = {curr_vel.x, curr_vel.y * -1};
             body_set_velocity(body, new_vel);
             break;
         }

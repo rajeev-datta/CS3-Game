@@ -238,12 +238,11 @@ void add_enemy_to_scene(scene_t *scene, vector_t *center) {
     list_t *enemy_tank_points = animate_tank(center);
     tank_t *enemy_tank = enemy_tank_init(enemy_tank_points, speed, enemy_tank_info);
     scene_add_body(scene, tank_get_body(enemy_tank));
-    
 }
 
 void level_1(vector_t top_right, double wall_length, double wall_height, scene_t *scene) {
     vector_t *enemy_center = malloc(sizeof(vector_t));
-    *enemy_center = {900, TOP_RIGHT_COORD.y/2};
+    *enemy_center = (vector_t){900, TOP_RIGHT_COORD.y/2};
     add_enemy_to_scene(scene, enemy_center);
 
     body_types_t *wall_info = malloc(sizeof(body_types_t *));
@@ -273,11 +272,11 @@ void level_1(vector_t top_right, double wall_length, double wall_height, scene_t
 
 void level_2(vector_t top_right, double wall_length, double wall_height, scene_t *scene) {
     vector_t *enemy_center = malloc(sizeof(vector_t));
-    *enemy_center = {300, TOP_RIGHT_COORD.y/2};
+    *enemy_center = (vector_t){300, TOP_RIGHT_COORD.y/2};
     add_enemy_to_scene(scene, enemy_center);
 
     vector_t *enemy2_center = malloc(sizeof(vector_t));
-    *enemy2_center = {600, TOP_RIGHT_COORD.y/2};
+    *enemy2_center = (vector_t){600, TOP_RIGHT_COORD.y/2};
     add_enemy_to_scene(scene, enemy2_center);
     
     body_types_t *wall_info = malloc(sizeof(body_types_t *));
@@ -319,15 +318,15 @@ void level_2(vector_t top_right, double wall_length, double wall_height, scene_t
 
 void level_3(vector_t top_right, double wall_length, double wall_height, scene_t *scene) {
     vector_t *enemy_center = malloc(sizeof(vector_t));
-    *enemy_center = {250, TOP_RIGHT_COORD.y/2};
+    *enemy_center = (vector_t){250, TOP_RIGHT_COORD.y/2};
     add_enemy_to_scene(scene, enemy_center);
 
     vector_t *enemy2_center = malloc(sizeof(vector_t));
-    *enemy2_center = {550, TOP_RIGHT_COORD.y/2};
+    *enemy2_center = (vector_t){550, TOP_RIGHT_COORD.y/2};
     add_enemy_to_scene(scene, enemy2_center);
     
     vector_t *enemy3_center = malloc(sizeof(vector_t));
-    *enemy3_center = {900, TOP_RIGHT_COORD.y/2};
+    *enemy3_center = (vector_t){900, TOP_RIGHT_COORD.y/2};
     add_enemy_to_scene(scene, enemy3_center);
     
     body_types_t *wall_info = malloc(sizeof(body_types_t *));

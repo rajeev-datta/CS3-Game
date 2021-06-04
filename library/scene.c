@@ -139,7 +139,6 @@ void scene_body_detonate(scene_t *scene, body_t *body) {
     double angle = 2 * M_PI / NUM_OF_BOMB_FRAGS;
 
     for (int i = 0; i < NUM_OF_BOMB_FRAGS; i++) {
-        printf("adding fragment!\n");
         list_t *bullet = animate_circle(body_get_centroid(body), FRAG_RADIUS,
                                        CIRC_PTS);
         body_types_t *tank_bullet_info = malloc(sizeof(body_types_t *));

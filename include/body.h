@@ -210,4 +210,16 @@ void body_set_lives(body_t *body, int lives);
 
 int body_get_lives(body_t *body);
 
+bool body_is_powerup(body_t *body);
+
+void body_set_is_powerup(body_t *body, bool bool_powerup);
+
+bool body_is_pause_button(body_t *body);
+
+void body_set_is_pause_button(body_t *body, bool bool_pause);
+
+bool body_is_tank(body_t *body);
+
+void body_set_is_tank(body_t *body, bool bool_pause);
+
 #endif // #ifndef __BODY_H__

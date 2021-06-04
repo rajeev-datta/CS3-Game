@@ -13,6 +13,7 @@
 #include "animate.h"
 #include "tank.h"
 #include "powerup.h"
+#include "stdio.h"
 
 static const int CIRCLE_PTS = 16;
 static const double BULLET_RADIUS = 5;
@@ -24,7 +25,7 @@ static const double MACHINE_GUN_RANGE = 3;
 static const double FRAG_BOMB_RELOAD_TIME = 4;
 static const double FRAG_BOMB_RADIUS = 7;
 static const double BULLET_MASS = 100;
-static const double FRAG_BOMB_RANGE = 2.5;
+static const double FRAG_BOMB_RANGE = 1;
 static const double LAND_MINE_RELOAD_TIME = 7;
 static const double LAND_MINE_TIME_LIMIT = 10;
 static const double LAND_MINE_SIDE_LENGTH = 7;
@@ -85,7 +86,7 @@ void machine_gun_shoot(scene_t *scene, body_t *body) {
     off_center.x = MACHINE_GUN_FACTOR * cos(body_get_orientation(body));
     off_center.y = MACHINE_GUN_FACTOR * sin(body_get_orientation(body));
     vector_t bullet_center = vec_add(body_get_centroid(body), off_center);
-    list_t *bullet = animate_circle(bullet_center, FRAG_BOMB_RADIUS,
+    list_t *bullet = animate_circle(bullet_center, MACHINE_GUN_BULLET_RADIUS,
                                        CIRCLE_PTS);
     body_types_t *tank_bullet_info = malloc(sizeof(body_types_t *));
     *tank_bullet_info = BULLET;
@@ -114,7 +115,7 @@ void frag_bomb_shoot(scene_t *scene, body_t *body) {
     off_center.x = FRAG_BOMB_FACTOR * cos(body_get_orientation(body));
     off_center.y = FRAG_BOMB_FACTOR * sin(body_get_orientation(body));
     vector_t bullet_center = vec_add(body_get_centroid(body), off_center);
-    list_t *bullet = animate_circle(bullet_center, MACHINE_GUN_BULLET_RADIUS,
+    list_t *bullet = animate_circle(bullet_center, FRAG_BOMB_RADIUS,
                                        CIRCLE_PTS);
     body_types_t *tank_frag_bomb_info = malloc(sizeof(body_types_t *));
     *tank_frag_bomb_info = TANK_FRAG_BOMB;
@@ -195,8 +196,6 @@ void remote_missile_shoot(scene_t *scene, body_t *body) {
 }
 
 void tank_powerup_fxn(body_t *body1, body_t *body2, vector_t axis, void *aux) {
-    body_remove(body2);
-
     if (((tank_powerup_aux_t *)aux)->type == MACHINE_GUN) {
         // machine gun power up
         tank_set_new_reload_time(((tank_powerup_aux_t *)aux)->tank, MACHINE_GUN_RELOAD_TIME);
@@ -222,6 +221,8 @@ void tank_powerup_fxn(body_t *body1, body_t *body2, vector_t axis, void *aux) {
         tank_set_new_range(((tank_powerup_aux_t *)aux)->tank, MISSILE_RANGE);
         tank_set_shooting_handler(((tank_powerup_aux_t *)aux)->tank, (shooting_handler_t) remote_missile_shoot);
     }
+
+    body_remove(body2);
 }
 
 void create_tank_powerup_collision(scene_t *scene, tank_t *tank, body_t *powerup, powerups_t type) {

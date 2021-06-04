@@ -683,6 +683,15 @@ void update_and_check_projectiles_and_tanks(scene_t *scene, tank_t *tank, double
                 body_remove(scene_get_body(scene, i));
             }
         }
+
+        if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == FRAG_BOMB) {
+            body_increase_time(scene_get_body(scene, i), dt);
+            double curr_time = body_get_time(scene_get_body(scene, i));
+
+            if (curr_time > curr_range) {
+                scene_body_detonate(scene, scene_get_body(scene, i));
+            }
+        }
     }
 }
 
@@ -842,7 +851,7 @@ int main(int argc, char *argv[]) {
 
             if (time_passed > TANK_POWER_UP_TIME) {
                 // make_tank_power_up(temp_scene, rand() % NUM_POWERUPS, tank1);
-                make_tank_power_up(temp_scene, 4, tank1);
+                make_tank_power_up(temp_scene, 1, tank1);
                 time_passed = 0;
             }
         } else {

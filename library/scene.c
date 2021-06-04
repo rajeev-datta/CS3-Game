@@ -68,7 +68,7 @@ size_t scene_bodies(scene_t *scene) {
 }
 
 body_t *scene_get_body(scene_t *scene, size_t index) {
-    assert(index < list_size(scene->bodies));
+    // assert(index < list_size(scene->bodies));
     return list_get(scene->bodies, index);
 }
 
@@ -114,6 +114,7 @@ void scene_tick(scene_t *scene, double dt) {
     for (size_t i = 0; i < scene_bodies(scene); i++) {
         body_t *body = list_get(scene->bodies, i);
         if(body_is_removed(body)) {
+            // printf("removed body\n");
             body_t *removed = list_remove(scene->bodies, i);
             body_free(removed);
             i--;
@@ -135,11 +136,10 @@ void scene_erase_some(scene_t *scene, int index) {
 }
 
 void scene_body_detonate(scene_t *scene, body_t *body) {
-    body_remove(body);
-
     double angle = 2 * M_PI / NUM_OF_BOMB_FRAGS;
 
     for (int i = 0; i < NUM_OF_BOMB_FRAGS; i++) {
+        printf("adding fragment!\n");
         list_t *bullet = animate_circle(body_get_centroid(body), FRAG_RADIUS,
                                        CIRC_PTS);
         body_types_t *tank_bullet_info = malloc(sizeof(body_types_t *));
@@ -161,7 +161,8 @@ void scene_body_detonate(scene_t *scene, body_t *body) {
             }
         }
         angle += 2 * M_PI / NUM_OF_BOMB_FRAGS;
-        scene_add_body(scene, body);
+        scene_add_body(scene, frag_body);
     }
+    body_remove(body);
 }
 

@@ -21,6 +21,9 @@ typedef struct body {
     bool remove;
     double time;
     int lives;
+    bool is_powerup;
+    bool is_pause_button;
+    bool is_tank;
 } body_t;
 
 body_t *body_init(list_t *shape, double mass, rgb_color_t color) {
@@ -41,6 +44,9 @@ body_t *body_init(list_t *shape, double mass, rgb_color_t color) {
     body_obj->info_freer = NULL;
     body_obj->time = 0;
     body_obj->lives = 0;
+    body_obj->is_powerup = false;
+    body_obj->is_pause_button = false;
+    body_obj->is_tank = false;
     return body_obj;
 }
 
@@ -192,3 +198,28 @@ void body_set_lives(body_t *body, int lives) {
 int body_get_lives(body_t *body) {
     return body->lives;
 }
+
+bool body_is_powerup(body_t *body) {
+    return body->is_powerup;
+}
+
+void body_set_is_powerup(body_t *body, bool bool_powerup) {
+    body->is_powerup = bool_powerup;
+}
+
+bool body_is_pause_button(body_t *body) {
+    return body->is_pause_button;
+}
+
+void body_set_is_pause_button(body_t *body, bool bool_pause) {
+    body->is_pause_button = bool_pause;
+}
+
+bool body_is_tank(body_t *body) {
+    return body->is_tank;
+}
+
+void body_set_is_tank(body_t *body, bool bool_tank) {
+    body->is_tank = bool_tank;
+}
+

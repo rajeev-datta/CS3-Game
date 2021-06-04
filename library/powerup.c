@@ -186,7 +186,7 @@ void remote_missile_shoot(scene_t *scene, body_t *body) {
     list_t *missile = animate_rectangle(bullet_center, MISSILE_LENGTH,
                                        MISSILE_HEIGHT);
     body_types_t *tank_missile_info = malloc(sizeof(body_types_t *));
-    *tank_missile_info = TANK_REMOTE_MISSILE;
+    *tank_missile_info = TANK_REMOTE_MISSILE_1;
     body_t *missile_body = body_init_with_info(missile, BULLET_MASS,
                                               color_get_purple(), tank_missile_info, free);
 

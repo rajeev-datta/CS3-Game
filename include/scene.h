@@ -13,7 +13,8 @@ typedef enum body_types {
     WALL,
     TANK_LAND_MINE,
     TANK_FORCE_FIELD,
-    TANK_REMOTE_MISSILE,
+    TANK_REMOTE_MISSILE_1,
+    TANK_REMOTE_MISSILE_2,
 } body_types_t;
 
 /**

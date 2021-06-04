@@ -488,19 +488,16 @@ void add_pause_screen_text(scene_t *scene, bool *multi, TTF_Font *font,
                   CHOOSE_LEVEL_WIDTH, CHOOSE_LEVEL_HEIGHT, font, MAROON_TEXT, text);
     } else {
         if (win == 0) {
-            printf("You Lose\n");
             char *text = "You Lose!";
             sdl_write(TOP_RIGHT_COORD.x/2 - CHOOSE_LEVEL_WIDTH/2,
                     TOP_RIGHT_COORD.y - CHOOSE_LEVEL_HEIGHT/2,
                     CHOOSE_LEVEL_WIDTH, CHOOSE_LEVEL_HEIGHT, font, MAROON_TEXT, text);
         } else if (win == 1) {
-            printf("Red Player Wins!\n");
             char *text = "Red Player Wins!";
             sdl_write(TOP_RIGHT_COORD.x/2 - CHOOSE_LEVEL_WIDTH/2,
                     TOP_RIGHT_COORD.y - CHOOSE_LEVEL_HEIGHT/2,
                     CHOOSE_LEVEL_WIDTH, CHOOSE_LEVEL_HEIGHT, font, MAROON_TEXT, text);
         } else if (win == 2) {
-            printf("Blue Player Wins\n");
             char *text = "Blue Player Wins!";
             sdl_write(TOP_RIGHT_COORD.x/2 - CHOOSE_LEVEL_WIDTH/2,
                     TOP_RIGHT_COORD.y - CHOOSE_LEVEL_HEIGHT/2,
@@ -750,17 +747,14 @@ int find_winner(tank_t *tank1, tank_t *tank2, bool *multi, bool *game_over) {
         *game_over = true;
         if (*multi) {
             // Condition where player 2 wins
-            printf("Condition where player 2 wins\n");
             return 2;
         }
         // Condition where player 1 loses
-        printf("Condition where player 1 loses\n");
         return 0;
     }
     if (*multi && body_get_lives(tank_get_body(tank2)) <= 0) {
         *game_over = true;
         // Condition where player 1 wins
-        printf("Condition where player 1 wins\n");
         return 1;
     }
     // Game is still going on
@@ -776,7 +770,6 @@ int main(int argc, char *argv[]) {
     body_set_lives(tank_get_body(tank1), INIT_LIVES);
     tank_t *tank2 = add_tank_to_scene(scene, (body_types_t) TANK_2,
                                     TANK2_OFF_SCREEN);
-    body_set_lives(tank_get_body(tank2), 0);
     level_1(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scene);
     int *level = malloc(sizeof(int));
     *level = 1;
@@ -786,7 +779,6 @@ int main(int argc, char *argv[]) {
     bool *play = malloc(sizeof(bool));
     *play = true;
     bool *multi = malloc(sizeof(bool));
-    // *multi = false;
     *multi = false;
     bool *choosing_level = malloc(sizeof(bool));
     *choosing_level = false;
@@ -858,11 +850,11 @@ int main(int argc, char *argv[]) {
         }
 
         sdl_render_scene(temp_scene);
-        if (!*play) {
+        if (*play) {
+            add_play_screen_text(temp_scene, multi, font, tank1, tank2);
+        } else {
             add_pause_screen_text(temp_scene, multi, font, choosing_level, win);
             add_pause_screen_images(temp_scene, level1, level2, level3);
-        } else {
-            add_play_screen_text(temp_scene, multi, font, tank1, tank2);
         }
         sdl_show();
         scene_tick(temp_scene, dt);

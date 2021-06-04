@@ -333,12 +333,10 @@ void level_3(vector_t top_right, double wall_length, double wall_height, scene_t
     list_t *left_center_top_wall = animate_rectangle((vector_t) {(top_right.x*7)/20, (top_right.y*3)/4}, wall_length, wall_height*2);
     body_t *left_center_top_wall_body = body_init_with_info(left_center_top_wall, INFINITY, color_get_red(), wall_info, free);
     scene_add_body(scene, left_center_top_wall_body);
-    // create_physics_collision(scene, ELASTICITY, tank_body, center_top_wall_body);
 
     list_t *left_center_bottom_wall = animate_rectangle((vector_t) {(top_right.x*7)/20, (top_right.y)/4}, wall_length, wall_height);
     body_t *left_center_bottom_wall_body = body_init_with_info(left_center_bottom_wall, INFINITY, color_get_red(), wall_info, free);
     scene_add_body(scene, left_center_bottom_wall_body);
-    // create_physics_collision(scene, ELASTICITY, tank_body, center_bottom_wall_body);
 
     list_t *right_center_top_wall = animate_rectangle((vector_t) {(top_right.x*13)/20, (top_right.y*3)/4}, wall_length, wall_height);
     body_t *right_center_top_wall_body = body_init_with_info(right_center_top_wall, INFINITY, color_get_red(), wall_info, free);
@@ -355,32 +353,26 @@ void level_3(vector_t top_right, double wall_length, double wall_height, scene_t
     list_t *left_top_wall = animate_rectangle((vector_t) {(top_right.x)*3/20, (top_right.y*9)/10}, wall_length, wall_height);
     body_t *left_top_wall_body = body_init_with_info(left_top_wall, INFINITY, color_get_red(), wall_info, free);
     scene_add_body(scene, left_top_wall_body);
-    // create_physics_collision(scene, ELASTICITY, tank_body, left_top_wall_body);
 
     list_t *left_center_wall = animate_rectangle((vector_t) {(top_right.x*3)/20, (top_right.y)/2}, wall_length, wall_height);
     body_t *left_center_wall_body = body_init_with_info(left_center_wall, INFINITY, color_get_red(), wall_info, free);
     scene_add_body(scene, left_center_wall_body);
-    // create_physics_collision(scene, ELASTICITY, tank_body, left_center_wall_body);
 
     list_t *left_bottom_wall = animate_rectangle((vector_t) {(top_right.x*3)/20, (top_right.y)/10}, wall_length, wall_height);
     body_t *left_bottom_wall_body = body_init_with_info(left_bottom_wall, INFINITY, color_get_red(), wall_info, free);
     scene_add_body(scene, left_bottom_wall_body);
-    // create_physics_collision(scene, ELASTICITY, tank_body, left_bottom_wall_body);
 
     list_t *right_top_wall = animate_rectangle((vector_t) {(top_right.x*17)/20, (top_right.y*9)/10}, wall_length, wall_height);
     body_t *right_top_wall_body = body_init_with_info(right_top_wall, INFINITY, color_get_red(), wall_info, free);
     scene_add_body(scene, right_top_wall_body);
-    // create_physics_collision(scene, ELASTICITY, tank_body, right_top_wall_body);
 
     list_t *right_center_wall = animate_rectangle((vector_t) {(top_right.x*17)/20, (top_right.y)/2}, wall_length, wall_height);
     body_t *right_center_wall_body = body_init_with_info(right_center_wall, INFINITY, color_get_red(), wall_info, free);
     scene_add_body(scene, right_center_wall_body);
-    // create_physics_collision(scene, ELASTICITY, tank_body, right_center_wall_body);
 
     list_t *right_bottom_wall = animate_rectangle((vector_t) {(top_right.x*17)/20, (top_right.y)/10}, wall_length, wall_height);
     body_t *right_bottom_wall_body = body_init_with_info(right_bottom_wall, INFINITY, color_get_red(), wall_info, free);
     scene_add_body(scene, right_bottom_wall_body);
-    // create_physics_collision(scene, ELASTICITY, tank_body, right_bottom_wall_body);
 }
 
 
@@ -410,15 +402,17 @@ void place_tanks(scene_t *scene, bool *multi) {
 }
 
 void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int *level,
-              bool *multi, bool *choosing_level) {
+              bool *multi, bool *choosing_level, bool *game_over) {
     if (*play) {
         if (within_rect(scene_get_body(scenes[PLAY], PAUSE_BUTTON), point)){
             *play = false;
         }
     } else {
-        if (!(*choosing_level) && within_rect(scene_get_body(scenes[PAUSE], RESUME_BUT), point)) {
+        if (!(*game_over) && !(*choosing_level)
+              && within_rect(scene_get_body(scenes[PAUSE], RESUME_BUT), point)) {
             *play = true;
-        } else if (!(*choosing_level) && within_rect(scene_get_body(scenes[PAUSE], RESTART_BUT), point)) {
+        } else if (!(*game_over) && !(*choosing_level)
+                   && within_rect(scene_get_body(scenes[PAUSE], RESTART_BUT), point)) {
             printf("clicked restart\n");
             scene_erase_some(scenes[PLAY], FIRST_REMOVABLE_INDEX);
             place_tanks(scenes[PLAY], multi);
@@ -433,8 +427,11 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
         } else if (within_rect(scene_get_body(scenes[PAUSE], EASY_BUT), point)) {
             printf("clicked easy\n");
             if (*choosing_level) {
-                scene_remove_body(scene, WHITE_SCREEN);
+                scene_remove_body(scenes[PAUSE], WHITE_SCREEN);
                 *choosing_level = false;
+            } else if (*game_over) {
+                scene_remove_body(scenes[PAUSE], WHITE_SCREEN);
+                *game_over = false;
             }
             scene_erase_some(scenes[PLAY], FIRST_REMOVABLE_INDEX);
             place_tanks(scenes[PLAY], multi);
@@ -446,6 +443,9 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
             if (*choosing_level) {
                 scene_remove_body(scene, WHITE_SCREEN);
                 *choosing_level = false;
+            } else if (*game_over) {
+                scene_remove_body(scene, WHITE_SCREEN);
+                *game_over = false;
             }
             scene_erase_some(scenes[PLAY], FIRST_REMOVABLE_INDEX);
             place_tanks(scenes[PLAY], multi);
@@ -457,6 +457,9 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
             if (*choosing_level) {
                 scene_remove_body(scene, WHITE_SCREEN);
                 *choosing_level = false;
+            } else if (*game_over) {
+                scene_remove_body(scene, WHITE_SCREEN);
+                *game_over = false;
             }
             scene_erase_some(scenes[PLAY], FIRST_REMOVABLE_INDEX);
             place_tanks(scenes[PLAY], multi);
@@ -466,6 +469,10 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
         } else if (!(*choosing_level) && within_rect(scene_get_body(scenes[PAUSE], CHOOSE_PLAYER_BOX), point)) {
             *multi = !(*multi);
             *choosing_level = true;
+            if (*game_over) {
+                scene_remove_body(scene, WHITE_SCREEN);
+                *game_over = false;
+            }
             vector_t center = {TOP_RIGHT_COORD.x/2.0, 3*TOP_RIGHT_COORD.y/4.0};
             add_rect_to_scene(scene, center, TOP_RIGHT_COORD.x,
                               TOP_RIGHT_COORD.y/2, WHITE_SCREEN, color_get_white());
@@ -502,7 +509,7 @@ void set_up_pause_screen(scene_t *scene) {
 }
 
 void add_pause_screen_text(scene_t *scene, bool *multi, TTF_Font *font,
-                           bool *choosing_level) {
+                           bool *choosing_level, int win) {
     list_t *resume_shape = body_get_shape(scene_get_body(scene, RESUME_BUT));
     assert(list_size(resume_shape) == 4);
     int x = ((vector_t *)list_get(resume_shape, 0))->x + BUTTON_LENGTH * (1 - TEXT_SCALE)/2;
@@ -553,6 +560,23 @@ void add_pause_screen_text(scene_t *scene, bool *multi, TTF_Font *font,
         sdl_write(TOP_RIGHT_COORD.x/2 - CHOOSE_LEVEL_WIDTH/2,
                   TOP_RIGHT_COORD.y - CHOOSE_LEVEL_HEIGHT/2,
                   CHOOSE_LEVEL_WIDTH, CHOOSE_LEVEL_HEIGHT, font, MAROON_TEXT, text);
+    } else {
+        if (win == 0) {
+            char *text = "You Lose!";
+            sdl_write(TOP_RIGHT_COORD.x/2 - CHOOSE_LEVEL_WIDTH/2,
+                    TOP_RIGHT_COORD.y - CHOOSE_LEVEL_HEIGHT/2,
+                    CHOOSE_LEVEL_WIDTH, CHOOSE_LEVEL_HEIGHT, font, MAROON_TEXT, text);
+        } else if (win == 1) {
+            char *text = "Red Player Wins!";
+            sdl_write(TOP_RIGHT_COORD.x/2 - CHOOSE_LEVEL_WIDTH/2,
+                    TOP_RIGHT_COORD.y - CHOOSE_LEVEL_HEIGHT/2,
+                    CHOOSE_LEVEL_WIDTH, CHOOSE_LEVEL_HEIGHT, font, MAROON_TEXT, text);
+        } else if (win == 2) {
+            char *text = "Blue Player Wins!";
+            sdl_write(TOP_RIGHT_COORD.x/2 - CHOOSE_LEVEL_WIDTH/2,
+                    TOP_RIGHT_COORD.y - CHOOSE_LEVEL_HEIGHT/2,
+                    CHOOSE_LEVEL_WIDTH, CHOOSE_LEVEL_HEIGHT, font, MAROON_TEXT, text);
+        }
     }
 
     list_free(resume_shape);
@@ -893,6 +917,25 @@ void handle_force_field(scene_t *scene, tank_t *tank, double dt) {
     }
 }
 
+int find_winner(tank_t *tank1, tank_t *tank2, bool *multi, bool *game_over) {
+    if (body_get_lives(tank_get_body(tank1)) <= 0) {
+        *game_over = true;
+        if (*multi) {
+            // Condition where player 2 wins
+            return 2;
+        }
+        // Condition where player 1 loses
+        return 0;
+    }
+    if (*multi && body_get_lives(tank_get_body(tank2)) <= 0) {
+        *game_over = true;
+        // Condition where player 1 wins
+        return 1;
+    }
+    // Game is still going on
+    return -1;
+}
+
 int main(int argc, char *argv[]) {
     sdl_init(BOTTOM_LEFT_COORD, TOP_RIGHT_COORD);
     scene_t *scene = scene_init();
@@ -914,6 +957,8 @@ int main(int argc, char *argv[]) {
     *multi = false;
     bool *choosing_level = malloc(sizeof(bool));
     *choosing_level = false;
+    bool *game_over = malloc(sizeof(bool));
+    *game_over = false;
     TTF_Font *font = TTF_OpenFont(FONT, FONT_SIZE);
     if (!font) {
         printf("TTF_OpenFontRW: %s\n", TTF_GetError());
@@ -950,12 +995,21 @@ int main(int argc, char *argv[]) {
     *tank_center = center;
 
     while (!sdl_is_done(temp_scene, scene_get_body(temp_scene, 0), play, scenes, level, multi,
-                        choosing_level, tank1, tank2, NULL)) {
+                        choosing_level, tank1, tank2, game_over)) {
         double dt = time_since_last_tick();
-        time_passed += dt;
+
+        int win = find_winner(tank1, tank2, multi, game_over);
+
+        if (*game_over && *play == true) {
+            *play = false;
+            vector_t center = {TOP_RIGHT_COORD.x/2.0, 3*TOP_RIGHT_COORD.y/4.0};
+            add_rect_to_scene(pause_scene, center, TOP_RIGHT_COORD.x, TOP_RIGHT_COORD.y/2
+                              - CHOOSE_LEVEL_HEIGHT, WHITE_SCREEN, color_get_white());
+        }
 
         if (*play) {
             temp_scene = scene;
+            time_passed += dt;
 
             // tank_increase_body_time(tank1, dt);
 
@@ -998,11 +1052,11 @@ int main(int argc, char *argv[]) {
         }
 
         sdl_render_scene(temp_scene);
-        if (!*play) {
-            add_pause_screen_text(temp_scene, multi, font, choosing_level);
-            add_pause_screen_images(temp_scene, level1, level2, level3);
-        } else {
+        if (*play) {
             add_play_screen_text(temp_scene, multi, font, tank1, tank2);
+        } else {
+            add_pause_screen_text(temp_scene, multi, font, choosing_level, win);
+            add_pause_screen_images(temp_scene, level1, level2, level3);
         }
         sdl_show();
         
@@ -1017,6 +1071,7 @@ int main(int argc, char *argv[]) {
     free(play);
     free(multi);
     free(choosing_level);
+    free(game_over);
     scene_free(pause_scene);
     scene_free(scene);
     free(scenes);

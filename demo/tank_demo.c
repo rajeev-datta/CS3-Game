@@ -230,15 +230,15 @@ tank_t *add_tank_to_scene(scene_t *scene, body_types_t info, vector_t center) {
     return tank;
 }
 
-void add_enemy_to_scene(scene_t *scene, vector_t center) {
-    body_types_t *enemy_tank_info = malloc(sizeof(body_types_t *));
-    *enemy_tank_info = ENEMY_TANK;
-    vector_t speed = malloc(sizeof(vector_t));
-    *speed = {0, 150};
-    list_t *enemy_tank_points = animate_tank(center);
-    tank_t *enemy_tank = enemy_tank_init(enemy_tank_points, speed, enemy_tank_info);
-    scene_add_body(scene, tank_get_body(enemy_tank));
-}
+// void add_enemy_to_scene(scene_t *scene, vector_t center) {
+//     body_types_t *enemy_tank_info = malloc(sizeof(body_types_t *));
+//     *enemy_tank_info = ENEMY_TANK;
+//     vector_t *speed = malloc(sizeof(vector_t));
+//     *speed = (vector_t) {0, 150};
+//     list_t *enemy_tank_points = animate_tank(center);
+//     tank_t *enemy_tank = enemy_tank_init(enemy_tank_points, speed, enemy_tank_info);
+//     scene_add_body(scene, tank_get_body(enemy_tank));
+// }
 
 void level_1(vector_t top_right, double wall_length, double wall_height, scene_t *scene) {
     vector_t enemy_center = {900, TOP_RIGHT_COORD.y/2};

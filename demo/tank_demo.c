@@ -69,6 +69,7 @@ static const int FIRST_REMOVABLE_INDEX = 4;
 static const int INIT_LIVES = 3;
 static const int LIVES_WIDTH = 100;
 static const int LIVES_HEIGHT = 50;
+static const double POWERUP_LIFESPAN = 5;
 
 typedef enum pause_scene{
     RESUME_BUT,
@@ -712,6 +713,15 @@ void update_and_check_projectiles_and_tanks(scene_t *scene, tank_t *tank, double
                     body_remove(scene_get_body(scene, i));
                 }
             }
+
+            if (body_is_powerup(scene_get_body(scene, i))) {
+                body_increase_time(scene_get_body(scene, i), dt);
+                double curr_time = body_get_time(scene_get_body(scene, i));
+
+                if (curr_time > POWERUP_LIFESPAN) {
+                    body_remove(scene_get_body(scene, i));
+                }
+            }
         } else {
             if (body_is_tank(scene_get_body(scene, i))) {
                 body_increase_time(scene_get_body(scene, i), dt);
@@ -988,8 +998,8 @@ int main(int argc, char *argv[]) {
 
             // Shoot a power-up at an interval of time.
             if (time_passed > TANK_POWER_UP_TIME) {
-                // make_tank_power_up(temp_scene, rand() % NUM_POWERUPS, tank1);
-                make_tank_power_up(temp_scene, 4, tank1);
+                make_tank_power_up(temp_scene, rand() % NUM_POWERUPS, tank1);
+                // make_tank_power_up(temp_scene, 4, tank1);
                 time_passed = 0;
             }
         } else {

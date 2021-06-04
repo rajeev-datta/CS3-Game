@@ -974,6 +974,12 @@ int main(int argc, char *argv[]) {
             side_boundary(scene, TOP_RIGHT_COORD, BOTTOM_LEFT_COORD, 25.0);
             wall_boundary(scene, tank1);
 
+            for(size_t i = 0; i < scene_bodies(scene); i++) { 
+                if(*(body_types_t *)body_get_info(scene_get_body(scene, i)) == ENEMY_TANK) {
+                    hit_boundary_check(scene_get_body(scene, i), BOTTOM_LEFT_COORD, TOP_RIGHT_COORD, dt);
+                }
+            }
+
             // Shoot a power-up at an interval of time.
             if (time_passed > TANK_POWER_UP_TIME) {
                 // make_tank_power_up(temp_scene, rand() % NUM_POWERUPS, tank1);

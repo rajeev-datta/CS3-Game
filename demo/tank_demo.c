@@ -272,10 +272,12 @@ void level_1(vector_t top_right, double wall_length, double wall_height, scene_t
 }
 
 void level_2(vector_t top_right, double wall_length, double wall_height, scene_t *scene) {
-    vector_t enemy_center = {300, TOP_RIGHT_COORD.y/2};
+    vector_t *enemy_center = malloc(sizeof(vector_t));
+    *enemy_center = {300, TOP_RIGHT_COORD.y/2};
     add_enemy_to_scene(scene, enemy_center);
 
-    vector_t enemy2_center = {600, TOP_RIGHT_COORD.y/2};
+    vector_t *enemy2_center = malloc(sizeof(vector_t));
+    *enemy2_center = {600, TOP_RIGHT_COORD.y/2};
     add_enemy_to_scene(scene, enemy2_center);
     
     body_types_t *wall_info = malloc(sizeof(body_types_t *));
@@ -316,13 +318,16 @@ void level_2(vector_t top_right, double wall_length, double wall_height, scene_t
 }
 
 void level_3(vector_t top_right, double wall_length, double wall_height, scene_t *scene) {
-    vector_t enemy_center = {250, TOP_RIGHT_COORD.y/2};
+    vector_t *enemy_center = malloc(sizeof(vector_t));
+    *enemy_center = {250, TOP_RIGHT_COORD.y/2};
     add_enemy_to_scene(scene, enemy_center);
 
-    vector_t enemy2_center = {550, TOP_RIGHT_COORD.y/2};
+    vector_t *enemy2_center = malloc(sizeof(vector_t));
+    *enemy2_center = {550, TOP_RIGHT_COORD.y/2};
     add_enemy_to_scene(scene, enemy2_center);
     
-    vector_t enemy3_center = {900, TOP_RIGHT_COORD.y/2};
+    vector_t *enemy3_center = malloc(sizeof(vector_t));
+    *enemy3_center = {900, TOP_RIGHT_COORD.y/2};
     add_enemy_to_scene(scene, enemy3_center);
     
     body_types_t *wall_info = malloc(sizeof(body_types_t *));
@@ -979,7 +984,7 @@ int main(int argc, char *argv[]) {
 
             for(size_t i = 0; i < scene_bodies(scene); i++) { 
                 if(*(body_types_t *)body_get_info(scene_get_body(scene, i)) == ENEMY_TANK) {
-                    body_hit_boundary_check(scene_get_body(scene, i), BOTTOM_LEFT_COORD, TOP_RIGHT_COORD, dt);
+                    tank_hit_boundary_check(scene_get_body(scene, i), BOTTOM_LEFT_COORD, TOP_RIGHT_COORD, dt);
                 }
             }
 

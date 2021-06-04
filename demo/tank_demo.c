@@ -119,7 +119,7 @@ void put_forces(scene_t *scene) { //should work for different levels because sce
 }
 
 void add_rect_to_scene(scene_t *scene, vector_t center, int width, int height,
-                       scene_indices_t information, rgb_color_t color) {
+                       int information, rgb_color_t color) {
     list_t *rect = animate_rectangle(center, width, height);
     scene_indices_t *info = malloc(sizeof(scene_indices_t));
     *info = information;
@@ -657,10 +657,8 @@ void update_and_check_projectiles_and_tanks(scene_t *scene, tank_t *tank, double
             if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_FRAG_BOMB) {
                 body_increase_time(scene_get_body(scene, i), dt);
                 double curr_time = body_get_time(scene_get_body(scene, i));
-                printf("current time: %f\n", curr_time);
 
                 if (curr_time > curr_range) {
-                    printf("detonate!\n");
                     scene_body_detonate(scene, scene_get_body(scene, i));
                 }
             }
@@ -804,16 +802,16 @@ void update_and_check_projectiles_and_tanks(scene_t *scene, tank_t *tank, double
 //     }
 // }
 
-bool check_for_force_field(scene_t *scene) {
-    for (size_t i=0; i < scene_bodies(scene); i++) {
-        if (!body_is_powerup(scene_get_body(scene, 1))) {
-            if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_FORCE_FIELD) {
-                return true;
-            }
-        }
-    }
-    return false;
-}
+// bool check_for_force_field(scene_t *scene) {
+//     for (size_t i=0; i < scene_bodies(scene); i++) {
+//         if (!body_is_powerup(scene_get_body(scene, 1))) {
+//             if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_FORCE_FIELD) {
+//                 return true;
+//             }
+//         }
+//     }
+//     return false;
+// }
 
 body_t *create_new_force_field(scene_t *scene, tank_t *tank) {
     body_t *tank_body = tank_get_body(tank);
@@ -827,7 +825,7 @@ body_t *create_new_force_field(scene_t *scene, tank_t *tank) {
 
     body_set_velocity(force_field_body, (vector_t) {0, 0});
     for (size_t i = 0; i < scene_bodies(scene); i++) {
-        if (body_is_powerup(scene_get_body(scene, i))) {
+        if (!body_is_powerup(scene_get_body(scene, i))) {
             if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == BULLET) {
                 create_partial_destructive_collision(scene, force_field_body, scene_get_body(scene, i));
             }
@@ -840,26 +838,26 @@ body_t *create_new_force_field(scene_t *scene, tank_t *tank) {
 
 void handle_force_field(scene_t *scene, tank_t *tank, double dt) {
     if (tank_get_weapon(tank) == (shooting_handler_t) force_field_shoot) {
-        if (check_for_force_field(scene)) {
-            for (size_t i=0; i < scene_bodies(scene); i++) {
-                if (!body_is_powerup(scene_get_body(scene, i))) {
-                    if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_FORCE_FIELD) {
-                        body_t *force_field = scene_get_body(scene, i);
-                        body_increase_time(force_field, dt);
-                        double curr_time = body_get_time(force_field);
-                        
-                        if (curr_time > tank_get_curr_range(tank)) {
-                            body_remove(force_field);
-                        } else {
-                            body_remove(force_field);
-                            body_t *new_force_field = create_new_force_field(scene, tank);
-                            body_set_time(new_force_field, curr_time);
-                        }
+        bool force_field_exists = false;
+        for (size_t i=0; i < scene_bodies(scene); i++) {
+            if (!body_is_powerup(scene_get_body(scene, i))) {
+                if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_FORCE_FIELD) {
+                    force_field_exists = true;
+                    body_t *force_field = scene_get_body(scene, i);
+                    body_increase_time(force_field, dt);
+                    double curr_time = body_get_time(force_field);
+                    
+                    if (curr_time > tank_get_curr_range(tank)) {
+                        body_remove(force_field);
+                    } else {
+                        body_remove(force_field);
+                        body_t *new_force_field = create_new_force_field(scene, tank);
+                        body_set_time(new_force_field, curr_time);
                     }
                 }
             }
         }
-        else {
+        if (!force_field_exists) {
             create_new_force_field(scene, tank);
         }
     }
@@ -955,7 +953,7 @@ int main(int argc, char *argv[]) {
             // Shoot a power-up at an interval of time.
             if (time_passed > TANK_POWER_UP_TIME) {
                 // make_tank_power_up(temp_scene, rand() % NUM_POWERUPS, tank1);
-                make_tank_power_up(temp_scene, 1, tank1);
+                make_tank_power_up(temp_scene, 3, tank1);
                 time_passed = 0;
             }
         } else {

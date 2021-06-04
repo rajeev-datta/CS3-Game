@@ -191,6 +191,30 @@ void hit_boundary_check(star_t *star, vector_t min, vector_t max, double dt) {
     }
 }
 
+void body_hit_boundary_check(body_t *body, vector_t min, vector_t max, double dt) {
+    list_t *points = body_get_real_shape(body);
+    for (size_t i = 0; i < list_size(points); i++) {
+        vector_t *temp = list_get(star_get_vertices(star), i);
+
+        //cases for boundaries and velocities (each case)
+        if ((temp->x > max.x && star_get_velocity(star)->x > 0) ||
+            (temp->x < min.x && star_get_velocity(star)->x < 0)) {
+            star_get_velocity(star)->x *= -1;
+            break;
+        }
+    }
+    for (size_t i = 0; i < list_size(points); i++) {
+        vector_t *temp = list_get(star_get_vertices(star), i);
+
+        //cases for boundaries and velocities (each case)
+        if ((temp->y > max.y && star_get_velocity(star)->y > 0) ||
+            (temp->y < min.y && star_get_velocity(star)->y < 0)) {
+            star_get_velocity(star)->y *= -1;
+            break;
+        }
+    }
+}
+
 void bounce(star_t *star, double g, vector_t min, vector_t max, double dt, double radius,
             double elasticity) {
     star_get_velocity(star)->y -= g * dt;

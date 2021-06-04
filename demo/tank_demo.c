@@ -230,10 +230,11 @@ tank_t *add_tank_to_scene(scene_t *scene, body_types_t info, vector_t center) {
     return tank;
 }
 
-void_t *add_enemy_to_scene(scene_t *scene, vector_t center) {
+void add_enemy_to_scene(scene_t *scene, vector_t center) {
     body_types_t *enemy_tank_info = malloc(sizeof(body_types_t *));
     *enemy_tank_info = ENEMY_TANK;
-    vector_t speed = {0, 150};
+    vector_t speed = malloc(sizeof(vector_t));
+    *speed = {0, 150};
     list_t *enemy_tank_points = animate_tank(center);
     tank_t *enemy_tank = enemy_tank_init(enemy_tank_points, speed, enemy_tank_info);
     scene_add_body(scene, tank_get_body(enemy_tank));

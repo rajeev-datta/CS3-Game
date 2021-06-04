@@ -746,18 +746,22 @@ void handle_force_field(scene_t *scene, tank_t *tank, double dt) {
 }
 
 int find_winner(tank_t *tank1, tank_t *tank2, bool *multi, bool *game_over) {
-    if (body_get_lives(tank_get_body(tank1)) == 0) {
+    if (body_get_lives(tank_get_body(tank1)) <= 0) {
         *game_over = true;
         if (*multi) {
             // Condition where player 2 wins
+            printf("Condition where player 2 wins\n");
             return 2;
         }
         // Condition where player 1 loses
+        printf("Condition where player 1 loses\n");
         return 0;
     }
-    if (*multi && body_get_lives(tank_get_body(tank2)) == 0) {
+    if (*multi && body_get_lives(tank_get_body(tank2)) <= 0) {
         *game_over = true;
         // Condition where player 1 wins
+        printf("Condition where player 1 wins\n");
+        return 1;
     }
     // Game is still going on
     return -1;
@@ -783,7 +787,7 @@ int main(int argc, char *argv[]) {
     *play = true;
     bool *multi = malloc(sizeof(bool));
     // *multi = false;
-    *multi = true;
+    *multi = false;
     bool *choosing_level = malloc(sizeof(bool));
     *choosing_level = false;
     bool *game_over = malloc(sizeof(bool));

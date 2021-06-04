@@ -44,7 +44,7 @@ size_t list_capacity(list_t *list) {
 }
 
 void *list_get(list_t *list, size_t index) {
-    // assert(index < list->size);
+    assert(index < list->size);
     return list->data[index];
 }
 

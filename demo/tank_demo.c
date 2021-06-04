@@ -1006,9 +1006,7 @@ void handle_force_field(scene_t *scene, tank_t *tank, double dt) {
                     if (curr_time > tank_get_curr_range(tank)) {
                         body_remove(force_field);
                     } else {
-                        body_remove(force_field);
-                        body_t *new_force_field = create_new_force_field(scene, tank);
-                        body_set_time(new_force_field, curr_time);
+                        body_set_centroid(force_field, body_get_centroid(tank_get_body(tank)));
                     }
                 }
             }
@@ -1115,8 +1113,8 @@ int main(int argc, char *argv[]) {
 
             // Shoot a power-up at an interval of time.
             if (time_passed > TANK_POWER_UP_TIME) {
-                make_tank_power_up(temp_scene, rand() % NUM_POWERUPS, tank1);
-                // make_tank_power_up(temp_scene, 4, tank1);
+                // make_tank_power_up(temp_scene, rand() % NUM_POWERUPS, tank1);
+                make_tank_power_up(temp_scene, 3, tank1);
                 time_passed = 0;
             }
         } else {

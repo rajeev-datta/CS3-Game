@@ -68,7 +68,7 @@ size_t scene_bodies(scene_t *scene) {
 }
 
 body_t *scene_get_body(scene_t *scene, size_t index) {
-    // assert(index < list_size(scene->bodies));
+    assert(index < list_size(scene->bodies));
     return list_get(scene->bodies, index);
 }
 

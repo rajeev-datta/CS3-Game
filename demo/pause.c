@@ -488,16 +488,19 @@ void add_pause_screen_text(scene_t *scene, bool *multi, TTF_Font *font,
                   CHOOSE_LEVEL_WIDTH, CHOOSE_LEVEL_HEIGHT, font, MAROON_TEXT, text);
     } else {
         if (win == 0) {
+            printf("You Lose\n");
             char *text = "You Lose!";
             sdl_write(TOP_RIGHT_COORD.x/2 - CHOOSE_LEVEL_WIDTH/2,
                     TOP_RIGHT_COORD.y - CHOOSE_LEVEL_HEIGHT/2,
                     CHOOSE_LEVEL_WIDTH, CHOOSE_LEVEL_HEIGHT, font, MAROON_TEXT, text);
         } else if (win == 1) {
+            printf("Red Player Wins!\n");
             char *text = "Red Player Wins!";
             sdl_write(TOP_RIGHT_COORD.x/2 - CHOOSE_LEVEL_WIDTH/2,
                     TOP_RIGHT_COORD.y - CHOOSE_LEVEL_HEIGHT/2,
                     CHOOSE_LEVEL_WIDTH, CHOOSE_LEVEL_HEIGHT, font, MAROON_TEXT, text);
         } else if (win == 2) {
+            printf("Blue Player Wins\n");
             char *text = "Blue Player Wins!";
             sdl_write(TOP_RIGHT_COORD.x/2 - CHOOSE_LEVEL_WIDTH/2,
                     TOP_RIGHT_COORD.y - CHOOSE_LEVEL_HEIGHT/2,

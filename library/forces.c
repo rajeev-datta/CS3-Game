@@ -109,22 +109,22 @@ void drag_fxn(aux_t *aux) {
 void destructive_fxn(body_t *body1, body_t *body2, vector_t axis, void *aux) {
     // aux represents a bool determining whether this is a partial or complete destructive collision
     if (*(bool *)aux) {
-        if (*(int *)body_get_info(body2) != TANK_1 && *(int *)body_get_info(body2) != TANK_2) {
-            body_remove(body2);
-        } else {
+        if (body_is_tank(body2)) {
             body_set_lives(body2, body_get_lives(body2) - 1);
+        } else {
+            body_remove(body2);
         }
     }
     else {
-        if (*(int *)body_get_info(body1) != TANK_1 && *(int *)body_get_info(body1) != TANK_2) {
-            body_remove(body1);
-        } else {
+        if (body_is_tank(body1)) {
             body_set_lives(body1, body_get_lives(body1) - 1);
-        }
-        if (*(int *)body_get_info(body2) != TANK_1 && *(int *)body_get_info(body2) != TANK_2) {
-            body_remove(body2);
         } else {
+            body_remove(body1);
+        }
+        if (body_is_tank(body2)) {
             body_set_lives(body2, body_get_lives(body2) - 1);
+        } else {
+            body_remove(body2);
         }
     }
 }

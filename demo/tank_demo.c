@@ -696,6 +696,11 @@ void add_pause_screen_text(scene_t *scene, bool *multi, TTF_Font *font,
             sdl_write(TOP_RIGHT_COORD.x/2 - CHOOSE_LEVEL_WIDTH/2,
                     TOP_RIGHT_COORD.y - CHOOSE_LEVEL_HEIGHT/2,
                     CHOOSE_LEVEL_WIDTH, CHOOSE_LEVEL_HEIGHT, font, MAROON_TEXT, text);
+        } else if (win == 3) {
+            char *text = "You Win!";
+            sdl_write(TOP_RIGHT_COORD.x/2 - CHOOSE_LEVEL_WIDTH/2,
+                    TOP_RIGHT_COORD.y - CHOOSE_LEVEL_HEIGHT/2,
+                    CHOOSE_LEVEL_WIDTH, CHOOSE_LEVEL_HEIGHT, font, MAROON_TEXT, text);
         }
     }
 
@@ -1049,7 +1054,23 @@ void handle_force_field(scene_t *scene, tank_t *tank, double dt) {
     }
 }
 
-int find_winner(tank_t *tank1, tank_t *tank2, bool *multi, bool *game_over) {
+bool all_enemies_gone(scene_t *scene) {
+    bool all_gone = true;
+    for (size_t i = 0; i < scene_bodies(scene); i++) {
+        if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == ENEMY_TANK) {
+            all_gone = false;
+            break;
+        }
+    }
+    return all_gone;
+}
+
+int find_winner(scene_t *scene, tank_t *tank1, tank_t *tank2, bool *multi, bool *game_over) {
+    if (!(*multi) && all_enemies_gone(scene)) {
+        // Condition where player 1 wins
+        *game_over = true;
+        return 3;
+    }
     if (body_get_lives(tank_get_body(tank1)) <= 0) {
         *game_over = true;
         if (*multi) {
@@ -1130,7 +1151,7 @@ int main(int argc, char *argv[]) {
                         choosing_level, tank1, tank2, game_over)) {
         double dt = time_since_last_tick();
 
-        int win = find_winner(tank1, tank2, multi, game_over);
+        int win = find_winner(scene, tank1, tank2, multi, game_over);
 
         if (*game_over && *play == true) {
             *play = false;

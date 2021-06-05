@@ -7,6 +7,7 @@
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
 #include <stdbool.h>
+#include <string.h>
 #include <assert.h>
 #include <SDL2/SDL_mixer.h>
 #include "animate.h"
@@ -70,6 +71,8 @@ static const int INIT_LIVES = 3;
 static const int LIVES_WIDTH = 100;
 static const int LIVES_HEIGHT = 50;
 static const double POWERUP_LIFESPAN = 5;
+static const int LIVES_TXT = 9;
+static const int LIVES_DIGIT = 4;
 
 typedef enum pause_scene{
     RESUME_BUT,
@@ -98,11 +101,8 @@ void put_forces(scene_t *scene) { //should work for different levels because sce
         for(size_t j = 0; j < scene_bodies(scene); j++) {
             if(*(body_types_t *) body_get_info(scene_get_body(scene, i)) == BULLET) {
                 if(*(body_types_t *) body_get_info(scene_get_body(scene, j)) == TANK_1
-                || *(body_types_t *) body_get_info(scene_get_body(scene, j)) == TANK_2) {
-                    // create_lives_collision(scene, scene_get_body(scene, j), scene_get_body(scene, i));
-                    create_partial_destructive_collision(scene, scene_get_body(scene, j), scene_get_body(scene, i));
-                }
-                if (*(body_types_t *) body_get_info(scene_get_body(scene, j)) == ENEMY_TANK) {
+                || *(body_types_t *) body_get_info(scene_get_body(scene, j)) == TANK_2
+                || *(body_types_t *) body_get_info(scene_get_body(scene, j)) == ENEMY_TANK) {
                     //bullet disappears because tanks have lives, so they survive
                     //need to write code to check for lives
                     create_partial_destructive_collision(scene, scene_get_body(scene, j), scene_get_body(scene, i));
@@ -736,37 +736,33 @@ void add_pause_screen_images(scene_t *scene, SDL_Surface *level1, SDL_Surface *l
 
 void add_play_screen_text(scene_t *scene, bool *multi, TTF_Font *font, tank_t *tank1,
                           tank_t *tank2) {
-    char *tank1_lives_text;
+    char *tank1_lives_text = malloc(sizeof(char) * LIVES_TXT + LIVES_DIGIT);
+    strcpy(tank1_lives_text, "Lives: ");
     int tank1_lives = body_get_lives(tank_get_body(tank1));
-    if (tank1_lives == 0) {
-        tank1_lives_text = "Lives: 0";
-    } else if (tank1_lives == 1) {
-        tank1_lives_text = "Lives: 1";
-    } else if (tank1_lives == 2) {
-        tank1_lives_text = "Lives: 2";
-    } else {
-        tank1_lives_text = "Lives: 3";
-    }
+    char *num1 = malloc(sizeof(char) * LIVES_DIGIT);
+    sprintf(num1, "%u", tank1_lives);
+    tank1_lives_text = strcat(tank1_lives_text, num1);
+
     int x = TOP_RIGHT_COORD.x/2 - LIVES_WIDTH/2;
     int y1 = TOP_RIGHT_COORD.y - BUFFER;
     sdl_write(x, y1, LIVES_WIDTH, LIVES_HEIGHT, font,
               RED_TEXT, tank1_lives_text);
+    free(tank1_lives_text);
+    free(num1);
     
     if (*multi) {
-        char *tank2_lives_text;
+        char *tank2_lives_text = malloc(sizeof(char) * LIVES_TXT + LIVES_DIGIT);
+        strcpy(tank2_lives_text, "Lives: ");
         int tank2_lives = body_get_lives(tank_get_body(tank2));
-        if (tank2_lives == 0) {
-            tank2_lives_text = "Lives: 0";
-        } else if (tank2_lives == 1) {
-            tank2_lives_text = "Lives: 1";
-        } else if (tank2_lives == 2) {
-            tank2_lives_text = "Lives: 2";
-        } else {
-            tank2_lives_text = "Lives: 3";
-        }
+        char *num2 = malloc(sizeof(char) * LIVES_DIGIT);
+        sprintf(num2, "%u", tank2_lives);
+        tank2_lives_text = strcat(tank2_lives_text, num2);
+
         int y2 = BOTTOM_LEFT_COORD.y + BUFFER + LIVES_HEIGHT;
         sdl_write(x, y2, LIVES_WIDTH, LIVES_HEIGHT, font,
                 BLUE_TEXT, tank2_lives_text);
+        free(tank2_lives_text);
+        free(num2);
     }
 }
 

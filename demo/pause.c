@@ -570,37 +570,33 @@ void set_up_pause_screen(scene_t *scene) {
 
 void add_play_screen_text(scene_t *scene, bool *multi, TTF_Font *font, tank_t *tank1,
                           tank_t *tank2) {
-    char *tank1_lives_text;
+    char *tank1_lives_text = malloc(sizeof(char) * LIVES_TXT + LIVES_DIGIT);
+    strcpy(tank1_lives_text, "Lives: ");
     int tank1_lives = body_get_lives(tank_get_body(tank1));
-    if (tank1_lives == 0) {
-        tank1_lives_text = "Lives: 0";
-    } else if (tank1_lives == 1) {
-        tank1_lives_text = "Lives: 1";
-    } else if (tank1_lives == 2) {
-        tank1_lives_text = "Lives: 2";
-    } else {
-        tank1_lives_text = "Lives: 3";
-    }
+    char *num1 = malloc(sizeof(char) * LIVES_DIGIT);
+    sprintf(num1, "%u", tank1_lives);
+    tank1_lives_text = strcat(tank1_lives_text, num1);
+
     int x = TOP_RIGHT_COORD.x/2 - LIVES_WIDTH/2;
     int y1 = TOP_RIGHT_COORD.y - BUFFER;
     sdl_write(x, y1, LIVES_WIDTH, LIVES_HEIGHT, font,
               RED_TEXT, tank1_lives_text);
+    free(tank1_lives_text);
+    free(num1);
     
     if (*multi) {
-        char *tank2_lives_text;
+        char *tank2_lives_text = malloc(sizeof(char) * LIVES_TXT + LIVES_DIGIT);
+        strcpy(tank2_lives_text, "Lives: ");
         int tank2_lives = body_get_lives(tank_get_body(tank2));
-        if (tank2_lives == 0) {
-            tank2_lives_text = "Lives: 0";
-        } else if (tank2_lives == 1) {
-            tank2_lives_text = "Lives: 1";
-        } else if (tank2_lives == 2) {
-            tank2_lives_text = "Lives: 2";
-        } else {
-            tank2_lives_text = "Lives: 3";
-        }
+        char *num2 = malloc(sizeof(char) * LIVES_DIGIT);
+        sprintf(num2, "%u", tank2_lives);
+        tank2_lives_text = strcat(tank2_lives_text, num2);
+
         int y2 = BOTTOM_LEFT_COORD.y + BUFFER + LIVES_HEIGHT;
         sdl_write(x, y2, LIVES_WIDTH, LIVES_HEIGHT, font,
                 BLUE_TEXT, tank2_lives_text);
+        free(tank2_lives_text);
+        free(num2);
     }
 }
 

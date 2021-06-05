@@ -150,6 +150,7 @@ void scene_body_detonate(scene_t *scene, body_t *body) {
         frag_init_velocity.x = FRAG_INIT_VEL * cos(angle);
         frag_init_velocity.y = FRAG_INIT_VEL * sin(angle);
         body_set_velocity(frag_body, frag_init_velocity);
+        body_set_time(frag_body, 0);
 
         for (size_t i = 0; i < scene_bodies(scene); i++) {
             if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_1 || *(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_2) {

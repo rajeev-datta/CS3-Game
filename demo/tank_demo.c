@@ -98,13 +98,16 @@ void put_forces(scene_t *scene) { //should work for different levels because sce
         for(size_t j = 0; j < scene_bodies(scene); j++) {
             if(*(body_types_t *) body_get_info(scene_get_body(scene, i)) == BULLET) {
                 if(*(body_types_t *) body_get_info(scene_get_body(scene, j)) == TANK_1
-                || *(body_types_t *) body_get_info(scene_get_body(scene, j)) == TANK_2
-                || *(body_types_t *) body_get_info(scene_get_body(scene, j)) == ENEMY_TANK) {
+                || *(body_types_t *) body_get_info(scene_get_body(scene, j)) == TANK_2) {
+                    // create_lives_collision(scene, scene_get_body(scene, j), scene_get_body(scene, i));
+                    create_partial_destructive_collision(scene, scene_get_body(scene, j), scene_get_body(scene, i));
+                }
+                if (*(body_types_t *) body_get_info(scene_get_body(scene, j)) == ENEMY_TANK) {
                     //bullet disappears because tanks have lives, so they survive
                     //need to write code to check for lives
                     create_partial_destructive_collision(scene, scene_get_body(scene, j), scene_get_body(scene, i));
                 }
-                else if(*(body_types_t *) body_get_info(scene_get_body(scene, j)) == WALL) {
+                if(*(body_types_t *) body_get_info(scene_get_body(scene, j)) == WALL) {
                     create_physics_collision(scene, ELASTICITY, scene_get_body(scene, i), scene_get_body(scene, j));
                 }
             }

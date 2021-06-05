@@ -109,11 +109,23 @@ void drag_fxn(aux_t *aux) {
 void destructive_fxn(body_t *body1, body_t *body2, vector_t axis, void *aux) {
     // aux represents a bool determining whether this is a partial or complete destructive collision
     if (*(bool *)aux) {
-        body_remove(body2);
+        if (*(int *)body_get_info(body2) != TANK_1 && *(int *)body_get_info(body2) != TANK_2) {
+            body_remove(body2);
+        } else {
+            body_set_lives(body2, body_get_lives(body2) - 1);
+        }
     }
     else {
-        body_remove(body1);
-        body_remove(body2);
+        if (*(int *)body_get_info(body1) != TANK_1 && *(int *)body_get_info(body1) != TANK_2) {
+            body_remove(body1);
+        } else {
+            body_set_lives(body1, body_get_lives(body1) - 1);
+        }
+        if (*(int *)body_get_info(body2) != TANK_1 && *(int *)body_get_info(body2) != TANK_2) {
+            body_remove(body2);
+        } else {
+            body_set_lives(body2, body_get_lives(body2) - 1);
+        }
     }
 }
 
@@ -233,20 +245,20 @@ void create_destructive_collision(scene_t *scene, body_t *body1, body_t *body2) 
     bool *partial_destruction = malloc(sizeof(bool));
     *partial_destruction = false;
     create_collision(scene, body1, body2, (collision_handler_t) destructive_fxn,
-                    partial_destruction, (free_func_t) free);
+                     partial_destruction, (free_func_t) free);
 }
 
 void create_partial_destructive_collision(scene_t *scene, body_t *body1, body_t *body_being_removed) {
     bool *partial_destruction = malloc(sizeof(bool));
     *partial_destruction = true;
     create_collision(scene, body1, body_being_removed, (collision_handler_t) destructive_fxn,
-                    partial_destruction, (free_func_t) free);
+                     partial_destruction, (free_func_t) free);
 }
 
 void create_powerup_collision(scene_t *scene, body_t *body1, body_t *body2, body_t *ball, char type) {
     powerup_aux_t *pow_aux = powerup_aux_init(ball, type);
     create_collision(scene, body1, body2, (collision_handler_t) powerup_fxn,
-                    pow_aux, (free_func_t) free);
+                     pow_aux, (free_func_t) free);
 }
 
 void create_physics_collision(

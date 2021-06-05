@@ -112,6 +112,10 @@ void destructive_fxn(body_t *body1, body_t *body2, vector_t axis, void *aux) {
         if (body_is_tank(body2)) {
             body_set_lives(body2, body_get_lives(body2) - 1);
         } else {
+            if (*(body_types_t *)body_get_info(body1) == TANK_FORCE_FIELD) {
+                printf("stop bullet!\n");
+                body_set_velocity(body2, (vector_t) {0, 0});
+            }
             body_remove(body2);
         }
     }

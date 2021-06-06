@@ -92,4 +92,6 @@ void list_add(list_t *list, void *value);
  */
 void list_set(list_t *list, void *value, size_t idx);
 
+void list_clear(list_t *list);
+
 #endif // #ifndef __LIST_H__

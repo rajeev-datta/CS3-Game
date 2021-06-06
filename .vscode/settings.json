@@ -48,6 +48,7 @@
         "ios": "c",
         "test_util.h": "c",
         "__node_handle": "c",
-        "cstdio": "c"
+        "cstdio": "c",
+        "sdl.h": "c"
     }
 }

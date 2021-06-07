@@ -75,7 +75,7 @@ static const int LIVES_TXT = 9;
 static const int LIVES_DIGIT = 4;
 static const double BULLET_ELASTICITY = 0.9;
 static const int MAX_CIRC_PTS = 128;
-static const char *MUSIC = "music.wav";
+static const char *MUSIC = "sounds/music.wav";
 
 typedef enum pause_scene{
     RESUME_BUT,

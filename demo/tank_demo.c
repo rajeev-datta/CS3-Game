@@ -371,10 +371,12 @@ void add_enemy_to_scene(scene_t *scene, vector_t *center) {
     scene_add_body(scene, tank_get_body(enemy_tank));
 }
 
-void level_1(vector_t top_right, double wall_length, double wall_height, scene_t *scene) {
-    vector_t *enemy_center = malloc(sizeof(vector_t));
-    *enemy_center = (vector_t){900, TOP_RIGHT_COORD.y/2};
-    add_enemy_to_scene(scene, enemy_center);
+void level_1(vector_t top_right, double wall_length, double wall_height, scene_t *scene, bool *multi) {
+    if (!*multi) {
+        vector_t *enemy_center = malloc(sizeof(vector_t));
+        *enemy_center = (vector_t){900, TOP_RIGHT_COORD.y/2};
+        add_enemy_to_scene(scene, enemy_center);
+    }
 
     body_types_t *wall_info = malloc(sizeof(body_types_t *));
     *wall_info = WALL;
@@ -401,14 +403,16 @@ void level_1(vector_t top_right, double wall_length, double wall_height, scene_t
     put_forces(scene);
 }
 
-void level_2(vector_t top_right, double wall_length, double wall_height, scene_t *scene) {
-    vector_t *enemy_center = malloc(sizeof(vector_t));
-    *enemy_center = (vector_t){top_right.x * 4/10, TOP_RIGHT_COORD.y};
-    add_enemy_to_scene(scene, enemy_center);
+void level_2(vector_t top_right, double wall_length, double wall_height, scene_t *scene, bool *multi) {
+    if (!*multi) {
+        vector_t *enemy_center = malloc(sizeof(vector_t));
+        *enemy_center = (vector_t){top_right.x * 4/10, TOP_RIGHT_COORD.y};
+        add_enemy_to_scene(scene, enemy_center);
 
-    vector_t *enemy2_center = malloc(sizeof(vector_t));
-    *enemy2_center = (vector_t){600, 0};
-    add_enemy_to_scene(scene, enemy2_center);
+        vector_t *enemy2_center = malloc(sizeof(vector_t));
+        *enemy2_center = (vector_t){600, 0};
+        add_enemy_to_scene(scene, enemy2_center);
+    }
     
     body_types_t *wall_info = malloc(sizeof(body_types_t *));
     *wall_info = WALL;
@@ -447,18 +451,20 @@ void level_2(vector_t top_right, double wall_length, double wall_height, scene_t
     put_forces(scene);
 }
 
-void level_3(vector_t top_right, double wall_length, double wall_height, scene_t *scene) {
-    vector_t *enemy_center = malloc(sizeof(vector_t));
-    *enemy_center = (vector_t){250, TOP_RIGHT_COORD.y/2};
-    add_enemy_to_scene(scene, enemy_center);
+void level_3(vector_t top_right, double wall_length, double wall_height, scene_t *scene, bool *multi) {
+    if (!*multi) {
+        vector_t *enemy_center = malloc(sizeof(vector_t));
+        *enemy_center = (vector_t){250, TOP_RIGHT_COORD.y/2};
+        add_enemy_to_scene(scene, enemy_center);
 
-    vector_t *enemy2_center = malloc(sizeof(vector_t));
-    *enemy2_center = (vector_t){550, 0};
-    add_enemy_to_scene(scene, enemy2_center);
-    
-    vector_t *enemy3_center = malloc(sizeof(vector_t));
-    *enemy3_center = (vector_t){900, TOP_RIGHT_COORD.y};
-    add_enemy_to_scene(scene, enemy3_center);
+        vector_t *enemy2_center = malloc(sizeof(vector_t));
+        *enemy2_center = (vector_t){550, 0};
+        add_enemy_to_scene(scene, enemy2_center);
+        
+        vector_t *enemy3_center = malloc(sizeof(vector_t));
+        *enemy3_center = (vector_t){900, TOP_RIGHT_COORD.y};
+        add_enemy_to_scene(scene, enemy3_center);
+    }
     
     body_types_t *wall_info = malloc(sizeof(body_types_t *));
     *wall_info = WALL;
@@ -549,11 +555,11 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
             scene_erase_some(scenes[PLAY], FIRST_REMOVABLE_INDEX);
             place_tanks(scenes[PLAY], multi);
             if (*level == 1) {
-                level_1(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY]);
+                level_1(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY], multi);
             } else if (*level == 2) {
-                level_2(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY]);
+                level_2(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY], multi);
             } else if (*level == 3) {
-                level_3(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY]);
+                level_3(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY], multi);
             }
             *play = true;
         } else if (within_rect(scene_get_body(scenes[PAUSE], EASY_BUT), point)) {
@@ -567,7 +573,7 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
             }
             scene_erase_some(scenes[PLAY], FIRST_REMOVABLE_INDEX);
             place_tanks(scenes[PLAY], multi);
-            level_1(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY]);
+            level_1(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY], multi);
             *level = 1;
             *play = true;
         } else if (within_rect(scene_get_body(scenes[PAUSE], MEDIUM_BUT), point)) {
@@ -581,7 +587,7 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
             }
             scene_erase_some(scenes[PLAY], FIRST_REMOVABLE_INDEX);
             place_tanks(scenes[PLAY], multi);
-            level_2(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY]);
+            level_2(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY], multi);
             *level = 2;
             *play = true;
         } else if (within_rect(scene_get_body(scenes[PAUSE], HARD_BUT), point)) {
@@ -595,7 +601,7 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
             }
             scene_erase_some(scenes[PLAY], FIRST_REMOVABLE_INDEX);
             place_tanks(scenes[PLAY], multi);
-            level_3(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY]);
+            level_3(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY], multi);
             *level = 3;
             *play = true;
         } else if (!(*choosing_level) && within_rect(scene_get_body(scenes[PAUSE], CHOOSE_PLAYER_BOX), point)) {
@@ -1111,7 +1117,9 @@ int main(int argc, char *argv[]) {
     body_set_lives(tank_get_body(tank1), INIT_LIVES);
     tank_t *tank2 = add_tank_to_scene(scene, (body_types_t) TANK_2,
                                     TANK2_OFF_SCREEN);
-    level_1(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scene);
+    bool *multi = malloc(sizeof(bool));
+    *multi = false;
+    level_1(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scene, multi);
     int *level = malloc(sizeof(int));
     *level = 1;
 
@@ -1119,8 +1127,6 @@ int main(int argc, char *argv[]) {
     set_up_pause_screen(pause_scene);
     bool *play = malloc(sizeof(bool));
     *play = true;
-    bool *multi = malloc(sizeof(bool));
-    *multi = false;
     bool *choosing_level = malloc(sizeof(bool));
     *choosing_level = false;
     bool *game_over = malloc(sizeof(bool));

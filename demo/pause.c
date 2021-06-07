@@ -271,7 +271,7 @@ void on_key_push(char key, key_event_type_t type, double held_time,
 
         if (tank_get_weapon(tank1) == (shooting_handler_t) remote_missile_shoot) {
             for (size_t i=0; i < scene_bodies(scene); i++) {
-                if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE) {
+                if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE_1) {
                     body_t *missile = scene_get_body(scene, i);
 
                     if (type == KEY_RELEASED) {
@@ -670,7 +670,7 @@ void update_and_check_projectiles_and_tanks(scene_t *scene, tank_t *tank, double
             }
         }
 
-        if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE) {
+        if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE_1) {
             body_increase_time(scene_get_body(scene, i), dt);
             double curr_time = body_get_time(scene_get_body(scene, i));
 
@@ -836,10 +836,10 @@ int main(int argc, char *argv[]) {
 
 
     while (!sdl_is_done(temp_scene, scene_get_body(temp_scene, 0), play, scenes, level, multi,
-                        choosing_level, tank1, tank2, game_over)) {
+                        choosing_level, tank1, tank2, game_over, NULL)) {
         double dt = time_since_last_tick();
 
-        int win = find_winner(tank1, tank2, multi, game_over);
+        int win = find_winner(scene, tank1, tank2, multi, game_over);
 
         if (*game_over && *play == true) {
             *play = false;

@@ -206,10 +206,10 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                             speed1.y = INIT_VEL * sin(body_get_orientation(tank1_body));
                         }
                         if (key_pressed == 'd') {
-                            body_set_rotation(tank1_body, body_get_orientation(tank1_body) + ANGLE_OFFSET);
+                            body_set_rotation(tank1_body, body_get_orientation(tank1_body) + ANGLE_OFFSET / (2*i + 1));
                         }
                         if (key_pressed == 'a') {
-                            body_set_rotation(tank1_body, body_get_orientation(tank1_body) - ANGLE_OFFSET);
+                            body_set_rotation(tank1_body, body_get_orientation(tank1_body) - ANGLE_OFFSET / (2*i + 1));
                         }
                         if (key_pressed == ' ') {
                             if (body_get_time(tank1_body) > tank_get_curr_reload(tank1)) {
@@ -310,10 +310,10 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                             speed1.y = INIT_VEL * sin(body_get_orientation(tank1_body));
                         }
                         if (key_pressed == 'd') {
-                            body_set_rotation(tank1_body, body_get_orientation(tank1_body) + ANGLE_OFFSET);
+                            body_set_rotation(tank1_body, body_get_orientation(tank1_body) + ANGLE_OFFSET / (2*i + 1));
                         }
                         if (key_pressed == 'a') {
-                            body_set_rotation(tank1_body, body_get_orientation(tank1_body) - ANGLE_OFFSET);
+                            body_set_rotation(tank1_body, body_get_orientation(tank1_body) - ANGLE_OFFSET / (2*i + 1));
                         }
                         if (key_pressed == ' ') {
                             if (body_get_time(tank1_body) > tank_get_curr_reload(tank1)) {
@@ -330,10 +330,10 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                             speed2.y = INIT_VEL * sin(body_get_orientation(tank2_body));
                         }
                         if (key == RIGHT_ARROW) {
-                            body_set_rotation(tank2_body, body_get_orientation(tank2_body) + ANGLE_OFFSET);
+                            body_set_rotation(tank2_body, body_get_orientation(tank2_body) + ANGLE_OFFSET / (2*i + 1));
                         }
                         if (key_pressed == LEFT_ARROW) {
-                            body_set_rotation(tank2_body, body_get_orientation(tank2_body) - ANGLE_OFFSET);
+                            body_set_rotation(tank2_body, body_get_orientation(tank2_body) - ANGLE_OFFSET / (2*i + 1));
                         }
                         if (key_pressed == '.') {
                             if (body_get_time(tank2_body) > tank_get_curr_reload(tank2)) {
@@ -403,11 +403,11 @@ void level_1(vector_t top_right, double wall_length, double wall_height, scene_t
 
 void level_2(vector_t top_right, double wall_length, double wall_height, scene_t *scene) {
     vector_t *enemy_center = malloc(sizeof(vector_t));
-    *enemy_center = (vector_t){300, TOP_RIGHT_COORD.y/2};
+    *enemy_center = (vector_t){top_right.x * 4/10, TOP_RIGHT_COORD.y};
     add_enemy_to_scene(scene, enemy_center);
 
     vector_t *enemy2_center = malloc(sizeof(vector_t));
-    *enemy2_center = (vector_t){600, TOP_RIGHT_COORD.y/2};
+    *enemy2_center = (vector_t){600, 0};
     add_enemy_to_scene(scene, enemy2_center);
     
     body_types_t *wall_info = malloc(sizeof(body_types_t *));
@@ -453,11 +453,11 @@ void level_3(vector_t top_right, double wall_length, double wall_height, scene_t
     add_enemy_to_scene(scene, enemy_center);
 
     vector_t *enemy2_center = malloc(sizeof(vector_t));
-    *enemy2_center = (vector_t){550, TOP_RIGHT_COORD.y/2};
+    *enemy2_center = (vector_t){550, 0};
     add_enemy_to_scene(scene, enemy2_center);
     
     vector_t *enemy3_center = malloc(sizeof(vector_t));
-    *enemy3_center = (vector_t){900, TOP_RIGHT_COORD.y/2};
+    *enemy3_center = (vector_t){900, TOP_RIGHT_COORD.y};
     add_enemy_to_scene(scene, enemy3_center);
     
     body_types_t *wall_info = malloc(sizeof(body_types_t *));

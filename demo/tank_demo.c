@@ -585,7 +585,7 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
             scene_erase_some(scenes[PLAY], FIRST_REMOVABLE_INDEX);
             place_tanks(scenes[PLAY], multi);
             level_1(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY], multi);
-            *level = THIRD_LEVEL;
+            *level = FIRST_LEVEL;
             *play = true;
         } else if (within_rect(scene_get_body(scenes[PAUSE], MEDIUM_BUT), point)
                    &&  *unlocked_level >= SECOND_LEVEL) {
@@ -1242,21 +1242,26 @@ int main(int argc, char *argv[]) {
 
         if (*play) {
             win = find_winner(scene, tank1, tank2, multi, game_over);
+            printf("win:%u\n", win);
+            printf("curr lvl: %u\n", *level);
             if (win >=1 && win <= 3) {
                 if (*level == SECOND_LEVEL) {
                     *unlocked_level = THIRD_LEVEL;
-                } else if (*level == FIRST_LEVEL && *unlocked_level == FIRST_LEVEL) {
-                    *unlocked_level = SECOND_LEVEL;
+                } else if (*level == FIRST_LEVEL) {
+                    if (*unlocked_level == FIRST_LEVEL) {   
+                        *unlocked_level = SECOND_LEVEL;
+                    }
                 }
+            }
+
+            if ((*game_over || *game_started)) {
+                *play = false;
+                vector_t center = {TOP_RIGHT_COORD.x/2.0, 3*TOP_RIGHT_COORD.y/4.0};
+                add_rect_to_scene(pause_scene, center, TOP_RIGHT_COORD.x, TOP_RIGHT_COORD.y/2
+                                - CHOOSE_LEVEL_HEIGHT, WHITE_SCREEN, color_get_white());
             }
         }
 
-        if ((*game_over || *game_started) && *play == true) {
-            *play = false;
-            vector_t center = {TOP_RIGHT_COORD.x/2.0, 3*TOP_RIGHT_COORD.y/4.0};
-            add_rect_to_scene(pause_scene, center, TOP_RIGHT_COORD.x, TOP_RIGHT_COORD.y/2
-                              - CHOOSE_LEVEL_HEIGHT, WHITE_SCREEN, color_get_white());
-        }
 
         if (*play) {
             temp_scene = scene;

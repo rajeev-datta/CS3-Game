@@ -1205,7 +1205,7 @@ int main(int argc, char *argv[]) {
     bool *game_started = malloc(sizeof(bool));
     *game_started = true;
     int *unlocked_level = malloc(sizeof(int));
-    *unlocked_level = FIRST_LEVEL;
+    *unlocked_level = THIRD_LEVEL;
     TTF_Font *font = TTF_OpenFont(FONT, FONT_SIZE);
     if (!font) {
         printf("TTF_OpenFontRW: %s\n", TTF_GetError());

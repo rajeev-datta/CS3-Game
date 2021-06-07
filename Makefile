@@ -4,7 +4,7 @@ DEMOS = bounce gravity pacman nbodies damping spaceinvaders pegs breakout level_
 STAFF_LIBS = test_util sdl_wrapper
 # List of C files in "libraries" that you will write.
 # This also defines the order in which the tests are run.
-STUDENT_LIBS = vector list polygon color body scene forces animate star collision tank powerup
+STUDENT_LIBS = vector list polygon color body scene forces animate star collision tank powerup sound
 
 # If we're not on Windows...
 ifneq ($(OS), Windows_NT)
@@ -35,7 +35,7 @@ TEST_BINS = $(addprefix bin/test_suite_,$(STUDENT_LIBS))
 # List of demo executables, i.e. "bin/bounce".
 DEMO_BINS = $(addprefix bin/,$(DEMOS))
 # All executables (the concatenation of TEST_BINS and DEMO_BINS)
-BINS = $(TEST_BINS) $(DEMO_BINS)
+BINS = $(DEMO_BINS)
 
 # The first Make rule. It is relatively simple:
 # "To build 'all', make sure all files in BINS are up to date."

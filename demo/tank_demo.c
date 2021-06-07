@@ -585,7 +585,7 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
             scene_erase_some(scenes[PLAY], FIRST_REMOVABLE_INDEX);
             place_tanks(scenes[PLAY], multi);
             level_1(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY], multi);
-            *level = 1;
+            *level = THIRD_LEVEL;
             *play = true;
         } else if (within_rect(scene_get_body(scenes[PAUSE], MEDIUM_BUT), point)
                    &&  *unlocked_level >= SECOND_LEVEL) {
@@ -603,7 +603,7 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
             scene_erase_some(scenes[PLAY], FIRST_REMOVABLE_INDEX);
             place_tanks(scenes[PLAY], multi);
             level_2(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY], multi);
-            *level = 2;
+            *level = SECOND_LEVEL;
             *play = true;
         } else if (within_rect(scene_get_body(scenes[PAUSE], HARD_BUT), point)
                    &&  *unlocked_level >= THIRD_LEVEL) {
@@ -621,7 +621,7 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
             scene_erase_some(scenes[PLAY], FIRST_REMOVABLE_INDEX);
             place_tanks(scenes[PLAY], multi);
             level_3(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY], multi);
-            *level = 3;
+            *level = THIRD_LEVEL;
             *play = true;
         } else if (!(*choosing_level) && within_rect(scene_get_body(scenes[PAUSE], CHOOSE_PLAYER_BOX), point)) {
             *multi = !(*multi);
@@ -1123,28 +1123,26 @@ bool all_enemies_gone(scene_t *scene) {
     return all_gone;
 }
 
-int find_winner(scene_t *scene, tank_t *tank1, tank_t *tank2, bool *multi, bool *game_over,
-                bool *play) {
-    if (*play) {
-        if (!(*multi) && all_enemies_gone(scene)) {
-            // Condition where player 1 wins
-            *game_over = true;
-            return 3;
+int find_winner(scene_t *scene, tank_t *tank1, tank_t *tank2, bool *multi,
+                bool *game_over) {
+    if (!(*multi) && all_enemies_gone(scene)) {
+        // Condition where player 1 wins
+        *game_over = true;
+        return 3;
+    }
+    if (body_get_lives(tank_get_body(tank1)) <= 0) {
+        *game_over = true;
+        if (*multi) {
+            // Condition where player 2 wins
+            return 2;
         }
-        if (body_get_lives(tank_get_body(tank1)) <= 0) {
-            *game_over = true;
-            if (*multi) {
-                // Condition where player 2 wins
-                return 2;
-            }
-            // Condition where player 1 loses
-            return 0;
-        }
-        if (*multi && body_get_lives(tank_get_body(tank2)) <= 0) {
-            *game_over = true;
-            // Condition where player 1 wins
-            return 1;
-        }
+        // Condition where player 1 loses
+        return 0;
+    }
+    if (*multi && body_get_lives(tank_get_body(tank2)) <= 0) {
+        *game_over = true;
+        // Condition where player 1 wins
+        return 1;
     }
     // Game is still going on
     return -1;
@@ -1181,7 +1179,7 @@ int main(int argc, char *argv[]) {
     *multi = false;
     level_1(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scene, multi);
     int *level = malloc(sizeof(int));
-    *level = 1;
+    *level = FIRST_LEVEL;
 
     scene_t *pause_scene = scene_init();
     set_up_pause_screen(pause_scene);
@@ -1194,7 +1192,7 @@ int main(int argc, char *argv[]) {
     bool *game_started = malloc(sizeof(bool));
     *game_started = true;
     int *unlocked_level = malloc(sizeof(int));
-    *unlocked_level = THIRD_LEVEL;
+    *unlocked_level = FIRST_LEVEL;
     TTF_Font *font = TTF_OpenFont(FONT, FONT_SIZE);
     if (!font) {
         printf("TTF_OpenFontRW: %s\n", TTF_GetError());
@@ -1235,19 +1233,21 @@ int main(int argc, char *argv[]) {
     *tank_center = center;
 
     list_t *keys_pressed = list_init(0, free);
+    int win;
 
     while (!sdl_is_done(temp_scene, scene_get_body(temp_scene, 0), play, scenes, level,
                         multi, choosing_level, tank1, tank2, game_over, keys_pressed,
                         game_started, unlocked_level)) {
         double dt = time_since_last_tick();
 
-        int win = find_winner(scene, tank1, tank2, multi, game_over, play);
-
-        if (win >=1 && win <= 3) {
-            if (*level == 2) {
-                *unlocked_level == 3;
-            } else if (*level == 1 && *unlocked_level == 1) {
-                *unlocked_level == 2;
+        if (*play) {
+            win = find_winner(scene, tank1, tank2, multi, game_over);
+            if (win >=1 && win <= 3) {
+                if (*level == SECOND_LEVEL) {
+                    *unlocked_level = THIRD_LEVEL;
+                } else if (*level == FIRST_LEVEL && *unlocked_level == FIRST_LEVEL) {
+                    *unlocked_level = SECOND_LEVEL;
+                }
             }
         }
 

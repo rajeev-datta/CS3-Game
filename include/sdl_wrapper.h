@@ -47,7 +47,7 @@ typedef enum {
  */
 typedef void (*key_handler_t)(char key, key_event_type_t type, double held_time,
                               void *body, scene_t *scene, bool *play, bool * multi,
-                              tank_t *tank1, tank_t *tank2);
+                              tank_t *tank1, tank_t *tank2, list_t *keys_pressed);
 
 /**
  * A keypress handler.

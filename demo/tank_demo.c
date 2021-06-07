@@ -1129,9 +1129,6 @@ int main(int argc, char *argv[]) {
         printf("Mix_PlayMusic: %s\n", Mix_GetError());
         return -1;
     }
-    while(1) {
-        continue;
-    }
 
     make_pause_button(scene);
     tank_t *tank1 = add_tank_to_scene(scene, (body_types_t) TANK_1,
@@ -1192,6 +1189,7 @@ int main(int argc, char *argv[]) {
 
     while (!sdl_is_done(temp_scene, scene_get_body(temp_scene, 0), play, scenes, level, multi,
                         choosing_level, tank1, tank2, game_over, keys_pressed)) {
+       
         double dt = time_since_last_tick();
 
         int win = find_winner(scene, tank1, tank2, multi, game_over);
@@ -1260,6 +1258,10 @@ int main(int argc, char *argv[]) {
         scene_tick(temp_scene, dt);
     }
 
+    while(1) {
+        continue;
+    }
+
     SDL_FreeSurface(level1);
     SDL_FreeSurface(level2);
     SDL_FreeSurface(level3);
@@ -1272,4 +1274,5 @@ int main(int argc, char *argv[]) {
     scene_free(pause_scene);
     scene_free(scene);
     free(scenes);
+    Mix_FreeMusic(sound);
 }

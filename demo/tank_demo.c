@@ -1260,10 +1260,8 @@ int main(int argc, char *argv[]) {
             if (win >=1 && win <= 3) {
                 if (*level == SECOND_LEVEL) {
                     *unlocked_level = THIRD_LEVEL;
-                } else if (*level == FIRST_LEVEL) {
-                    if (*unlocked_level == FIRST_LEVEL) {   
-                        *unlocked_level = SECOND_LEVEL;
-                    }
+                } else if (*level == FIRST_LEVEL && *unlocked_level == FIRST_LEVEL) {  
+                    *unlocked_level = SECOND_LEVEL;
                 }
             }
 

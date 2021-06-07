@@ -36,7 +36,7 @@ static const double INIT_POWERUP_LENGTH = 10;
 static const double INIT_POWERUP_HEIGHT = 10;
 static const double POWERUP_MASS = 50;
 static const int NUM_POWERUPS = 5;
-static const int TANK_POWER_UP_TIME = 5;
+static const int TANK_POWER_UP_TIME = 3;
 static double const INIT_VEL = 200;
 static double const ANGLE_OFFSET = (10 * M_PI)/180;
 static const double ELASTICITY = 1;
@@ -1372,8 +1372,8 @@ int main(int argc, char *argv[]) {
 
             // Shoot a power-up at an interval of time.
             if (time_passed > TANK_POWER_UP_TIME) {
-                make_tank_power_up(temp_scene, rand() % NUM_POWERUPS, tank1);
-                // make_tank_power_up(temp_scene, 4, tank1);
+                // make_tank_power_up(temp_scene, rand() % NUM_POWERUPS, tank1);
+                make_tank_power_up(temp_scene, 3, tank1);
                 time_passed = 0;
             }
         } else {

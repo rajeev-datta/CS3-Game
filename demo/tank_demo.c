@@ -20,6 +20,7 @@
 #include "vector.h"
 #include "scene.h"
 #include "forces.h"
+#include "sound.h"
 
 static const vector_t BOTTOM_LEFT_COORD = {0, 0};
 static const vector_t TOP_RIGHT_COORD = {1000, 500};

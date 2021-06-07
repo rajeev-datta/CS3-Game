@@ -1244,7 +1244,11 @@ int main(int argc, char *argv[]) {
         int win = find_winner(scene, tank1, tank2, multi, game_over, play);
 
         if (win >=1 && win <= 3) {
-            *unlocked_level += 1;
+            if (*level == 2) {
+                *unlocked_level == 3;
+            } else if (*level == 1 && *unlocked_level == 1) {
+                *unlocked_level == 2;
+            }
         }
 
         if ((*game_over || *game_started) && *play == true) {

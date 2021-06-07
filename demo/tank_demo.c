@@ -76,6 +76,11 @@ static const int LIVES_DIGIT = 4;
 static const double BULLET_ELASTICITY = 0.9;
 static const int MAX_CIRC_PTS = 128;
 static const char *MUSIC = "sounds/music.wav";
+static const int FIRST_LEVEL = 1;
+static const int SECOND_LEVEL = 2;
+static const int THIRD_LEVEL = 3;
+static const int LOCK_WIDTH = 70;
+static const int LOCK_HEIGHT = 100;
 
 typedef enum pause_scene{
     RESUME_BUT,
@@ -541,16 +546,17 @@ void place_tanks(scene_t *scene, bool *multi) {
 }
 
 void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int *level,
-              bool *multi, bool *choosing_level, bool *game_over) {
+              bool *multi, bool *choosing_level, bool *game_over, bool *game_started,
+              int *unlocked_level) {
     if (*play) {
         if (within_rect(scene_get_body(scenes[PLAY], PAUSE_BUTTON), point)){
             *play = false;
         }
     } else {
-        if (!(*game_over) && !(*choosing_level)
+        if (!(*game_over || *game_started) && !(*choosing_level)
               && within_rect(scene_get_body(scenes[PAUSE], RESUME_BUT), point)) {
             *play = true;
-        } else if (!(*game_over) && !(*choosing_level)
+        } else if (!(*game_over || *game_started) && !(*choosing_level)
                    && within_rect(scene_get_body(scenes[PAUSE], RESTART_BUT), point)) {
             printf("clicked restart\n");
             scene_erase_some(scenes[PLAY], FIRST_REMOVABLE_INDEX);
@@ -563,7 +569,8 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
                 level_3(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY], multi);
             }
             *play = true;
-        } else if (within_rect(scene_get_body(scenes[PAUSE], EASY_BUT), point)) {
+        } else if (within_rect(scene_get_body(scenes[PAUSE], EASY_BUT), point)
+                   && *unlocked_level >= FIRST_LEVEL) {
             printf("clicked easy\n");
             if (*choosing_level) {
                 scene_remove_body(scenes[PAUSE], WHITE_SCREEN);
@@ -571,13 +578,17 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
             } else if (*game_over) {
                 scene_remove_body(scenes[PAUSE], WHITE_SCREEN);
                 *game_over = false;
+            } else if (*game_started) {
+                scene_remove_body(scenes[PAUSE], WHITE_SCREEN);
+                *game_started = false;
             }
             scene_erase_some(scenes[PLAY], FIRST_REMOVABLE_INDEX);
             place_tanks(scenes[PLAY], multi);
             level_1(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY], multi);
             *level = 1;
             *play = true;
-        } else if (within_rect(scene_get_body(scenes[PAUSE], MEDIUM_BUT), point)) {
+        } else if (within_rect(scene_get_body(scenes[PAUSE], MEDIUM_BUT), point)
+                   &&  *unlocked_level >= SECOND_LEVEL) {
             printf("clicked medium\n");
             if (*choosing_level) {
                 scene_remove_body(scene, WHITE_SCREEN);
@@ -585,13 +596,17 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
             } else if (*game_over) {
                 scene_remove_body(scene, WHITE_SCREEN);
                 *game_over = false;
+            } else if (*game_started) {
+                scene_remove_body(scenes[PAUSE], WHITE_SCREEN);
+                *game_started = false;
             }
             scene_erase_some(scenes[PLAY], FIRST_REMOVABLE_INDEX);
             place_tanks(scenes[PLAY], multi);
             level_2(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY], multi);
             *level = 2;
             *play = true;
-        } else if (within_rect(scene_get_body(scenes[PAUSE], HARD_BUT), point)) {
+        } else if (within_rect(scene_get_body(scenes[PAUSE], HARD_BUT), point)
+                   &&  *unlocked_level >= THIRD_LEVEL) {
             printf("clicked hard\n");
             if (*choosing_level) {
                 scene_remove_body(scene, WHITE_SCREEN);
@@ -599,6 +614,9 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
             } else if (*game_over) {
                 scene_remove_body(scene, WHITE_SCREEN);
                 *game_over = false;
+            } else if (*game_started) {
+                scene_remove_body(scenes[PAUSE], WHITE_SCREEN);
+                *game_started = false;
             }
             scene_erase_some(scenes[PLAY], FIRST_REMOVABLE_INDEX);
             place_tanks(scenes[PLAY], multi);
@@ -611,6 +629,9 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
             if (*game_over) {
                 scene_remove_body(scene, WHITE_SCREEN);
                 *game_over = false;
+            } else if (*game_started) {
+                scene_remove_body(scene, WHITE_SCREEN);
+                *game_started = false;
             }
             vector_t center = {TOP_RIGHT_COORD.x/2.0, 3*TOP_RIGHT_COORD.y/4.0};
             add_rect_to_scene(scene, center, TOP_RIGHT_COORD.x,
@@ -648,7 +669,7 @@ void set_up_pause_screen(scene_t *scene) {
 }
 
 void add_pause_screen_text(scene_t *scene, bool *multi, TTF_Font *font,
-                           bool *choosing_level, int win) {
+                           bool *choosing_level, int win, bool *game_started) {
     list_t *resume_shape = body_get_shape(scene_get_body(scene, RESUME_BUT));
     assert(list_size(resume_shape) == 4);
     int x = ((vector_t *)list_get(resume_shape, 0))->x + BUTTON_LENGTH * (1 - TEXT_SCALE)/2;
@@ -720,6 +741,11 @@ void add_pause_screen_text(scene_t *scene, bool *multi, TTF_Font *font,
             sdl_write(TOP_RIGHT_COORD.x/2 - CHOOSE_LEVEL_WIDTH/2,
                     TOP_RIGHT_COORD.y - CHOOSE_LEVEL_HEIGHT/2,
                     CHOOSE_LEVEL_WIDTH, CHOOSE_LEVEL_HEIGHT, font, MAROON_TEXT, text);
+        } else if (*game_started) {
+            char *text = "Start Game";
+            sdl_write(TOP_RIGHT_COORD.x/2 - CHOOSE_LEVEL_WIDTH/2,
+                    TOP_RIGHT_COORD.y - CHOOSE_LEVEL_HEIGHT/2,
+                    CHOOSE_LEVEL_WIDTH, CHOOSE_LEVEL_HEIGHT, font, MAROON_TEXT, text);
         }
     }
 
@@ -729,7 +755,8 @@ void add_pause_screen_text(scene_t *scene, bool *multi, TTF_Font *font,
 }
 
 void add_pause_screen_images(scene_t *scene, SDL_Surface *level1, SDL_Surface *level2,
-                             SDL_Surface *level3) {
+                             SDL_Surface *level3, SDL_Surface *lock,
+                             int *unlocked_level) {
     double level_width = TOP_RIGHT_COORD.x / 3.0 - LEVEL_BUFFER;
     double level_height = level_width/2;
     double image_width = level_width * IMG_X_SCALE;
@@ -752,6 +779,17 @@ void add_pause_screen_images(scene_t *scene, SDL_Surface *level1, SDL_Surface *l
     int hard_x = ((vector_t *)list_get(hard_shape, 0))->x + level_width * (1 - IMG_X_SCALE)/2;
     int hard_y = ((vector_t *)list_get(hard_shape, 1))->y - level_height * (1 - IMG_Y_SCALE)/2;
     sdl_image(level3, hard_x, hard_y, image_width, image_height);
+
+    if (*unlocked_level < SECOND_LEVEL) {
+        sdl_image(lock, medium_x + image_width/2 - LOCK_WIDTH/2,
+                 medium_y + image_height/2 - LOCK_HEIGHT/2 - BUFFER, LOCK_WIDTH,
+                 LOCK_HEIGHT);
+    }
+    if (*unlocked_level < THIRD_LEVEL) {
+        sdl_image(lock, hard_x + image_width/2 - LOCK_WIDTH/2,
+                 hard_y + image_height/2 - LOCK_HEIGHT/2 - BUFFER, LOCK_WIDTH,
+                 LOCK_HEIGHT);
+    }
 
     list_free(easy_shape);
     list_free(medium_shape);
@@ -1085,25 +1123,28 @@ bool all_enemies_gone(scene_t *scene) {
     return all_gone;
 }
 
-int find_winner(scene_t *scene, tank_t *tank1, tank_t *tank2, bool *multi, bool *game_over) {
-    if (!(*multi) && all_enemies_gone(scene)) {
-        // Condition where player 1 wins
-        *game_over = true;
-        return 3;
-    }
-    if (body_get_lives(tank_get_body(tank1)) <= 0) {
-        *game_over = true;
-        if (*multi) {
-            // Condition where player 2 wins
-            return 2;
+int find_winner(scene_t *scene, tank_t *tank1, tank_t *tank2, bool *multi, bool *game_over,
+                bool *play) {
+    if (*play) {
+        if (!(*multi) && all_enemies_gone(scene)) {
+            // Condition where player 1 wins
+            *game_over = true;
+            return 3;
         }
-        // Condition where player 1 loses
-        return 0;
-    }
-    if (*multi && body_get_lives(tank_get_body(tank2)) <= 0) {
-        *game_over = true;
-        // Condition where player 1 wins
-        return 1;
+        if (body_get_lives(tank_get_body(tank1)) <= 0) {
+            *game_over = true;
+            if (*multi) {
+                // Condition where player 2 wins
+                return 2;
+            }
+            // Condition where player 1 loses
+            return 0;
+        }
+        if (*multi && body_get_lives(tank_get_body(tank2)) <= 0) {
+            *game_over = true;
+            // Condition where player 1 wins
+            return 1;
+        }
     }
     // Game is still going on
     return -1;
@@ -1150,6 +1191,10 @@ int main(int argc, char *argv[]) {
     *choosing_level = false;
     bool *game_over = malloc(sizeof(bool));
     *game_over = false;
+    bool *game_started = malloc(sizeof(bool));
+    *game_started = true;
+    int *unlocked_level = malloc(sizeof(int));
+    *unlocked_level = THIRD_LEVEL;
     TTF_Font *font = TTF_OpenFont(FONT, FONT_SIZE);
     if (!font) {
         printf("TTF_OpenFontRW: %s\n", TTF_GetError());
@@ -1164,6 +1209,10 @@ int main(int argc, char *argv[]) {
     }
     SDL_Surface *level3 = IMG_Load("images/level3.png");
     if (!level3) {
+        printf("IMG_LoadRW: %s\n", IMG_GetError());
+    }
+    SDL_Surface *lock = IMG_Load("images/lock.png");
+    if (!lock) {
         printf("IMG_LoadRW: %s\n", IMG_GetError());
     }
     SDL_Surface *wall = IMG_Load("images/wall.png");
@@ -1187,13 +1236,18 @@ int main(int argc, char *argv[]) {
 
     list_t *keys_pressed = list_init(0, free);
 
-    while (!sdl_is_done(temp_scene, scene_get_body(temp_scene, 0), play, scenes, level, multi,
-                        choosing_level, tank1, tank2, game_over, keys_pressed)) {
+    while (!sdl_is_done(temp_scene, scene_get_body(temp_scene, 0), play, scenes, level,
+                        multi, choosing_level, tank1, tank2, game_over, keys_pressed,
+                        game_started, unlocked_level)) {
         double dt = time_since_last_tick();
 
-        int win = find_winner(scene, tank1, tank2, multi, game_over);
+        int win = find_winner(scene, tank1, tank2, multi, game_over, play);
 
-        if (*game_over && *play == true) {
+        if (win >=1 && win <= 3) {
+            *unlocked_level += 1;
+        }
+
+        if ((*game_over || *game_started) && *play == true) {
             *play = false;
             vector_t center = {TOP_RIGHT_COORD.x/2.0, 3*TOP_RIGHT_COORD.y/4.0};
             add_rect_to_scene(pause_scene, center, TOP_RIGHT_COORD.x, TOP_RIGHT_COORD.y/2
@@ -1249,8 +1303,10 @@ int main(int argc, char *argv[]) {
         if (*play) {
             add_play_screen_text(temp_scene, multi, font, tank1, tank2);
         } else {
-            add_pause_screen_text(temp_scene, multi, font, choosing_level, win);
-            add_pause_screen_images(temp_scene, level1, level2, level3);
+            add_pause_screen_text(temp_scene, multi, font, choosing_level, win,
+                                  game_started);
+            add_pause_screen_images(temp_scene, level1, level2, level3, lock,
+                                    unlocked_level);
         }
         sdl_show();
         
@@ -1264,11 +1320,13 @@ int main(int argc, char *argv[]) {
     SDL_FreeSurface(level2);
     SDL_FreeSurface(level3);
     SDL_FreeSurface(wall);
+    SDL_FreeSurface(lock);
     TTF_CloseFont(font);
     free(play);
     free(multi);
     free(choosing_level);
     free(game_over);
+    free(game_started);
     scene_free(pause_scene);
     scene_free(scene);
     free(scenes);

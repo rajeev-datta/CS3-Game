@@ -75,6 +75,7 @@ static const int LIVES_TXT = 9;
 static const int LIVES_DIGIT = 4;
 static const double BULLET_ELASTICITY = 0.9;
 static const int MAX_CIRC_PTS = 128;
+static const char *MUSIC = "music.wav";
 
 typedef enum pause_scene{
     RESUME_BUT,
@@ -1111,6 +1112,27 @@ int find_winner(scene_t *scene, tank_t *tank1, tank_t *tank2, bool *multi, bool 
 int main(int argc, char *argv[]) {
     sdl_init(BOTTOM_LEFT_COORD, TOP_RIGHT_COORD);
     scene_t *scene = scene_init();
+
+    //start playing music
+    SDL_Init(SDL_INIT_AUDIO);
+    Mix_Init(MIX_INIT_FLAC | MIX_INIT_MOD | MIX_INIT_MP3 | MIX_INIT_OGG);
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+        printf("Mix_OpenAudio: %s\n", Mix_GetError());
+        return -1;
+    }
+    Mix_Music *sound = Mix_LoadMUS(MUSIC);
+    if (!sound) {
+        printf("Mix_LoadMUS: %s\n", Mix_GetError());
+        return -1;
+    }
+    if (Mix_PlayMusic(sound, -1) == -1) {
+        printf("Mix_PlayMusic: %s\n", Mix_GetError());
+        return -1;
+    }
+    while(1) {
+        continue;
+    }
+
     make_pause_button(scene);
     tank_t *tank1 = add_tank_to_scene(scene, (body_types_t) TANK_1,
                                     TANK1_INIT_POS);

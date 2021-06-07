@@ -108,6 +108,7 @@ void scene_tick(scene_t *scene, double dt) {
                 if(*(body_types_t *) body_get_info(curr_body) == TANK_1 ||
                    *(body_types_t *) body_get_info(curr_body) == TANK_2 || 
                    *(body_types_t *) body_get_info(curr_body) == ENEMY_TANK) {
+                    printf("playing remove sound");
                     play_remove_sound();
                 }
                 force_data_free(list_remove(scene->force_data_lst, j));

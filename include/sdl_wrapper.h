@@ -93,7 +93,7 @@ void sdl_init(vector_t min, vector_t max);
  */
 bool sdl_is_done(scene_t *scene, void *body, bool *play, scene_t **scenes, int *level,
                  bool *multi, bool *choosing_level, tank_t *tank1, tank_t *tank2,
-                 bool *game_over);
+                 bool *game_over, list_t *keys_pressed);
 
 /**
  * Clears the screen. Should be called before drawing polygons in each frame.

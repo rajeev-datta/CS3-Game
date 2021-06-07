@@ -340,7 +340,6 @@ void wall_boundary(scene_t *scene, tank_t *tank) {
         if (*(body_types_t* )body_get_info(curr_body) == WALL) {
             collision_info_t collision = find_collision(body_get_real_shape(tank_body), body_get_real_shape(curr_body));
             if (collision.collided) {
-                printf("(%f, %f)", collision.axis.x, collision.axis.y);
                 if (fabs(collision.axis.x) != 0.0) {
                     if (body_get_centroid(tank_body).x - body_get_centroid(curr_body).x < 0) {
                         body_set_centroid(tank_body, (vector_t) {body_get_centroid(tank_body).x - 10, body_get_centroid(tank_body).y});

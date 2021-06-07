@@ -144,7 +144,7 @@ void make_pause_button(scene_t *scene) {
 
 void on_key_push(char key, key_event_type_t type, double held_time,
                  void *object, scene_t *scene, bool *play, bool *multi,
-                 tank_t *tank1, tank_t *tank2) {
+                 tank_t *tank1, tank_t *tank2, list_t *keys_pressed) {
     if (*play) {
         if (!*multi) {
             body_t *tank1_body = tank_get_body(tank1);
@@ -156,12 +156,9 @@ void on_key_push(char key, key_event_type_t type, double held_time,
             // }
 
             if (tank_get_weapon(tank1) == (shooting_handler_t) remote_missile_shoot) {
-                body_set_velocity(tank1_body, (vector_t){0, 0});
-                bool missile_exists = false;
-                for (size_t i=0; i < scene_bodies(scene); i++) {
+                for (size_t i=0; scene_bodies(scene); i++) {
                     // marked for deletion but not deleted yet
                     if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE_1) {
-                        missile_exists = true;
                         body_t *missile = scene_get_body(scene, i);
 
                         if (type == KEY_RELEASED) {
@@ -188,51 +185,55 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                         }
                     }
                 }
-                
-                if (!missile_exists) {
-                    tank_shoot(scene, tank1);
-                }
             }
             else {
                 if (type == KEY_RELEASED) {
                     body_set_velocity(tank1_body, (vector_t){0, 0});
+                    list_clear(keys_pressed);
                 } else if (type == KEY_PRESSED) {
-                    vector_t speed = {0, 0};
-                    switch (key) {
-                        case DOWN_ARROW:
-                            speed.x = -INIT_VEL * cos(body_get_orientation(tank1_body));
-                            speed.y = -INIT_VEL * sin(body_get_orientation(tank1_body));
-                            break;
-                        case UP_ARROW:
-                            speed.x = INIT_VEL * cos(body_get_orientation(tank1_body));
-                            speed.y = INIT_VEL * sin(body_get_orientation(tank1_body));
-                            break;
-                        case RIGHT_ARROW:
+                    vector_t speed1 = {0, 0};
+                    vector_t speed2 = {0, 0};
+                    //if (key == '')
+                    list_add(keys_pressed, key);
+                    for (size_t i = 0; i < list_size(keys_pressed); i++) {
+                        char key_pressed = list_get(keys_pressed, i);
+                        if (key_pressed == 's') {
+                            speed1.x = -INIT_VEL * cos(body_get_orientation(tank1_body));
+                            speed1.y = -INIT_VEL * sin(body_get_orientation(tank1_body));
+                        }
+                        if (key_pressed == 'w') {
+                            speed1.x = INIT_VEL * cos(body_get_orientation(tank1_body));
+                            speed1.y = INIT_VEL * sin(body_get_orientation(tank1_body));
+                        }
+                        if (key_pressed == 'd') {
                             body_set_rotation(tank1_body, body_get_orientation(tank1_body) + ANGLE_OFFSET);
-                            break;
-                        case LEFT_ARROW:
+                        }
+                        if (key_pressed == 'a') {
                             body_set_rotation(tank1_body, body_get_orientation(tank1_body) - ANGLE_OFFSET);
-                            break;
-                        case ' ':
+                        }
+                        if (key_pressed == ' ') {
                             if (body_get_time(tank1_body) > tank_get_curr_reload(tank1)) {
                                 tank_shoot(scene, tank1);
                                 tank_set_body_time(tank1, 0);
                             }
-                            break;
+                        }
                     }
-                    body_set_velocity(tank1_body, speed);
+                    body_set_velocity(tank1_body, speed1);
                 }
-            }
+
+            // if (!missile_exists) {
+            //     tank_shoot(scene, tank1);
+            // }
+        }
         } else {
             body_t *tank1_body = tank_get_body(tank1);
             body_t *tank2_body = tank_get_body(tank2);
 
             if (tank_get_weapon(tank1) == (shooting_handler_t) remote_missile_shoot) {
-                bool missile_exists = false;
-                for (size_t i=0; i < scene_bodies(scene); i++) {
+                for (size_t i=0; scene_bodies(scene); i++) {
                     if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE_1) {
                         body_t *missile1 = scene_get_body(scene, i);
-                        missile_exists = true;
+
                         if (type == KEY_RELEASED) {
                             body_set_velocity(missile1, (vector_t){0, 0});
                         } else if (type == KEY_PRESSED) {
@@ -256,18 +257,13 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                             body_set_velocity(missile1, speed1);
                         }
                     }
-
-                    if (!missile_exists) {
-                        tank_shoot(scene, tank1);
-                    }
                 }
             }
             if (tank_get_weapon(tank2) == (shooting_handler_t) remote_missile_shoot) {
-                bool missile_exists = false;
-                for (size_t i=0; i < scene_bodies(scene); i++) {
+                for (size_t i=0; scene_bodies(scene); i++) {
                     if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE_2) {
                         body_t *missile2 = scene_get_body(scene, i);
-                        missile_exists = true;
+
                         if (type == KEY_RELEASED) {
                             body_set_velocity(missile2, (vector_t){0, 0});
                         } else if (type == KEY_PRESSED) {
@@ -292,57 +288,58 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                         }
                     }
                 }
-
-                if (!missile_exists) {
-                    tank_shoot(scene, tank2);
-                }
             }
             else {
                 if (type == KEY_RELEASED) {
                     body_set_velocity(tank1_body, (vector_t){0, 0});
                     body_set_velocity(tank2_body, (vector_t){0, 0});
+                    list_clear(keys_pressed);
                 } else if (type == KEY_PRESSED) {
                     vector_t speed1 = {0, 0};
                     vector_t speed2 = {0, 0};
                     //if (key == '')
-                    if (key == 's') {
-                        speed1.x = -INIT_VEL * cos(body_get_orientation(tank1_body));
-                        speed1.y = -INIT_VEL * sin(body_get_orientation(tank1_body));
-                    }
-                    if (key == 'w') {
-                        speed1.x = INIT_VEL * cos(body_get_orientation(tank1_body));
-                        speed1.y = INIT_VEL * sin(body_get_orientation(tank1_body));
-                    }
-                    if (key == 'd') {
-                        body_set_rotation(tank1_body, body_get_orientation(tank1_body) + ANGLE_OFFSET);
-                    }
-                    if (key == 'a') {
-                        body_set_rotation(tank1_body, body_get_orientation(tank1_body) - ANGLE_OFFSET);
-                    }
-                    if (key == ' ') {
-                        if (body_get_time(tank1_body) > tank_get_curr_reload(tank1)) {
-                            tank_shoot(scene, tank1);
-                            tank_set_body_time(tank1, 0);
+                    list_add(keys_pressed, key);
+                    for (size_t i = 0; i < list_size(keys_pressed); i++) {
+                        char key_pressed = list_get(keys_pressed, i);
+                        if (key_pressed == 's') {
+                            speed1.x = -INIT_VEL * cos(body_get_orientation(tank1_body));
+                            speed1.y = -INIT_VEL * sin(body_get_orientation(tank1_body));
                         }
-                    }
-                    if (key == DOWN_ARROW) {
-                        speed2.x = -INIT_VEL * cos(body_get_orientation(tank2_body));
-                        speed2.y = -INIT_VEL * sin(body_get_orientation(tank2_body));
-                    }
-                    if (key == UP_ARROW) {
-                        speed2.x = INIT_VEL * cos(body_get_orientation(tank2_body));
-                        speed2.y = INIT_VEL * sin(body_get_orientation(tank2_body));
-                    }
-                    if (key == RIGHT_ARROW) {
-                        body_set_rotation(tank2_body, body_get_orientation(tank2_body) + ANGLE_OFFSET);
-                    }
-                    if (key == LEFT_ARROW) {
-                        body_set_rotation(tank2_body, body_get_orientation(tank2_body) - ANGLE_OFFSET);
-                    }
-                    if (key == '.') {
-                        if (body_get_time(tank2_body) > tank_get_curr_reload(tank2)) {
-                            tank_shoot(scene, tank2);
-                            tank_set_body_time(tank2, 0);
+                        if (key_pressed == 'w') {
+                            speed1.x = INIT_VEL * cos(body_get_orientation(tank1_body));
+                            speed1.y = INIT_VEL * sin(body_get_orientation(tank1_body));
+                        }
+                        if (key_pressed == 'd') {
+                            body_set_rotation(tank1_body, body_get_orientation(tank1_body) + ANGLE_OFFSET);
+                        }
+                        if (key_pressed == 'a') {
+                            body_set_rotation(tank1_body, body_get_orientation(tank1_body) - ANGLE_OFFSET);
+                        }
+                        if (key_pressed == ' ') {
+                            if (body_get_time(tank1_body) > tank_get_curr_reload(tank1)) {
+                                tank_shoot(scene, tank1);
+                                tank_set_body_time(tank1, 0);
+                            }
+                        }
+                        if (key_pressed == DOWN_ARROW) {
+                            speed2.x = -INIT_VEL * cos(body_get_orientation(tank2_body));
+                            speed2.y = -INIT_VEL * sin(body_get_orientation(tank2_body));
+                        }
+                        if (key_pressed == UP_ARROW) {
+                            speed2.x = INIT_VEL * cos(body_get_orientation(tank2_body));
+                            speed2.y = INIT_VEL * sin(body_get_orientation(tank2_body));
+                        }
+                        if (key == RIGHT_ARROW) {
+                            body_set_rotation(tank2_body, body_get_orientation(tank2_body) + ANGLE_OFFSET);
+                        }
+                        if (key_pressed == LEFT_ARROW) {
+                            body_set_rotation(tank2_body, body_get_orientation(tank2_body) - ANGLE_OFFSET);
+                        }
+                        if (key_pressed == '.') {
+                            if (body_get_time(tank2_body) > tank_get_curr_reload(tank2)) {
+                                tank_shoot(scene, tank2);
+                                tank_set_body_time(tank2, 0);
+                            }
                         }
                     }
                     body_set_velocity(tank1_body, speed1);
@@ -1163,8 +1160,10 @@ int main(int argc, char *argv[]) {
     vector_t center = {rand() % (int)TOP_RIGHT_COORD.x, rand() % (int)TOP_RIGHT_COORD.y};
     *tank_center = center;
 
+    list_t *keys_pressed = list_init(0, free);
+
     while (!sdl_is_done(temp_scene, scene_get_body(temp_scene, 0), play, scenes, level, multi,
-                        choosing_level, tank1, tank2, game_over)) {
+                        choosing_level, tank1, tank2, game_over, keys_pressed)) {
         double dt = time_since_last_tick();
 
         int win = find_winner(scene, tank1, tank2, multi, game_over);

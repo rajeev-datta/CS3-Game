@@ -78,3 +78,8 @@ void list_set(list_t *list, void *value, size_t idx) {
     list->data[idx] = value;
 }
 
+void list_clear(list_t *list) {
+    while (list_size(list) != 0.0) {
+        list_remove(list, 0);
+    }
+}

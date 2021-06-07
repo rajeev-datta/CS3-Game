@@ -1113,7 +1113,7 @@ int main(int argc, char *argv[]) {
     sdl_init(BOTTOM_LEFT_COORD, TOP_RIGHT_COORD);
     scene_t *scene = scene_init();
 
-    //start playing music
+    //set up music
     SDL_Init(SDL_INIT_AUDIO);
     Mix_Init(MIX_INIT_FLAC | MIX_INIT_MOD | MIX_INIT_MP3 | MIX_INIT_OGG);
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
@@ -1256,6 +1256,7 @@ int main(int argc, char *argv[]) {
         
         scene_tick(temp_scene, dt);
 
+        //keep playing music
         continue;
     }
 

@@ -611,10 +611,13 @@ void place_tanks(scene_t *scene, bool *multi) {
     body_set_centroid(scene_get_body(scene, TANK1), TANK1_INIT_POS);
     body_set_rotation(scene_get_body(scene, TANK1), 0);
     body_set_lives(scene_get_body(scene, TANK1), INIT_LIVES);
+    tank_set_shooting_handler(scene_get_body(scene, TANK1), NULL);
+
     if (*multi) {
         body_set_centroid(scene_get_body(scene, TANK2), TANK2_INIT_POS);
         body_set_rotation(scene_get_body(scene, TANK2), M_PI);
         body_set_lives(scene_get_body(scene, TANK2), INIT_LIVES);
+        tank_set_shooting_handler(scene_get_body(scene, TANK2), NULL);
     } else {
         body_set_centroid(scene_get_body(scene, TANK2), TANK2_OFF_SCREEN);
     }

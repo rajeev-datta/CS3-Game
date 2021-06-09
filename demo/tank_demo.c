@@ -1355,6 +1355,11 @@ int main(int argc, char *argv[]) {
 
             update_and_check_projectiles_and_tanks(scene, tank1, dt);
 
+            if (*multi) {
+                update_and_check_projectiles_and_tanks(scene, tank2, dt);
+                handle_force_field(scene, tank2, dt);
+            }
+
             handle_force_field(scene, tank1, dt);
             
             // side_boundary(scene, TOP_RIGHT_COORD, BOTTOM_LEFT_COORD, 25.0);

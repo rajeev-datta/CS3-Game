@@ -65,11 +65,13 @@ typedef void (*key_handler_t)(char key, key_event_type_t type, double held_time,
  * @param game_over a pointer to a boolean indicating if the game is over
  * @param game_started a pointer to a boolean that keeps track if the game just started
  * @param unlocked_level a pointer to an int representing the highest unlocked level
+ * @param tank1 the player 1 tank
+ * @param tank2 the palyer 2 tank
  */
 typedef void (*mouse_handler_t)(scene_t *scene, vector_t point, bool *play,
                                 scene_t **scenes, int *level, bool * multi,
                                 bool *choosing_level, bool *game_over, bool *game_started,
-                                int *unlocked_level);
+                                int *unlocked_level, tank_t *tank1, tank_t *tank2);
 
 /**
  * Initializes the SDL window and renderer.
@@ -91,6 +93,8 @@ void sdl_init(vector_t min, vector_t max);
  * @param level a pointer to an integer representing the level of the game
  * @param multi a pointer to a boolean indicating multiplayer
  * @param choosing_level a pointer to a boolean indicating if the level is being chosen
+ * @param tank1 the player 1 tank
+ * @param tank2 the palyer 2 tank
  * @param game_over a pointer to a boolean indicating if the game is over
  * @param keys_pressed a list of the keys that have been pressed
  * @param game_started a pointer to a boolean that keeps track if the game just started

@@ -162,7 +162,7 @@ bool sdl_is_done(scene_t *scene, void *object, bool *play, scene_t **scenes, int
                 vector_t window_center = get_window_center();
                 vector_t pixel = get_window_position((vector_t){x, y}, window_center);
                 mouse_handler(scene, pixel, play, scenes, level, multi, choosing_level,
-                              game_over, game_started, unlocked_level);
+                              game_over, game_started, unlocked_level, tank1, tank2);
             case SDL_KEYDOWN:
             case SDL_KEYUP:
                 // Skip the keypress if no handler is configured

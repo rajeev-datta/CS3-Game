@@ -612,17 +612,17 @@ bool within_rect(body_t *body, vector_t point) {
     return within;
 }
 
-void place_tanks(scene_t *scene, bool *multi) {
+void place_tanks(scene_t *scene, bool *multi, tank_t *tank1, tank_t* tank2) {
     body_set_centroid(scene_get_body(scene, TANK1), TANK1_INIT_POS);
     body_set_rotation(scene_get_body(scene, TANK1), 0);
     body_set_lives(scene_get_body(scene, TANK1), INIT_LIVES);
-    tank_set_shooting_handler(scene_get_body(scene, TANK1), NULL);
+    tank_set_shooting_handler(tank1, NULL);
+    tank_set_shooting_handler(tank2, NULL);
 
     if (*multi) {
         body_set_centroid(scene_get_body(scene, TANK2), TANK2_INIT_POS);
         body_set_rotation(scene_get_body(scene, TANK2), M_PI);
         body_set_lives(scene_get_body(scene, TANK2), INIT_LIVES);
-        tank_set_shooting_handler(scene_get_body(scene, TANK2), NULL);
     } else {
         body_set_centroid(scene_get_body(scene, TANK2), TANK2_OFF_SCREEN);
     }
@@ -630,7 +630,7 @@ void place_tanks(scene_t *scene, bool *multi) {
 
 void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int *level,
               bool *multi, bool *choosing_level, bool *game_over, bool *game_started,
-              int *unlocked_level) {
+              int *unlocked_level, tank_t *tank1, tank_t* tank2) {
     if (*play) {
         if (within_rect(scene_get_body(scenes[PLAY], PAUSE_BUTTON), point)){
             *play = false;
@@ -643,7 +643,7 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
                    && within_rect(scene_get_body(scenes[PAUSE], RESTART_BUT), point)) {
             printf("clicked restart\n");
             scene_erase_some(scenes[PLAY], FIRST_REMOVABLE_INDEX);
-            place_tanks(scenes[PLAY], multi);
+            place_tanks(scenes[PLAY], multi, tank1, tank2);
             if (*level == 1) {
                 level_1(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY], multi);
             } else if (*level == 2) {
@@ -666,7 +666,7 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
                 *game_started = false;
             }
             scene_erase_some(scenes[PLAY], FIRST_REMOVABLE_INDEX);
-            place_tanks(scenes[PLAY], multi);
+            place_tanks(scenes[PLAY], multi, tank1, tank2);
             level_1(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY], multi);
             *level = FIRST_LEVEL;
             *play = true;
@@ -684,7 +684,7 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
                 *game_started = false;
             }
             scene_erase_some(scenes[PLAY], FIRST_REMOVABLE_INDEX);
-            place_tanks(scenes[PLAY], multi);
+            place_tanks(scenes[PLAY], multi, tank1, tank2);
             level_2(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY], multi);
             *level = SECOND_LEVEL;
             *play = true;
@@ -702,7 +702,7 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
                 *game_started = false;
             }
             scene_erase_some(scenes[PLAY], FIRST_REMOVABLE_INDEX);
-            place_tanks(scenes[PLAY], multi);
+            place_tanks(scenes[PLAY], multi, tank1, tank2);
             level_3(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY], multi);
             *level = THIRD_LEVEL;
             *play = true;
@@ -1314,8 +1314,6 @@ int main(int argc, char *argv[]) {
         double dt = time_since_last_tick();
         if (*play) {
             win = find_winner(scene, tank1, tank2, multi, game_over);
-            //printf("win:%u\n", win);
-            //printf("curr lvl: %u\n", *level);
             if (win >=1 && win <= 3) {
                 if (*level == SECOND_LEVEL) {
                     *unlocked_level = THIRD_LEVEL;

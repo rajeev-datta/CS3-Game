@@ -9,6 +9,7 @@
 #include "animate.h"
 #include "forces.h"
 #include "sound.h"
+#include <stdbool.h>
 
 const size_t INIT_NUM_BODIES = 15;
 const int NUM_OF_BOMB_FRAGS = 10;
@@ -29,6 +30,7 @@ typedef struct force_data {
 typedef struct scene {
     list_t *bodies;
     list_t *force_data_lst;
+    bool *game_over;
 } scene_t;
 
 void force_data_free(force_data_t *force_data) {
@@ -55,6 +57,7 @@ scene_t *scene_init(void) {
     scene_t *scene_obj = malloc(sizeof(scene_t));
     scene_obj->bodies = list_init(INIT_NUM_BODIES, (free_func_t)body_free);
     scene_obj->force_data_lst = list_init(INIT_NUM_BODIES, (free_func_t)force_data_free);
+    scene_obj->game_over = malloc(sizeof(bool));
     return scene_obj;
 }
 
@@ -115,7 +118,8 @@ void scene_tick(scene_t *scene, double dt) {
     for (size_t i = 0; i < scene_bodies(scene); i++) {
         body_t *body = list_get(scene->bodies, i);
         if(body_is_removed(body)) {
-            if(*(body_types_t *) body_get_info(body) == ENEMY_TANK) {
+            if(*(body_types_t *) body_get_info(body) == ENEMY_TANK
+               && body_get_play_sound(body)) {
                 printf("playing remove sound");
                 play_remove_sound();
             }
@@ -135,6 +139,7 @@ void scene_erase(scene_t *scene) {
 
 void scene_erase_some(scene_t *scene, int index) {
     for (size_t i = index; i < scene_bodies(scene); i++) {
+        body_set_play_sound(scene_get_body(scene, i), false);
         scene_remove_body(scene, i);
     }
 }

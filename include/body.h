@@ -222,4 +222,8 @@ bool body_is_tank(body_t *body);
 
 void body_set_is_tank(body_t *body, bool bool_pause);
 
+void body_set_play_sound(body_t *body, bool play_sound);
+
+bool body_get_play_sound(body_t *body);
+
 #endif // #ifndef __BODY_H__

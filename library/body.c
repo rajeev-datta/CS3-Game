@@ -24,6 +24,7 @@ typedef struct body {
     bool is_powerup;
     bool is_pause_button;
     bool is_tank;
+    bool play_sound;
 } body_t;
 
 body_t *body_init(list_t *shape, double mass, rgb_color_t color) {
@@ -47,6 +48,7 @@ body_t *body_init(list_t *shape, double mass, rgb_color_t color) {
     body_obj->is_powerup = false;
     body_obj->is_pause_button = false;
     body_obj->is_tank = false;
+    body_obj->play_sound = true;
     return body_obj;
 }
 
@@ -127,6 +129,10 @@ void body_set_info(body_t *body, void *new_info) {
     body->info = new_info;
 }
 
+void body_set_play_sound(body_t *body, bool play_sound) {
+    body->play_sound = play_sound;
+}
+
 void body_add_force(body_t *body, vector_t force) {
     if (body->force.x == 0 && body->force.y == 0) {
         body->force = force;
@@ -175,6 +181,10 @@ void body_remove(body_t *body) {
 
 bool body_is_removed(body_t *body) {
     return body->remove;
+}
+
+bool body_get_play_sound(body_t *body) {
+    return body->play_sound;
 }
 
 double body_get_time(body_t *body) {

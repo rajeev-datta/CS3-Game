@@ -911,7 +911,7 @@ void add_play_screen_text(scene_t *scene, bool *multi, TTF_Font *font, tank_t *t
     }
 }
 
-void make_tank_power_up(scene_t *scene, int type, tank_t * tank) {
+void make_tank_power_up(scene_t *scene, int type, tank_t *tank, tank_t *tank_2) {
     rgb_color_t color;
     powerups_t powerup_type;
     if (type == 0) {
@@ -943,6 +943,9 @@ void make_tank_power_up(scene_t *scene, int type, tank_t * tank) {
 
     create_tank_powerup_collision(scene, tank, power_up_body, type);
     create_partial_destructive_collision(scene, tank_get_body(tank), power_up_body);
+
+    create_tank_powerup_collision(scene, tank_2, power_up_body, type);
+    create_partial_destructive_collision(scene, tank_get_body(tank_2), power_up_body);
 
     // create_tank_powerup_collision(scene, scene_get_body(scene, 1), power_up_body, type);
     // create_partial_destructive_collision(scene, scene_get_body(scene, 1), power_up_body);
@@ -1366,8 +1369,8 @@ int main(int argc, char *argv[]) {
 
             // Shoot a power-up at an interval of time.
             if (time_passed > TANK_POWER_UP_TIME) {
-                // make_tank_power_up(temp_scene, rand() % NUM_POWERUPS, tank1);
-                make_tank_power_up(temp_scene, 4, tank1);
+                // make_tank_power_up(temp_scene, rand() % NUM_POWERUPS, tank1, tank2);
+                make_tank_power_up(temp_scene, 3, tank1, tank2);
                 time_passed = 0;
             }
         } else {

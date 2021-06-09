@@ -1295,15 +1295,16 @@ int main(int argc, char *argv[]) {
     list_t *keys_pressed = list_init(0, free);
     int win;
 
+    load_sound();
+
     while (!sdl_is_done(temp_scene, scene_get_body(temp_scene, 0), play, scenes, level,
                         multi, choosing_level, tank1, tank2, game_over, keys_pressed,
                         game_started, unlocked_level)) {
         double dt = time_since_last_tick();
-        load_sound();
         if (*play) {
             win = find_winner(scene, tank1, tank2, multi, game_over);
-            printf("win:%u\n", win);
-            printf("curr lvl: %u\n", *level);
+            //printf("win:%u\n", win);
+            //printf("curr lvl: %u\n", *level);
             if (win >=1 && win <= 3) {
                 if (*level == SECOND_LEVEL) {
                     *unlocked_level = THIRD_LEVEL;
@@ -1383,6 +1384,7 @@ int main(int argc, char *argv[]) {
         continue;
     }
 
+    free_sound();
     SDL_FreeSurface(level1);
     SDL_FreeSurface(level2);
     SDL_FreeSurface(level3);

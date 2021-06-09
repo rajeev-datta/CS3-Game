@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include "sound.h"
 
 static const int MASS = 100;
 static const double default_reload_time = 1;
@@ -89,6 +90,7 @@ double tank_get_default_range(tank_t *tank) {
 }
 
 void tank_shoot(scene_t *scene, tank_t *tank) {
+    play_shoot_sound();
     body_t *tank_body = tank_get_body(tank);
     if (tank_get_weapon(tank) != NULL && tank_get_weapon(tank) != (shooting_handler_t) force_field_shoot) {
         shooting_handler_t weapon = tank_get_weapon(tank);

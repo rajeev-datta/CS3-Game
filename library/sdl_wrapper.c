@@ -138,7 +138,6 @@ void sdl_init(vector_t min, vector_t max) {
     );
     renderer = SDL_CreateRenderer(window, -1, 0);
     TTF_Init();
-    SDL_Init(SDL_INIT_VIDEO);
 
 }
 

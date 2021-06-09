@@ -243,8 +243,8 @@ void on_key_push(char key, key_event_type_t type, double held_time,
             body_t *tank1_body = tank_get_body(tank1);
             body_t *tank2_body = tank_get_body(tank2);
 
-            if (tank_get_weapon(tank1) == (shooting_handler_t) remote_missile_shoot) {
-                printf("tank1 missile");
+            if ((tank_get_weapon(tank1) == (shooting_handler_t) remote_missile_shoot) && 
+                (tank_get_weapon(tank2) != (shooting_handler_t) remote_missile_shoot)) {
                 bool missile_exists = false;
                 list_clear(keys_pressed);
                 body_set_velocity(tank1_body, (vector_t) {0,0});
@@ -255,8 +255,10 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                         list_clear(keys_pressed);
                         if (type == KEY_RELEASED) {
                             body_set_velocity(missile1, (vector_t){0, 0});
+                            body_set_velocity(tank2_body, (vector_t) {0,0});
                             list_clear(keys_pressed);
                         } else if (type == KEY_PRESSED) {
+                            printf("-----yes-----");
                             vector_t speed1 = {0, 0};
                             vector_t speed2 = {0, 0};
                             list_add(keys_pressed, key);
@@ -307,20 +309,18 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                     tank_shoot(scene, tank1);
                 }
             }
-            // With the two if statements, it seems to activate the first if statement and the else statement at
-            // the same time, as opposed to just one. Not sure why...
-            // When below code is commented out, code runs as intended for tank 1
-            if (tank_get_weapon(tank2) == (shooting_handler_t) remote_missile_shoot) {
-                printf("tank2 missile");
+            else if ((tank_get_weapon(tank1) != (shooting_handler_t) remote_missile_shoot) && 
+                     (tank_get_weapon(tank2) == (shooting_handler_t) remote_missile_shoot)) {
                 bool missile_exists = false;
                 list_clear(keys_pressed);
-                body_set_velocity(tank1_body, (vector_t) {0,0});
+                body_set_velocity(tank2_body, (vector_t) {0,0});
                 for (size_t i=0; i < scene_bodies(scene); i++) {
                     if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE_2) {
                         body_t *missile2 = scene_get_body(scene, i);
                         missile_exists = true;
                         list_clear(keys_pressed);
                         if (type == KEY_RELEASED) {
+                            body_set_velocity(tank1_body, (vector_t) {0,0});
                             body_set_velocity(missile2, (vector_t){0, 0});
                             list_clear(keys_pressed);
                         } else if (type == KEY_PRESSED) {
@@ -342,6 +342,12 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                                 }
                                 if (key_pressed == 'a') {
                                     body_set_rotation(tank1_body, body_get_orientation(tank1_body) - ANGLE_OFFSET / (2*i + 1));
+                                }
+                                if (key_pressed == ' ') {
+                                    if (body_get_time(tank1_body) > tank_get_curr_reload(tank1)) {
+                                        tank_shoot(scene, tank1);
+                                        tank_set_body_time(tank1, 0);
+                                    }
                                 }
                                 if (key_pressed == DOWN_ARROW) {
                                     speed2.x = -INIT_VEL * cos(body_get_orientation(missile2));
@@ -1361,7 +1367,7 @@ int main(int argc, char *argv[]) {
             // Shoot a power-up at an interval of time.
             if (time_passed > TANK_POWER_UP_TIME) {
                 // make_tank_power_up(temp_scene, rand() % NUM_POWERUPS, tank1);
-                make_tank_power_up(temp_scene, 3, tank1);
+                make_tank_power_up(temp_scene, 4, tank1);
                 time_passed = 0;
             }
         } else {

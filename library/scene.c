@@ -105,12 +105,6 @@ void scene_tick(scene_t *scene, double dt) {
         for (size_t k=0; k < list_size(curr_force_data->bodies); k++) {
             body_t *curr_body = list_get(curr_force_data->bodies, k);
             if (body_is_removed(curr_body)) {
-                if(*(body_types_t *) body_get_info(curr_body) == TANK_1 ||
-                   *(body_types_t *) body_get_info(curr_body) == TANK_2 || 
-                   *(body_types_t *) body_get_info(curr_body) == ENEMY_TANK) {
-                    printf("playing remove sound");
-                    play_remove_sound();
-                }
                 force_data_free(list_remove(scene->force_data_lst, j));
                 j--;
                 break;
@@ -121,7 +115,10 @@ void scene_tick(scene_t *scene, double dt) {
     for (size_t i = 0; i < scene_bodies(scene); i++) {
         body_t *body = list_get(scene->bodies, i);
         if(body_is_removed(body)) {
-            // printf("removed body\n");
+            if(*(body_types_t *) body_get_info(body) == ENEMY_TANK) {
+                printf("playing remove sound");
+                play_remove_sound();
+            }
             body_t *removed = list_remove(scene->bodies, i);
             body_free(removed);
             i--;

@@ -1209,6 +1209,7 @@ int find_winner(scene_t *scene, tank_t *tank1, tank_t *tank2, bool *multi,
     }
     if (body_get_lives(tank_get_body(tank1)) <= 0) {
         *game_over = true;
+        play_remove_sound();
         if (*multi) {
             // Condition where player 2 wins
             return 2;
@@ -1218,6 +1219,7 @@ int find_winner(scene_t *scene, tank_t *tank1, tank_t *tank2, bool *multi,
     }
     if (*multi && body_get_lives(tank_get_body(tank2)) <= 0) {
         *game_over = true;
+        play_remove_sound();
         // Condition where player 1 wins
         return 1;
     }

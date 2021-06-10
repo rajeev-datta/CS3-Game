@@ -25,6 +25,7 @@ typedef struct body {
     bool is_pause_button;
     bool is_tank;
     bool play_sound;
+    bool has_force_field;
 } body_t;
 
 body_t *body_init(list_t *shape, double mass, rgb_color_t color) {
@@ -49,6 +50,7 @@ body_t *body_init(list_t *shape, double mass, rgb_color_t color) {
     body_obj->is_pause_button = false;
     body_obj->is_tank = false;
     body_obj->play_sound = true;
+    body_obj->has_force_field = false;
     return body_obj;
 }
 
@@ -233,3 +235,10 @@ void body_set_is_tank(body_t *body, bool bool_tank) {
     body->is_tank = bool_tank;
 }
 
+bool body_has_force_field(body_t *body) {
+    return body->has_force_field;
+}
+
+void body_set_has_force_field(body_t *body, bool bool_force_field) {
+    body->has_force_field = bool_force_field;
+}

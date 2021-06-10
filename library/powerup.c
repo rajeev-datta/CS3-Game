@@ -39,6 +39,7 @@ static const double MISSILE_LENGTH = 20;
 static const double MISSILE_HEIGHT = 10;
 static const double MISSILE_RELOAD_TIME = 10;
 static const double MISSILE_RANGE = 10;
+static const double FORCE_FIELD_FACTOR = 80;
 
 typedef struct tank_powerup_aux {
     tank_t *tank;
@@ -55,8 +56,13 @@ tank_powerup_aux_t *tank_powerup_aux_init(tank_t *tank, powerups_t type) {
 void default_gun_shoot(scene_t *scene, body_t *body) {
     // method to handle the shooting of normal gun
     vector_t off_center;
-    off_center.x = FACTOR * cos(body_get_orientation(body));
-    off_center.y = FACTOR * sin(body_get_orientation(body));
+    if (!body_has_force_field(body)) {
+        off_center.x = FACTOR * cos(body_get_orientation(body));
+        off_center.y = FACTOR * sin(body_get_orientation(body));
+    } else {
+        off_center.x = FORCE_FIELD_FACTOR * cos(body_get_orientation(body));
+    off_center.y = FORCE_FIELD_FACTOR * sin(body_get_orientation(body));
+    }
     vector_t bullet_center = vec_add(body_get_centroid(body), off_center);
     list_t *bullet = animate_circle(bullet_center, BULLET_RADIUS,
                                        CIRCLE_PTS);

@@ -840,10 +840,14 @@ void handle_force_field(scene_t *scene, tank_t *tank, double dt) {
                 }
             }
         }
+
+
         if (!force_field_exists) {
             create_new_force_field(scene, tank);
+            body_set_has_force_field(tank_get_body(tank), true);
         }
     } else {
+        body_set_has_force_field(tank_get_body(tank), false);
         for (size_t i=0; i < scene_bodies(scene); i++) {
             if (!body_is_powerup(scene_get_body(scene, i))) {
                 if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_FORCE_FIELD) {

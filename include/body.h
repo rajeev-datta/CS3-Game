@@ -226,4 +226,8 @@ void body_set_play_sound(body_t *body, bool play_sound);
 
 bool body_get_play_sound(body_t *body);
 
+bool body_has_force_field(body_t *body);
+
+void body_set_has_force_field(body_t *body, bool bool_force_field);
+
 #endif // #ifndef __BODY_H__

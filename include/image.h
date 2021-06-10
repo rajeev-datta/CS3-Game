@@ -4,8 +4,10 @@
 #include "scene.h"
 #include "sdl_wrapper.h"
 
-void add_pause_screen_images(scene_t *scene, SDL_Surface *level1, SDL_Surface *level2,
-                             SDL_Surface *level3, SDL_Surface *lock,
-                             int *unlocked_level);
+void image_load();
+
+void image_pause_screen(scene_t *scene, int *unlocked_level);
+
+void image_free();
 
 #endif // #ifndef __IMAGE_H__

@@ -350,6 +350,15 @@ void update_and_check_projectiles_and_tanks(scene_t *scene, tank_t *tank, double
                 }
             }
 
+            if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == ENEMY_BULLET) {
+                body_increase_time(scene_get_body(scene, i), dt);
+                double curr_time = body_get_time(scene_get_body(scene, i));
+
+                if (curr_time > tank_get_default_range(tank)) {
+                    body_remove(scene_get_body(scene, i));
+                }
+            }
+
             if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_FRAG_BOMB) {
                 body_increase_time(scene_get_body(scene, i), dt);
                 double curr_time = body_get_time(scene_get_body(scene, i));

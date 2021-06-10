@@ -26,6 +26,7 @@ static const double LEVEL_1_WALL_LENGTH = 10;
 static const double LEVEL_1_WALL_HEIGHT = 100;
 static const int NUM_POWERUPS = 5;
 static const int TANK_POWER_UP_TIME = 3;
+static const int TANK_SHOOT_TIME = 1;
 static double const INIT_VEL = 200;
 static double const ANGLE_OFFSET = (10 * M_PI)/180;
 static const int NUM_SCENES = 2;
@@ -486,6 +487,7 @@ int main(int argc, char *argv[]) {
     sdl_on_mouse((mouse_handler_t)on_mouse);
 
     double time_passed = 0;
+    double shoot_time = 0;
     scene_t *temp_scene = malloc(sizeof(scene_t *));
     temp_scene = scene;
     scene_t **scenes = malloc(sizeof(scene_t *) * NUM_SCENES);
@@ -527,6 +529,18 @@ int main(int argc, char *argv[]) {
         if (*play) {
             temp_scene = scene;
             time_passed += dt;
+            shoot_time += dt;
+        
+            if(shoot_time >= TANK_SHOOT_TIME) {
+                vector_t player_loc;
+                for(int i = 0; i < scene_bodies(scene); i++) {
+                    if(*(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_1) {
+                        player_loc = body_get_centroid(scene_get_body(scene, i));
+                    }
+                }
+                enemy_tank_shoot(scene, level, player_loc);
+                shoot_time = 0;
+            }
 
             update_and_check_projectiles_and_tanks(scene, tank1, dt);
 

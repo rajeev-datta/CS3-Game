@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <math.h>
 #include "sound.h"
+#include "levels.h"
+#include "scene.h"
 
 static const int MASS = 100;
 static const double default_reload_time = 1;
@@ -149,4 +151,46 @@ void tank_increase_body_time(tank_t *tank, double time_increment) {
 
 void tank_set_body_time(tank_t *tank, double time) {
     body_set_time(tank_get_body(tank), time);
+}
+
+void enemy_tank_shoot(scene_t *scene, int *level, vector_t player) {
+    if (*level == get_first_level()) {
+        for(int i = 0; i < scene_bodies(scene); i++) {
+            if(*(body_types_t *)body_get_info(scene_get_body(scene, i)) == ENEMY_TANK) {
+                body_t *enemy = scene_get_body(scene, i);
+                if(body_get_centroid(enemy).y <= 350 && 
+                   body_get_centroid(enemy).y >= 150) {
+                    vector_t curr_vel = body_get_velocity(enemy);
+                    
+                    //adjust to shoot
+                    body_set_velocity(enemy, (vector_t){0, 0});
+                    double angle = atan(fabs(body_get_centroid(enemy).y - player.y) / 
+                                        fabs(body_get_centroid(enemy).x - player.x));
+                    if(body_get_centroid(enemy).y > player.y) {
+                        body_set_rotation(enemy, M_PI + angle);
+                    }
+                    else {
+                        body_set_rotation(enemy, M_PI - angle);
+                    }
+                    
+                    //shoot
+                    default_gun_shoot(scene, enemy); 
+
+                    //put back to normal
+                    body_set_velocity(enemy, curr_vel);
+                    body_set_rotation(enemy, M_PI);
+                }
+            }
+        }
+    }
+    else if (*level == get_second_level()) {
+        for(int i = 0; i < scene_bodies(scene); i++) {
+            
+        }
+    }
+    else if (*level == get_third_level()) {
+        for(int i = 0; i < scene_bodies(scene); i++) {
+            
+        }
+    }
 }

@@ -45,4 +45,6 @@ void tank_increase_body_time(tank_t *tank, double time_increment);
 
 void tank_set_body_time(tank_t *tank, double time);
 
+void enemy_tank_shoot(scene_t *scene, int *level, vector_t player);
+
 #endif // #ifndef __TANK_H__

@@ -49,6 +49,7 @@
         "test_util.h": "c",
         "__node_handle": "c",
         "cstdio": "c",
-        "sdl.h": "c"
+        "sdl.h": "c",
+        "screen_set.h": "c"
     }
 }

@@ -230,4 +230,8 @@ bool body_has_force_field(body_t *body);
 
 void body_set_has_force_field(body_t *body, bool bool_force_field);
 
+bool body_is_enemy_tank(body_t *body);
+
+void body_set_is_enemy_tank(body_t *body, bool bool_enemy_tank);
+
 #endif // #ifndef __BODY_H__

@@ -62,4 +62,10 @@ void screen_set_tanks(scene_t *scene, bool *multi, tank_t *tank1, tank_t* tank2)
 // Sets up the pause screen
 void screen_set_pause_screen(scene_t *scene);
 
+// Makes a tank and adds it to the scene
+tank_t *screen_set_new_tank(scene_t *scene, body_types_t info, vector_t center);
+
+// Makes a new enemy tank and adds it to the scene
+void screen_set_new_enemy(scene_t *scene, vector_t *center);
+
 #endif // #ifndef __SCREEN_SET_H__

@@ -137,3 +137,24 @@ void screen_set_pause_screen(scene_t *scene) {
     screen_set_rect(scene, player_selection_center, get_choose_player_box_width(),
                       get_choose_player_box_height(), CHOOSE_PLAYER_BOX, color_get_maroon());
 }
+
+tank_t *screen_set_new_tank(scene_t *scene, body_types_t info, vector_t center) {
+    body_types_t *tank_info = malloc(sizeof(body_types_t *));
+    *tank_info = info;
+    vector_t *tank_center = malloc(sizeof(vector_t));
+    *tank_center = center;
+    list_t *tank_points = animate_tank(tank_center);
+    tank_t *tank = tank_init(tank_points, tank_info);
+    body_set_is_tank(tank_get_body(tank), true);
+    scene_add_body(scene, tank_get_body(tank));
+    return tank;
+}
+
+void screen_set_new_enemy(scene_t *scene, vector_t *center) {
+    body_types_t *enemy_tank_info = malloc(sizeof(body_types_t *));
+    *enemy_tank_info = ENEMY_TANK;
+    vector_t speed = (vector_t) {0, 150};
+    list_t *enemy_tank_points = animate_tank(center);
+    tank_t *enemy_tank = enemy_tank_init(enemy_tank_points, speed, enemy_tank_info);
+    scene_add_body(scene, tank_get_body(enemy_tank));
+}

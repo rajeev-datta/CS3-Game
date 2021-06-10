@@ -13,4 +13,10 @@ void level_2(vector_t top_right, double wall_length, double wall_height, scene_t
 
 void level_3(vector_t top_right, double wall_length, double wall_height, scene_t *scene, bool *multi);
 
+int get_first_level();
+
+int get_second_level();
+
+int get_third_level();
+
 #endif // #ifndef __LEVELS_H__

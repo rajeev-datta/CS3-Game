@@ -14,6 +14,9 @@
 #include "levels.h"
 
 static const double ELASTICITY = 1;
+static const int FIRST_LEVEL = 1;
+static const int SECOND_LEVEL = 2;
+static const int THIRD_LEVEL = 3;
 
 void put_forces(scene_t *scene) { //should work for different levels because scene is argument
     for(size_t i = 0; i < scene_bodies(scene); i++) {
@@ -45,7 +48,7 @@ void level_1(vector_t top_right, double wall_length, double wall_height, scene_t
     if (!*multi) {
         vector_t *enemy_center = malloc(sizeof(vector_t));
         *enemy_center = (vector_t){900, get_top_right().y/2};
-        add_enemy_to_scene(scene, enemy_center);
+        screen_set_new_enemy(scene, enemy_center);
     }
 
     body_types_t *wall_info = malloc(sizeof(body_types_t *));
@@ -77,11 +80,11 @@ void level_2(vector_t top_right, double wall_length, double wall_height, scene_t
     if (!*multi) {
         vector_t *enemy_center = malloc(sizeof(vector_t));
         *enemy_center = (vector_t){top_right.x * 4/10, get_top_right().y};
-        add_enemy_to_scene(scene, enemy_center);
+        screen_set_new_enemy(scene, enemy_center);
 
         vector_t *enemy2_center = malloc(sizeof(vector_t));
         *enemy2_center = (vector_t){600, 0};
-        add_enemy_to_scene(scene, enemy2_center);
+        screen_set_new_enemy(scene, enemy2_center);
     }
     
     body_types_t *wall_info = malloc(sizeof(body_types_t *));
@@ -125,15 +128,15 @@ void level_3(vector_t top_right, double wall_length, double wall_height, scene_t
     if (!*multi) {
         vector_t *enemy_center = malloc(sizeof(vector_t));
         *enemy_center = (vector_t){250, get_top_right().y/2};
-        add_enemy_to_scene(scene, enemy_center);
+        screen_set_new_enemy(scene, enemy_center);
 
         vector_t *enemy2_center = malloc(sizeof(vector_t));
         *enemy2_center = (vector_t){550, 0};
-        add_enemy_to_scene(scene, enemy2_center);
+        screen_set_new_enemy(scene, enemy2_center);
         
         vector_t *enemy3_center = malloc(sizeof(vector_t));
         *enemy3_center = (vector_t){900, get_top_right().y};
-        add_enemy_to_scene(scene, enemy3_center);
+        screen_set_new_enemy(scene, enemy3_center);
     }
     
     body_types_t *wall_info = malloc(sizeof(body_types_t *));
@@ -181,4 +184,16 @@ void level_3(vector_t top_right, double wall_length, double wall_height, scene_t
     list_t *right_bottom_wall = animate_rectangle((vector_t) {(top_right.x*17)/20, (top_right.y)/10}, wall_length, wall_height);
     body_t *right_bottom_wall_body = body_init_with_info(right_bottom_wall, INFINITY, color_get_red(), wall_info, free);
     scene_add_body(scene, right_bottom_wall_body);
+}
+
+int get_first_level() {
+    return FIRST_LEVEL;
+}
+
+int get_second_level() {
+    return SECOND_LEVEL;
+}
+
+int get_third_level() {
+    return THIRD_LEVEL;
 }

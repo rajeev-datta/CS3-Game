@@ -532,7 +532,7 @@ int main(int argc, char *argv[]) {
 
             for(size_t i = 0; i < scene_bodies(scene); i++) { 
                 if(*(body_types_t *)body_get_info(scene_get_body(scene, i)) == ENEMY_TANK) {
-                    tank_hit_boundary_check(scene_get_body(scene, i), get_bottom_left(), get_top_right(), dt);
+                    body_hit_boundary_check(scene_get_body(scene, i), get_bottom_left(), get_top_right(), dt);
                 }
             }
 

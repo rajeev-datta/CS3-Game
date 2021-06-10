@@ -157,5 +157,4 @@ void screen_set_new_enemy(scene_t *scene, vector_t *center) {
     list_t *enemy_tank_points = animate_tank(center);
     tank_t *enemy_tank = enemy_tank_init(enemy_tank_points, speed, enemy_tank_info);
     scene_add_body(scene, tank_get_body(enemy_tank));
-    printf("The centroid x of enemy tank is %f \n", body_get_centroid(tank_get_body(enemy_tank)).x);
 }

@@ -39,4 +39,12 @@ void remote_missile_shoot(scene_t *scene, body_t *body);
 
 void create_tank_powerup_collision(scene_t *scene, tank_t *tank, body_t *powerup, powerups_t type);
 
+void make_tank_power_up(scene_t *scene, int type, tank_t *tank, tank_t *tank_2);
+
+void update_and_check_projectiles_and_tanks(scene_t *scene, tank_t *tank, double dt);
+
+body_t *create_new_force_field(scene_t *scene, tank_t *tank);
+
+void handle_force_field(scene_t *scene, tank_t *tank, double dt);
+
 #endif // #ifndef __POWERUP_H__

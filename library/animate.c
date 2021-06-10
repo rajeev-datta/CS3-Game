@@ -337,7 +337,7 @@ void wall_boundary(scene_t *scene, tank_t *tank) {
     body_t *tank_body = tank_get_body(tank);
     for (size_t i = 0; i < scene_bodies(scene); i++) {
         body_t *curr_body = scene_get_body(scene, i);
-        if (*(body_types_t* )body_get_info(curr_body) == WALL) {
+        if (!body_is_powerup(curr_body) && *(body_types_t* )body_get_info(curr_body) == WALL) {
             collision_info_t collision = find_collision(body_get_real_shape(tank_body), body_get_real_shape(curr_body));
             if (collision.collided) {
                 if (fabs(collision.axis.x) != 0.0) {

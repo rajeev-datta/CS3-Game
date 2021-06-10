@@ -114,7 +114,6 @@ void destructive_fxn(body_t *body1, body_t *body2, vector_t axis, void *aux) {
         }
 
         else if (body_is_inc_lives_pow(body2) && body_is_tank(body1)) {
-            printf("collision should happen!\n");
             body_set_lives(body1, body_get_lives(body1) + 1);
             body_remove(body2);
         }

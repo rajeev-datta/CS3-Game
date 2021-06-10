@@ -13,7 +13,7 @@
 #include "animate.h"
 #include "tank.h"
 #include "powerup.h"
-#include "stdio.h"
+#include <stdio.h>
 
 static const int CIRCLE_PTS = 16;
 static const double BULLET_RADIUS = 5;

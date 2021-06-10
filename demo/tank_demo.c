@@ -2,14 +2,9 @@
 #include <stdio.h>
 #include <time.h>
 #include "sdl_wrapper.h"
-#include <SDL2/SDL.h>
-#include <SDL2/SDL2_gfxPrimitives.h>
-#include <SDL2/SDL_ttf.h>
-#include <SDL2/SDL_image.h>
 #include <stdbool.h>
 #include <string.h>
 #include <assert.h>
-#include <SDL2/SDL_mixer.h>
 #include "animate.h"
 #include "polygon.h"
 #include "star.h"
@@ -21,17 +16,12 @@
 #include "scene.h"
 #include "forces.h"
 #include "sound.h"
+#include "gameplay.h"
+#include "text.h"
+#include "screen_set.h"
 
-static const vector_t BOTTOM_LEFT_COORD = {0, 0};
-static const vector_t TOP_RIGHT_COORD = {1000, 500};
 static const double LEVEL_1_WALL_LENGTH = 10;
 static const double LEVEL_1_WALL_HEIGHT = 100;
-static const rgb_color_t BACKGROUND = {1, 1, 1};
-static const double BUFFER = 10;
-static const double PAUSE_SCALE = 2.0/3;
-static const double PAUSE_HEIGHT = 40;
-static const double BUTTON_LENGTH = 300;
-static const double BUTTON_HEIGHT = 50;
 static const double INIT_POWERUP_LENGTH = 10;
 static const double INIT_POWERUP_HEIGHT = 10;
 static const double POWERUP_MASS = 50;
@@ -42,13 +32,6 @@ static double const ANGLE_OFFSET = (10 * M_PI)/180;
 static const double ELASTICITY = 1;
 static const int NUM_SCENES = 2;
 static const int FONT_SIZE = 100;
-static const double TEXT_SCALE = 0.8;
-static const SDL_Color WHITE_TEXT = {255, 255, 255};
-static const SDL_Color BLACK_TEXT = {0, 0, 0};
-static const SDL_Color MAROON_TEXT = {128, 0, 0};
-static const SDL_Color RED_TEXT = {255, 0, 0};
-static const SDL_Color BLUE_TEXT = {0, 0, 255};
-static const int LEVEL_BUFFER = 50;
 static const int CIRC_PTS = 16;
 static const double FORCE_FIELD_INNER_RADIUS = 60;
 static const double FORCE_FIELD_OUTER_RADIUS = 70;
@@ -56,24 +39,8 @@ static const double FORCE_FIELD_MASS = 50;
 static const double IMG_X_SCALE = 0.9;
 static const double IMG_Y_SCALE = 0.8;
 static const char *FONT = "fonts/AnticSlab-Regular.ttf";
-static const int CHOOSE_LEVEL_WIDTH = 500;
-static const int CHOOSE_LEVEL_HEIGHT = 100;
-static const int CHOOSE_PLAYER_BOX_WIDTH = 340;
-static const int CHOOSE_PLAYER_BOX_HEIGHT = 30;
-static const int EASY_TEXT_WIDTH = 50;
-static const int MEDIUM_TEXT_WIDTH = 90;
-static const int HARD_TEXT_WIDTH = 50;
-static const int LEVEL_TEXT_HEIGHT = 20;
-static const vector_t TANK1_INIT_POS = {50, 250};
-static const vector_t TANK2_INIT_POS = {950, 250};
-static const vector_t TANK2_OFF_SCREEN = {1200, 700};
 static const int FIRST_REMOVABLE_INDEX = 4;
-static const int INIT_LIVES = 3;
-static const int LIVES_WIDTH = 100;
-static const int LIVES_HEIGHT = 50;
 static const double POWERUP_LIFESPAN = 5;
-static const int LIVES_TXT = 9;
-static const int LIVES_DIGIT = 4;
 static const double BULLET_ELASTICITY = 0.9;
 static const int MAX_CIRC_PTS = 128;
 static const int FIRST_LEVEL = 1;
@@ -81,23 +48,6 @@ static const int SECOND_LEVEL = 2;
 static const int THIRD_LEVEL = 3;
 static const int LOCK_WIDTH = 70;
 static const int LOCK_HEIGHT = 100;
-
-typedef enum pause_scene{
-    RESUME_BUT,
-    RESTART_BUT,
-    MEDIUM_BUT,
-    EASY_BUT,
-    HARD_BUT,
-    CHOOSE_PLAYER_BOX,
-    WHITE_SCREEN
-} pause_scene_t;
-
-typedef enum scene_indices{
-    PAUSE_BUTTON,
-    PAUSE_BUTTON_WHITE,
-    TANK1,
-    TANK2
-} scene_indices_t;
 
 typedef enum scenes{
     PLAY,
@@ -128,24 +78,6 @@ void put_forces(scene_t *scene) { //should work for different levels because sce
             }
         }
     }
-}
-
-void add_rect_to_scene(scene_t *scene, vector_t center, int width, int height,
-                       int information, rgb_color_t color) {
-    list_t *rect = animate_rectangle(center, width, height);
-    scene_indices_t *info = malloc(sizeof(scene_indices_t));
-    *info = information;
-    body_t *rect_body = body_init_with_info(rect, INFINITY, color, info, free);
-    body_set_is_pause_button(rect_body, true);
-    scene_add_body(scene, rect_body);
-}
-
-void make_pause_button(scene_t *scene) {
-    double width = PAUSE_SCALE * PAUSE_HEIGHT;
-    vector_t pause_center = {BOTTOM_LEFT_COORD.x + width/2.0 + 3 * BUFFER,
-                             TOP_RIGHT_COORD.y - PAUSE_HEIGHT/2.0 - 3 * BUFFER};
-    add_rect_to_scene(scene, pause_center, width, PAUSE_HEIGHT, PAUSE_BUTTON, color_get_red());
-    add_rect_to_scene(scene, pause_center, width/3.0, PAUSE_HEIGHT, PAUSE_BUTTON_WHITE, BACKGROUND);
 }
 
 void on_key_push(char key, key_event_type_t type, double held_time,
@@ -375,7 +307,6 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                 }
             }
             else {
-                printf("no missile");
                 if (type == KEY_RELEASED) {
                     body_set_velocity(tank1_body, (vector_t){0, 0});
                     body_set_velocity(tank2_body, (vector_t){0, 0});
@@ -460,7 +391,7 @@ void add_enemy_to_scene(scene_t *scene, vector_t *center) {
 void level_1(vector_t top_right, double wall_length, double wall_height, scene_t *scene, bool *multi) {
     if (!*multi) {
         vector_t *enemy_center = malloc(sizeof(vector_t));
-        *enemy_center = (vector_t){900, TOP_RIGHT_COORD.y/2};
+        *enemy_center = (vector_t){900, get_top_right().y/2};
         add_enemy_to_scene(scene, enemy_center);
     }
 
@@ -492,7 +423,7 @@ void level_1(vector_t top_right, double wall_length, double wall_height, scene_t
 void level_2(vector_t top_right, double wall_length, double wall_height, scene_t *scene, bool *multi) {
     if (!*multi) {
         vector_t *enemy_center = malloc(sizeof(vector_t));
-        *enemy_center = (vector_t){top_right.x * 4/10, TOP_RIGHT_COORD.y};
+        *enemy_center = (vector_t){top_right.x * 4/10, get_top_right().y};
         add_enemy_to_scene(scene, enemy_center);
 
         vector_t *enemy2_center = malloc(sizeof(vector_t));
@@ -540,7 +471,7 @@ void level_2(vector_t top_right, double wall_length, double wall_height, scene_t
 void level_3(vector_t top_right, double wall_length, double wall_height, scene_t *scene, bool *multi) {
     if (!*multi) {
         vector_t *enemy_center = malloc(sizeof(vector_t));
-        *enemy_center = (vector_t){250, TOP_RIGHT_COORD.y/2};
+        *enemy_center = (vector_t){250, get_top_right().y/2};
         add_enemy_to_scene(scene, enemy_center);
 
         vector_t *enemy2_center = malloc(sizeof(vector_t));
@@ -548,7 +479,7 @@ void level_3(vector_t top_right, double wall_length, double wall_height, scene_t
         add_enemy_to_scene(scene, enemy2_center);
         
         vector_t *enemy3_center = malloc(sizeof(vector_t));
-        *enemy3_center = (vector_t){900, TOP_RIGHT_COORD.y};
+        *enemy3_center = (vector_t){900, get_top_right().y};
         add_enemy_to_scene(scene, enemy3_center);
     }
     
@@ -612,22 +543,6 @@ bool within_rect(body_t *body, vector_t point) {
     return within;
 }
 
-void place_tanks(scene_t *scene, bool *multi, tank_t *tank1, tank_t* tank2) {
-    body_set_centroid(scene_get_body(scene, TANK1), TANK1_INIT_POS);
-    body_set_rotation(scene_get_body(scene, TANK1), 0);
-    body_set_lives(scene_get_body(scene, TANK1), INIT_LIVES);
-    tank_set_shooting_handler(tank1, NULL);
-    tank_set_shooting_handler(tank2, NULL);
-
-    if (*multi) {
-        body_set_centroid(scene_get_body(scene, TANK2), TANK2_INIT_POS);
-        body_set_rotation(scene_get_body(scene, TANK2), M_PI);
-        body_set_lives(scene_get_body(scene, TANK2), INIT_LIVES);
-    } else {
-        body_set_centroid(scene_get_body(scene, TANK2), TANK2_OFF_SCREEN);
-    }
-}
-
 void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int *level,
               bool *multi, bool *choosing_level, bool *game_over, bool *game_started,
               int *unlocked_level, tank_t *tank1, tank_t* tank2) {
@@ -643,13 +558,13 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
                    && within_rect(scene_get_body(scenes[PAUSE], RESTART_BUT), point)) {
             printf("clicked restart\n");
             scene_erase_some(scenes[PLAY], FIRST_REMOVABLE_INDEX);
-            place_tanks(scenes[PLAY], multi, tank1, tank2);
+            screen_set_tanks(scenes[PLAY], multi, tank1, tank2);
             if (*level == 1) {
-                level_1(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY], multi);
+                level_1(get_top_right(), LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY], multi);
             } else if (*level == 2) {
-                level_2(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY], multi);
+                level_2(get_top_right(), LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY], multi);
             } else if (*level == 3) {
-                level_3(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY], multi);
+                level_3(get_top_right(), LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY], multi);
             }
             *play = true;
         } else if (within_rect(scene_get_body(scenes[PAUSE], EASY_BUT), point)
@@ -666,8 +581,8 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
                 *game_started = false;
             }
             scene_erase_some(scenes[PLAY], FIRST_REMOVABLE_INDEX);
-            place_tanks(scenes[PLAY], multi, tank1, tank2);
-            level_1(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY], multi);
+            screen_set_tanks(scenes[PLAY], multi, tank1, tank2);
+            level_1(get_top_right(), LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY], multi);
             *level = FIRST_LEVEL;
             *play = true;
         } else if (within_rect(scene_get_body(scenes[PAUSE], MEDIUM_BUT), point)
@@ -684,8 +599,8 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
                 *game_started = false;
             }
             scene_erase_some(scenes[PLAY], FIRST_REMOVABLE_INDEX);
-            place_tanks(scenes[PLAY], multi, tank1, tank2);
-            level_2(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY], multi);
+            screen_set_tanks(scenes[PLAY], multi, tank1, tank2);
+            level_2(get_top_right(), LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY], multi);
             *level = SECOND_LEVEL;
             *play = true;
         } else if (within_rect(scene_get_body(scenes[PAUSE], HARD_BUT), point)
@@ -702,8 +617,8 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
                 *game_started = false;
             }
             scene_erase_some(scenes[PLAY], FIRST_REMOVABLE_INDEX);
-            place_tanks(scenes[PLAY], multi, tank1, tank2);
-            level_3(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY], multi);
+            screen_set_tanks(scenes[PLAY], multi, tank1, tank2);
+            level_3(get_top_right(), LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY], multi);
             *level = THIRD_LEVEL;
             *play = true;
         } else if (!(*choosing_level) && within_rect(scene_get_body(scenes[PAUSE], CHOOSE_PLAYER_BOX), point)) {
@@ -716,131 +631,17 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
                 scene_remove_body(scene, WHITE_SCREEN);
                 *game_started = false;
             }
-            vector_t center = {TOP_RIGHT_COORD.x/2.0, 3*TOP_RIGHT_COORD.y/4.0};
-            add_rect_to_scene(scene, center, TOP_RIGHT_COORD.x,
-                              TOP_RIGHT_COORD.y/2, WHITE_SCREEN, color_get_white());
+            vector_t center = {get_top_right().x/2.0, 3*get_top_right().y/4.0};
+            screen_set_rect(scene, center, get_top_right().x,
+                              get_top_right().y/2, WHITE_SCREEN, color_get_white());
         }
     }
-}
-
-void set_up_pause_screen(scene_t *scene) {
-    vector_t resume_center = {TOP_RIGHT_COORD.x / 2.0,
-                              TOP_RIGHT_COORD.y - 1.5 * BUTTON_HEIGHT};
-    add_rect_to_scene(scene, resume_center, BUTTON_LENGTH, BUTTON_HEIGHT, RESUME_BUT,
-                      color_get_maroon());
-    vector_t restart_center = {resume_center.x,
-                              resume_center.y - 1.5 * BUTTON_HEIGHT};
-    add_rect_to_scene(scene, restart_center, BUTTON_LENGTH, BUTTON_HEIGHT, RESTART_BUT,
-                      color_get_maroon());
-
-    double level_width = TOP_RIGHT_COORD.x / 3.0 - LEVEL_BUFFER;
-    double level_height = level_width/2;
-    vector_t medium_center = {TOP_RIGHT_COORD.x / 2.0, TOP_RIGHT_COORD.y/2 - 2.5 * BUTTON_HEIGHT};
-    add_rect_to_scene(scene, medium_center, level_width, level_height, MEDIUM_BUT,
-                      color_get_maroon());
-    vector_t easy_center = {medium_center.x - LEVEL_BUFFER - level_width, medium_center.y};
-    add_rect_to_scene(scene, easy_center, level_width, level_height, EASY_BUT,
-                      color_get_maroon());
-    vector_t hard_center = {medium_center.x + LEVEL_BUFFER + level_width, medium_center.y};
-    add_rect_to_scene(scene, hard_center, level_width, level_height, HARD_BUT,
-                      color_get_maroon());
-
-    vector_t player_selection_center = {TOP_RIGHT_COORD.x / 2.0,
-                                    restart_center.y - 1.5 * BUTTON_HEIGHT};
-    add_rect_to_scene(scene, player_selection_center, CHOOSE_PLAYER_BOX_WIDTH,
-                      CHOOSE_PLAYER_BOX_HEIGHT, CHOOSE_PLAYER_BOX, color_get_maroon());
-}
-
-void add_pause_screen_text(scene_t *scene, bool *multi, TTF_Font *font,
-                           bool *choosing_level, int win, bool *game_started) {
-    list_t *resume_shape = body_get_shape(scene_get_body(scene, RESUME_BUT));
-    assert(list_size(resume_shape) == 4);
-    int x = ((vector_t *)list_get(resume_shape, 0))->x + BUTTON_LENGTH * (1 - TEXT_SCALE)/2;
-    int y = ((vector_t *)list_get(resume_shape, 1))->y - BUTTON_HEIGHT * (1 - TEXT_SCALE)/2;
-    int width = BUTTON_LENGTH * TEXT_SCALE;
-    int height = BUTTON_HEIGHT * TEXT_SCALE;
-    char *resume_text = "Resume";
-    sdl_write(x, y, width, height, font, WHITE_TEXT, resume_text);
-
-    list_t *restart_shape = body_get_shape(scene_get_body(scene, RESTART_BUT));
-    assert(list_size(restart_shape) == 4);
-    y = ((vector_t *)list_get(restart_shape, 1))->y - BUTTON_HEIGHT * (1 - TEXT_SCALE)/2;
-    char *restart_text = "Restart";
-    sdl_write(x, y, width, height, font, WHITE_TEXT, restart_text);
-
-    char *medium_text = "MEDIUM";
-    int medium_x = (TOP_RIGHT_COORD.x - MEDIUM_TEXT_WIDTH) / 2.0;
-    int levels_y = (TOP_RIGHT_COORD.y - BUTTON_HEIGHT) / 2.0;
-    sdl_write(medium_x,levels_y, MEDIUM_TEXT_WIDTH, LEVEL_TEXT_HEIGHT, font,
-              BLACK_TEXT, medium_text);
-
-    char *easy_text = "EASY";
-    int easy_x = medium_x - (TOP_RIGHT_COORD.x - LEVEL_BUFFER)/3.0;
-    sdl_write(easy_x,levels_y, EASY_TEXT_WIDTH, LEVEL_TEXT_HEIGHT, font,
-              BLACK_TEXT, easy_text);
-
-    char *hard_text = "HARD";
-    int hard_x = medium_x + (TOP_RIGHT_COORD.x + HARD_TEXT_WIDTH)/3.0;
-    sdl_write(hard_x,levels_y, HARD_TEXT_WIDTH, LEVEL_TEXT_HEIGHT, font,
-              BLACK_TEXT, hard_text);
-
-    list_t *choose_players_shape = body_get_shape(scene_get_body(scene, CHOOSE_PLAYER_BOX));
-    assert(list_size(restart_shape) == 4);
-    double cp_x = ((vector_t *)list_get(choose_players_shape, 0))->x + BUFFER;
-    double cp_y = ((vector_t *)list_get(choose_players_shape, 1))->y;
-    if (*multi) {
-        char *cp_text = "Switch to Single Player";
-        sdl_write(cp_x, cp_y, CHOOSE_PLAYER_BOX_WIDTH - 2* BUFFER, CHOOSE_PLAYER_BOX_HEIGHT,
-                  font, WHITE_TEXT, cp_text);
-    } else {
-        char *cp_text = "Switch to Multiplayer";
-        sdl_write(cp_x, cp_y, CHOOSE_PLAYER_BOX_WIDTH - 2* BUFFER, CHOOSE_PLAYER_BOX_HEIGHT,
-                  font, WHITE_TEXT, cp_text);
-    }
-
-    if (*choosing_level) {
-        char *text = "Choose Your Level:";
-        sdl_write(TOP_RIGHT_COORD.x/2 - CHOOSE_LEVEL_WIDTH/2,
-                  TOP_RIGHT_COORD.y - CHOOSE_LEVEL_HEIGHT/2,
-                  CHOOSE_LEVEL_WIDTH, CHOOSE_LEVEL_HEIGHT, font, MAROON_TEXT, text);
-    } else {
-        if (win == 0) {
-            char *text = "You Lose!";
-            sdl_write(TOP_RIGHT_COORD.x/2 - CHOOSE_LEVEL_WIDTH/2,
-                    TOP_RIGHT_COORD.y - CHOOSE_LEVEL_HEIGHT/2,
-                    CHOOSE_LEVEL_WIDTH, CHOOSE_LEVEL_HEIGHT, font, MAROON_TEXT, text);
-        } else if (win == 1) {
-            char *text = "Red Player Wins!";
-            sdl_write(TOP_RIGHT_COORD.x/2 - CHOOSE_LEVEL_WIDTH/2,
-                    TOP_RIGHT_COORD.y - CHOOSE_LEVEL_HEIGHT/2,
-                    CHOOSE_LEVEL_WIDTH, CHOOSE_LEVEL_HEIGHT, font, MAROON_TEXT, text);
-        } else if (win == 2) {
-            char *text = "Blue Player Wins!";
-            sdl_write(TOP_RIGHT_COORD.x/2 - CHOOSE_LEVEL_WIDTH/2,
-                    TOP_RIGHT_COORD.y - CHOOSE_LEVEL_HEIGHT/2,
-                    CHOOSE_LEVEL_WIDTH, CHOOSE_LEVEL_HEIGHT, font, MAROON_TEXT, text);
-        } else if (win == 3) {
-            char *text = "You Win!";
-            sdl_write(TOP_RIGHT_COORD.x/2 - CHOOSE_LEVEL_WIDTH/2,
-                    TOP_RIGHT_COORD.y - CHOOSE_LEVEL_HEIGHT/2,
-                    CHOOSE_LEVEL_WIDTH, CHOOSE_LEVEL_HEIGHT, font, MAROON_TEXT, text);
-        } else if (*game_started) {
-            char *text = "Start Game";
-            sdl_write(TOP_RIGHT_COORD.x/2 - CHOOSE_LEVEL_WIDTH/2,
-                    TOP_RIGHT_COORD.y - CHOOSE_LEVEL_HEIGHT/2,
-                    CHOOSE_LEVEL_WIDTH, CHOOSE_LEVEL_HEIGHT, font, MAROON_TEXT, text);
-        }
-    }
-
-    list_free(resume_shape);
-    list_free(restart_shape);
-    list_free(choose_players_shape);
 }
 
 void add_pause_screen_images(scene_t *scene, SDL_Surface *level1, SDL_Surface *level2,
                              SDL_Surface *level3, SDL_Surface *lock,
                              int *unlocked_level) {
-    double level_width = TOP_RIGHT_COORD.x / 3.0 - LEVEL_BUFFER;
+    double level_width = get_top_right().x / 3.0 - get_level_buffer();
     double level_height = level_width/2;
     double image_width = level_width * IMG_X_SCALE;
     double image_height = level_height * IMG_Y_SCALE;
@@ -865,50 +666,18 @@ void add_pause_screen_images(scene_t *scene, SDL_Surface *level1, SDL_Surface *l
 
     if (*unlocked_level < SECOND_LEVEL) {
         sdl_image(lock, medium_x + image_width/2 - LOCK_WIDTH/2,
-                 medium_y + image_height/2 - LOCK_HEIGHT/2 - BUFFER, LOCK_WIDTH,
+                 medium_y + image_height/2 - LOCK_HEIGHT/2 - get_buffer(), LOCK_WIDTH,
                  LOCK_HEIGHT);
     }
     if (*unlocked_level < THIRD_LEVEL) {
         sdl_image(lock, hard_x + image_width/2 - LOCK_WIDTH/2,
-                 hard_y + image_height/2 - LOCK_HEIGHT/2 - BUFFER, LOCK_WIDTH,
+                 hard_y + image_height/2 - LOCK_HEIGHT/2 - get_buffer(), LOCK_WIDTH,
                  LOCK_HEIGHT);
     }
 
     list_free(easy_shape);
     list_free(medium_shape);
     list_free(hard_shape);
-}
-
-void add_play_screen_text(scene_t *scene, bool *multi, TTF_Font *font, tank_t *tank1,
-                          tank_t *tank2) {
-    char *tank1_lives_text = malloc(sizeof(char) * LIVES_TXT + LIVES_DIGIT);
-    strcpy(tank1_lives_text, "Lives: ");
-    int tank1_lives = body_get_lives(tank_get_body(tank1));
-    char *num1 = malloc(sizeof(char) * LIVES_DIGIT);
-    sprintf(num1, "%u", tank1_lives);
-    tank1_lives_text = strcat(tank1_lives_text, num1);
-
-    int x = TOP_RIGHT_COORD.x/2 - LIVES_WIDTH/2;
-    int y1 = TOP_RIGHT_COORD.y - BUFFER;
-    sdl_write(x, y1, LIVES_WIDTH, LIVES_HEIGHT, font,
-              RED_TEXT, tank1_lives_text);
-    free(tank1_lives_text);
-    free(num1);
-    
-    if (*multi) {
-        char *tank2_lives_text = malloc(sizeof(char) * LIVES_TXT + LIVES_DIGIT);
-        strcpy(tank2_lives_text, "Lives: ");
-        int tank2_lives = body_get_lives(tank_get_body(tank2));
-        char *num2 = malloc(sizeof(char) * LIVES_DIGIT);
-        sprintf(num2, "%u", tank2_lives);
-        tank2_lives_text = strcat(tank2_lives_text, num2);
-
-        int y2 = BOTTOM_LEFT_COORD.y + BUFFER + LIVES_HEIGHT;
-        sdl_write(x, y2, LIVES_WIDTH, LIVES_HEIGHT, font,
-                BLUE_TEXT, tank2_lives_text);
-        free(tank2_lives_text);
-        free(num2);
-    }
 }
 
 void make_tank_power_up(scene_t *scene, int type, tank_t *tank, tank_t *tank_2) {
@@ -931,8 +700,8 @@ void make_tank_power_up(scene_t *scene, int type, tank_t *tank, tank_t *tank_2) 
         powerup_type = REMOTE_MISSILE;
         color = (rgb_color_t) {165.0/255, 104.0/255, 42.0/255};
     }
-    vector_t power_up_center = {rand() % (int)TOP_RIGHT_COORD.x,
-                                rand() % (int)TOP_RIGHT_COORD.y};
+    vector_t power_up_center = {rand() % (int)get_top_right().x,
+                                rand() % (int)get_top_right().y};
     list_t *power_up = animate_rectangle(power_up_center, INIT_POWERUP_LENGTH, INIT_POWERUP_HEIGHT);
     powerups_t *type_pt = malloc(sizeof(powerups_t));
     *type_pt = powerup_type;
@@ -1198,62 +967,24 @@ void handle_force_field(scene_t *scene, tank_t *tank, double dt) {
     }
 }
 
-bool all_enemies_gone(scene_t *scene) {
-    bool all_gone = true;
-    for (size_t i = 0; i < scene_bodies(scene); i++) {
-        if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == ENEMY_TANK) {
-            all_gone = false;
-            break;
-        }
-    }
-    return all_gone;
-}
-
-int find_winner(scene_t *scene, tank_t *tank1, tank_t *tank2, bool *multi,
-                bool *game_over) {
-    if (!(*multi) && all_enemies_gone(scene)) {
-        // Condition where player 1 wins
-        *game_over = true;
-        return 3;
-    }
-    if (body_get_lives(tank_get_body(tank1)) <= 0) {
-        *game_over = true;
-        play_remove_sound();
-        if (*multi) {
-            // Condition where player 2 wins
-            return 2;
-        }
-        // Condition where player 1 loses
-        return 0;
-    }
-    if (*multi && body_get_lives(tank_get_body(tank2)) <= 0) {
-        *game_over = true;
-        play_remove_sound();
-        // Condition where player 1 wins
-        return 1;
-    }
-    // Game is still going on
-    return -1;
-}
-
 int main(int argc, char *argv[]) {
-    sdl_init(BOTTOM_LEFT_COORD, TOP_RIGHT_COORD);
+    sdl_init(get_bottom_left(), get_top_right());
     scene_t *scene = scene_init();
 
-    make_pause_button(scene);
+    screen_set_pause_button(scene);
     tank_t *tank1 = add_tank_to_scene(scene, (body_types_t) TANK_1,
-                                    TANK1_INIT_POS);
-    body_set_lives(tank_get_body(tank1), INIT_LIVES);
+                                    get_tank1_init_pos());
+    body_set_lives(tank_get_body(tank1), get_init_lives());
     tank_t *tank2 = add_tank_to_scene(scene, (body_types_t) TANK_2,
-                                    TANK2_OFF_SCREEN);
+                                    get_tank2_off_screen());
     bool *multi = malloc(sizeof(bool));
     *multi = false;
-    level_1(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scene, multi);
+    level_1(get_top_right(), LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scene, multi);
     int *level = malloc(sizeof(int));
     *level = FIRST_LEVEL;
 
     scene_t *pause_scene = scene_init();
-    set_up_pause_screen(pause_scene);
+    screen_set_pause_screen(pause_scene);
     bool *play = malloc(sizeof(bool));
     *play = true;
     bool *choosing_level = malloc(sizeof(bool));
@@ -1300,7 +1031,7 @@ int main(int argc, char *argv[]) {
     scenes[PAUSE] = pause_scene;
 
     vector_t *tank_center = malloc(sizeof(vector_t));
-    vector_t center = {rand() % (int)TOP_RIGHT_COORD.x, rand() % (int)TOP_RIGHT_COORD.y};
+    vector_t center = {rand() % (int)get_top_right().x, rand() % (int)get_top_right().y};
     *tank_center = center;
 
     list_t *keys_pressed = list_init(0, free);
@@ -1313,7 +1044,7 @@ int main(int argc, char *argv[]) {
                         game_started, unlocked_level)) {
         double dt = time_since_last_tick();
         if (*play) {
-            win = find_winner(scene, tank1, tank2, multi, game_over);
+            win = gameplay_find_winner(scene, tank1, tank2, multi, game_over);
             if (win >=1 && win <= 3) {
                 if (*level == SECOND_LEVEL) {
                     *unlocked_level = THIRD_LEVEL;
@@ -1324,9 +1055,9 @@ int main(int argc, char *argv[]) {
 
             if ((*game_over || *game_started)) {
                 *play = false;
-                vector_t center = {TOP_RIGHT_COORD.x/2.0, 3*TOP_RIGHT_COORD.y/4.0};
-                add_rect_to_scene(pause_scene, center, TOP_RIGHT_COORD.x, TOP_RIGHT_COORD.y/2
-                                - CHOOSE_LEVEL_HEIGHT, WHITE_SCREEN, color_get_white());
+                vector_t center = {get_top_right().x/2.0, 3*get_top_right().y/4.0};
+                screen_set_rect(pause_scene, center, get_top_right().x, get_top_right().y/2
+                                - get_choose_level_height(), WHITE_SCREEN, color_get_white());
             }
         }
 
@@ -1360,13 +1091,13 @@ int main(int argc, char *argv[]) {
 
             handle_force_field(scene, tank1, dt);
             
-            // side_boundary(scene, TOP_RIGHT_COORD, BOTTOM_LEFT_COORD, 25.0);
+            // side_boundary(scene, get_top_right(), get_bottom_left(), 25.0);
             wall_boundary(scene, tank1);
             wall_boundary(scene, tank2);
 
             for(size_t i = 0; i < scene_bodies(scene); i++) { 
                 if(*(body_types_t *)body_get_info(scene_get_body(scene, i)) == ENEMY_TANK) {
-                    tank_hit_boundary_check(scene_get_body(scene, i), BOTTOM_LEFT_COORD, TOP_RIGHT_COORD, dt);
+                    tank_hit_boundary_check(scene_get_body(scene, i), get_bottom_left(), get_top_right(), dt);
                 }
             }
 

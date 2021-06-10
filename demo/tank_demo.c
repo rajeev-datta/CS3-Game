@@ -45,13 +45,6 @@ void on_key_push(char key, key_event_type_t type, double held_time,
     if (*play) {
         if (!*multi) {
             body_t *tank1_body = tank_get_body(tank1);
-
-            // for (size_t i=0; i < scene_bodies(scene); i++) {
-            //     if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_1) {
-            //         tank1_body = scene_get_body(scene, i);
-            //     }
-            // }
-
             if (tank_get_weapon(tank1) == (shooting_handler_t) remote_missile_shoot) {
                 printf("asdsad---");
                 bool missile_exists = false;
@@ -593,6 +586,7 @@ int main(int argc, char *argv[]) {
             time_passed += dt;
             shoot_time += dt;
         
+            //have the enemy tank(s) shoot after a certain period of time
             if(shoot_time >= TANK_SHOOT_TIME) {
                 vector_t player_loc;
                 for(int i = 0; i < scene_bodies(scene); i++) {
@@ -619,7 +613,7 @@ int main(int argc, char *argv[]) {
 
             for(size_t i = 0; i < scene_bodies(scene); i++) { 
                 if(*(body_types_t *)body_get_info(scene_get_body(scene, i)) == ENEMY_TANK) {
-                    tank_hit_boundary_check(scene_get_body(scene, i), get_bottom_left(), get_top_right(), dt);
+                    body_hit_boundary_check(scene_get_body(scene, i), get_bottom_left(), get_top_right(), dt);
                 }
             }
 

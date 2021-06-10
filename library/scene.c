@@ -120,7 +120,6 @@ void scene_tick(scene_t *scene, double dt) {
         if(body_is_removed(body)) {
             if(*(body_types_t *) body_get_info(body) == ENEMY_TANK
                && body_get_play_sound(body)) {
-                printf("playing remove sound");
                 play_remove_sound();
             }
             body_t *removed = list_remove(scene->bodies, i);

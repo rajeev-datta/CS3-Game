@@ -252,3 +252,7 @@ bool body_is_enemy_tank(body_t *body) {
 void body_set_is_enemy_tank(body_t *body, bool bool_enemy_tank) {
     body->is_enemy_tank = bool_enemy_tank;
 }
+
+void body_set_color(body_t *body, rgb_color_t color) {
+    body->color = color;
+}

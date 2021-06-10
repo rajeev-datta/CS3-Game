@@ -30,7 +30,9 @@ tank_t *tank_init(list_t *points, void* info) {
     body_t *shape = body_init_with_info(points, MASS, color_get_red(), info, free);
     if (*(body_types_t *) info == TANK_2) {
         body_set_rotation(shape, M_PI);
+        body_set_color(shape, color_get_blue());
     }
+
     tank_obj->shape = shape;
     
     tank_obj->weapon = NULL;

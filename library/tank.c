@@ -6,6 +6,7 @@
 #include "sound.h"
 #include "levels.h"
 #include "scene.h"
+#include "screen_set.h"
 
 static const int MASS = 100;
 static const double default_reload_time = 1;
@@ -167,27 +168,41 @@ void enemy_tank_shoot(scene_t *scene, int *level, vector_t player) {
     else if (*level == get_second_level()) {
         for(int i = 0; i < scene_bodies(scene); i++) {
             if(*(body_types_t *)body_get_info(scene_get_body(scene, i)) == ENEMY_TANK) {
-                // if(body_get_centroid(scene_get_body(scene, i)).x == ___) {
-                //     enemy_tank_helper(scene, scene_get_body(scene, i), __, __, player);
-                // }
-                // else if(body_get_centroid(scene_get_body(scene, i)).x == ___) {
-                //     enemy_tank_helper(scene, scene_get_body(scene, i), __, __, player);
-                // }
+                if(body_get_centroid(scene_get_body(scene, i)).x <= 400 && 
+                    body_get_centroid(scene_get_body(scene, i)).x >= 380) {
+                    enemy_tank_helper(scene, scene_get_body(scene, i), get_top_right().y,
+                                      300, player);
+                    enemy_tank_helper(scene, scene_get_body(scene, i), 200,
+                                      get_bottom_left().y, player);           
+                }
+                else if(body_get_centroid(scene_get_body(scene, i)).x <= 600 &&
+                        body_get_centroid(scene_get_body(scene, i)).x >= 580) {
+                    enemy_tank_helper(scene, scene_get_body(scene, i), get_top_right().y,
+                                      get_bottom_left().y, player);
+                }
             }
         }
     }
     else if (*level == get_third_level()) {
         for(int i = 0; i < scene_bodies(scene); i++) {
             if(*(body_types_t *)body_get_info(scene_get_body(scene, i)) == ENEMY_TANK) {
-                // if(body_get_centroid(scene_get_body(scene, i)).x == ___) {
-                //     enemy_tank_helper(scene, scene_get_body(scene, i), __, __, player);
-                // }
-                // else if(body_get_centroid(scene_get_body(scene, i)).x == ___) {
-                //     enemy_tank_helper(scene, scene_get_body(scene, i), __, __, player);
-                // }
-                // else if(body_get_centroid(scene_get_body(scene, i)).x == ___) {
-                //     enemy_tank_helper(scene, scene_get_body(scene, i), __, __, player);
-                // }
+                if(body_get_centroid(scene_get_body(scene, i)).x <= 250 && 
+                   body_get_centroid(scene_get_body(scene, i)).x >= 230) {
+                    enemy_tank_helper(scene, scene_get_body(scene, i), 400, 300, player);
+                    enemy_tank_helper(scene, scene_get_body(scene, i), 200, 100, player);           
+                }
+                else if(body_get_centroid(scene_get_body(scene, i)).x <= 550 &&
+                        body_get_centroid(scene_get_body(scene, i)).x >= 530) {
+                    enemy_tank_helper(scene, scene_get_body(scene, i), get_top_right().y,
+                                      400, player);
+                    enemy_tank_helper(scene, scene_get_body(scene, i), 100,
+                                      get_bottom_left().y, player);
+                }
+                else if(body_get_centroid(scene_get_body(scene, i)).x <= 900 &&
+                        body_get_centroid(scene_get_body(scene, i)).x >= 880) {
+                    enemy_tank_helper(scene, scene_get_body(scene, i), 400, 300, player);
+                    enemy_tank_helper(scene, scene_get_body(scene, i), 200, 100, player);
+                }
             }
         }
     }

@@ -45,13 +45,6 @@ void on_key_push(char key, key_event_type_t type, double held_time,
     if (*play) {
         if (!*multi) {
             body_t *tank1_body = tank_get_body(tank1);
-
-            // for (size_t i=0; i < scene_bodies(scene); i++) {
-            //     if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_1) {
-            //         tank1_body = scene_get_body(scene, i);
-            //     }
-            // }
-
             if (tank_get_weapon(tank1) == (shooting_handler_t) remote_missile_shoot) {
                 bool missile_exists = false;
                 list_clear(keys_pressed);

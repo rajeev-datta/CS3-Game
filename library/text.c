@@ -19,7 +19,7 @@ static const int LIVES_WIDTH = 100;
 static const int LIVES_HEIGHT = 50;
 static const char *CHOSEN_FONT = "fonts/AnticSlab-Regular.ttf";
 static const int FONT_SIZE = 100;
-TTF_Font *FONT;
+static TTF_Font *FONT;
 
 void text_open_font() {
     FONT = TTF_OpenFont(CHOSEN_FONT, FONT_SIZE);

@@ -462,26 +462,7 @@ int main(int argc, char *argv[]) {
     int *unlocked_level = malloc(sizeof(int));
     *unlocked_level = get_third_level();
     text_open_font();
-    SDL_Surface *level1 = IMG_Load("images/level1.png");
-    if (!level1) {
-        printf("IMG_LoadRW: %s\n", IMG_GetError());
-    }
-    SDL_Surface *level2 = IMG_Load("images/level2.png");
-    if (!level2) {
-        printf("IMG_LoadRW: %s\n", IMG_GetError());
-    }
-    SDL_Surface *level3 = IMG_Load("images/level3.png");
-    if (!level3) {
-        printf("IMG_LoadRW: %s\n", IMG_GetError());
-    }
-    SDL_Surface *lock = IMG_Load("images/lock.png");
-    if (!lock) {
-        printf("IMG_LoadRW: %s\n", IMG_GetError());
-    }
-    SDL_Surface *wall = IMG_Load("images/wall.png");
-    if (!wall) {
-        printf("IMG_LoadRW: %s\n", IMG_GetError());
-    }
+    image_load();
     
     sdl_on_key((key_handler_t)on_key_push);
     sdl_on_mouse((mouse_handler_t)on_mouse);
@@ -577,8 +558,7 @@ int main(int argc, char *argv[]) {
             text_for_play(temp_scene, multi, tank1, tank2);
         } else {
             text_for_pause(temp_scene, multi,  choosing_level, win, game_started);
-            image_pause_screen(temp_scene, level1, level2, level3, lock,
-                                    unlocked_level);
+            image_pause_screen(temp_scene, unlocked_level);
         }
         sdl_show();
         
@@ -589,11 +569,7 @@ int main(int argc, char *argv[]) {
     }
 
     free_sound();
-    SDL_FreeSurface(level1);
-    SDL_FreeSurface(level2);
-    SDL_FreeSurface(level3);
-    SDL_FreeSurface(wall);
-    SDL_FreeSurface(lock);
+    image_free();
     text_free();
     free(play);
     free(multi);

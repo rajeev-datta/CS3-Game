@@ -512,6 +512,7 @@ int main(int argc, char *argv[]) {
             time_passed += dt;
             shoot_time += dt;
         
+            //have the enemy tank(s) shoot after a certain period of time
             if(shoot_time >= TANK_SHOOT_TIME) {
                 vector_t player_loc;
                 for(int i = 0; i < scene_bodies(scene); i++) {

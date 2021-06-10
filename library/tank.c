@@ -160,29 +160,7 @@ void enemy_tank_shoot(scene_t *scene, int *level, vector_t player) {
     if (*level == get_first_level()) {
         for(int i = 0; i < scene_bodies(scene); i++) {
             if(*(body_types_t *)body_get_info(scene_get_body(scene, i)) == ENEMY_TANK) {
-                body_t *enemy = scene_get_body(scene, i);
-                if(body_get_centroid(enemy).y <= 350 && 
-                   body_get_centroid(enemy).y >= 150) {
-                    vector_t curr_vel = body_get_velocity(enemy);
-                    
-                    //adjust to shoot
-                    body_set_velocity(enemy, (vector_t){0, 0});
-                    double angle = atan(fabs(body_get_centroid(enemy).y - player.y) / 
-                                        fabs(body_get_centroid(enemy).x - player.x));
-                    if(body_get_centroid(enemy).y > player.y) {
-                        body_set_rotation(enemy, M_PI + angle);
-                    }
-                    else {
-                        body_set_rotation(enemy, M_PI - angle);
-                    }
-                    
-                    //shoot
-                    default_gun_shoot(scene, enemy); 
-
-                    //put back to normal
-                    body_set_velocity(enemy, curr_vel);
-                    body_set_rotation(enemy, M_PI);
-                }
+                enemy_tank_helper(scene, scene_get_body(scene, i), 350, 150, player);
             }
         }
     }
@@ -195,5 +173,29 @@ void enemy_tank_shoot(scene_t *scene, int *level, vector_t player) {
         for(int i = 0; i < scene_bodies(scene); i++) {
             
         }
+    }
+}
+
+void enemy_tank_helper(scene_t *scene, body_t *enemy, double max_y, double min_y, vector_t player) {
+    if(body_get_centroid(enemy).y <= max_y && body_get_centroid(enemy).y >= min_y) {
+        vector_t curr_vel = body_get_velocity(enemy);
+        
+        //adjust to shoot
+        body_set_velocity(enemy, (vector_t){0, 0});
+        double angle = atan(fabs(body_get_centroid(enemy).y - player.y) / 
+                            fabs(body_get_centroid(enemy).x - player.x));
+        if(body_get_centroid(enemy).y > player.y) {
+            body_set_rotation(enemy, M_PI + angle);
+        }
+        else {
+            body_set_rotation(enemy, M_PI - angle);
+        }
+        
+        //shoot
+        default_gun_shoot(scene, enemy); 
+
+        //put back to normal
+        body_set_velocity(enemy, curr_vel);
+        body_set_rotation(enemy, M_PI);
     }
 }

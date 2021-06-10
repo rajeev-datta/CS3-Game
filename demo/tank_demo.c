@@ -978,8 +978,8 @@ int main(int argc, char *argv[]) {
 
             // Shoot a power-up at an interval of time.
             if (time_passed > TANK_POWER_UP_TIME) {
-                // make_tank_power_up(temp_scene, rand() % NUM_POWERUPS, tank1, tank2);
-                make_tank_power_up(temp_scene, 3, tank1, tank2);
+                make_tank_power_up(temp_scene, rand() % NUM_POWERUPS, tank1, tank2);
+                // make_tank_power_up(temp_scene, 3, tank1, tank2);
                 time_passed = 0;
             }
         } else {

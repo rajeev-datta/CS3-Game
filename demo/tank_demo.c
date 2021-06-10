@@ -20,6 +20,7 @@
 #include "text.h"
 #include "screen_set.h"
 #include "levels.h"
+#include "image.h"
 
 static const double LEVEL_1_WALL_LENGTH = 10;
 static const double LEVEL_1_WALL_HEIGHT = 100;
@@ -28,11 +29,7 @@ static const int TANK_POWER_UP_TIME = 3;
 static double const INIT_VEL = 200;
 static double const ANGLE_OFFSET = (10 * M_PI)/180;
 static const int NUM_SCENES = 2;
-static const int FONT_SIZE = 100;
 static const int CIRC_PTS = 16;
-static const double IMG_X_SCALE = 0.9;
-static const double IMG_Y_SCALE = 0.8;
-static const char *FONT = "fonts/AnticSlab-Regular.ttf";
 static const int FIRST_REMOVABLE_INDEX = 4;
 static const double BULLET_ELASTICITY = 0.9;
 
@@ -463,10 +460,7 @@ int main(int argc, char *argv[]) {
     *game_started = true;
     int *unlocked_level = malloc(sizeof(int));
     *unlocked_level = get_third_level();
-    TTF_Font *font = TTF_OpenFont(FONT, FONT_SIZE);
-    if (!font) {
-        printf("TTF_OpenFontRW: %s\n", TTF_GetError());
-    }
+    text_open_font();
     SDL_Surface *level1 = IMG_Load("images/level1.png");
     if (!level1) {
         printf("IMG_LoadRW: %s\n", IMG_GetError());
@@ -566,10 +560,9 @@ int main(int argc, char *argv[]) {
 
         sdl_render_scene(temp_scene);
         if (*play) {
-            add_play_screen_text(temp_scene, multi, font, tank1, tank2);
+            text_for_play(temp_scene, multi, tank1, tank2);
         } else {
-            add_pause_screen_text(temp_scene, multi, font, choosing_level, win,
-                                  game_started);
+            text_for_pause(temp_scene, multi,  choosing_level, win, game_started);
             image_pause_screen(temp_scene, level1, level2, level3, lock,
                                     unlocked_level);
         }
@@ -587,7 +580,7 @@ int main(int argc, char *argv[]) {
     SDL_FreeSurface(level3);
     SDL_FreeSurface(wall);
     SDL_FreeSurface(lock);
-    TTF_CloseFont(font);
+    text_free();
     free(play);
     free(multi);
     free(choosing_level);

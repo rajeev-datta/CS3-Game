@@ -5,10 +5,13 @@
 #include <stdbool.h>
 #include "sdl_wrapper.h"
 
-void add_pause_screen_text(scene_t *scene, bool *multi, TTF_Font *font,
-                           bool *choosing_level, int win, bool *game_started);
+void text_open_font();
 
-void add_play_screen_text(scene_t *scene, bool *multi, TTF_Font *font, tank_t *tank1,
-                          tank_t *tank2);
+void text_for_pause(scene_t *scene, bool *multi, bool *choosing_level, int win,
+                    bool *game_started);
+
+void text_for_play(scene_t *scene, bool *multi, tank_t *tank1, tank_t *tank2);
+
+void text_free();
 
 #endif // #ifndef __TEXT_H__

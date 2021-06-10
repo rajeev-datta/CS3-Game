@@ -53,6 +53,7 @@ void on_key_push(char key, key_event_type_t type, double held_time,
             // }
 
             if (tank_get_weapon(tank1) == (shooting_handler_t) remote_missile_shoot) {
+                printf("asdsad---");
                 bool missile_exists = false;
                 list_clear(keys_pressed);
                 body_set_velocity(tank1_body, (vector_t) {0,0});
@@ -91,6 +92,7 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                 }
 
                 if (!missile_exists) {
+                    printf("ropes have been shot");
                     tank_shoot(scene, tank1);
                 }
             }
@@ -131,11 +133,13 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                 }
         }
         } else {
+            printf("a-");
             body_t *tank1_body = tank_get_body(tank1);
             body_t *tank2_body = tank_get_body(tank2);
 
             if ((tank_get_weapon(tank1) == (shooting_handler_t) remote_missile_shoot) && 
                 (tank_get_weapon(tank2) != (shooting_handler_t) remote_missile_shoot)) {
+                // printf("yes1, no2 \n");
                 bool missile_exists = false;
                 list_clear(keys_pressed);
                 body_set_velocity(tank1_body, (vector_t) {0,0});
@@ -149,7 +153,6 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                             body_set_velocity(tank2_body, (vector_t) {0,0});
                             list_clear(keys_pressed);
                         } else if (type == KEY_PRESSED) {
-                            printf("-----yes-----");
                             vector_t speed1 = {0, 0};
                             vector_t speed2 = {0, 0};
                             list_add(keys_pressed, (char *) key);
@@ -196,12 +199,15 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                     }
                 }
 
+                //gets activated like every 3 seconds...?
                 if (!missile_exists) {
+                    printf("shooting");
                     tank_shoot(scene, tank1);
                 }
             }
             else if ((tank_get_weapon(tank1) != (shooting_handler_t) remote_missile_shoot) && 
                      (tank_get_weapon(tank2) == (shooting_handler_t) remote_missile_shoot)) {
+                printf("no1, yes2 \n");
                 bool missile_exists = false;
                 list_clear(keys_pressed);
                 body_set_velocity(tank2_body, (vector_t) {0,0});
@@ -261,8 +267,83 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                     }
                 }
 
+                //gets activated every time
                 if (!missile_exists) {
+                    printf("shoot");
                     tank_shoot(scene, tank2);
+                }
+            }
+
+            else if ((tank_get_weapon(tank1) == (shooting_handler_t) remote_missile_shoot) && 
+                     (tank_get_weapon(tank2) == (shooting_handler_t) remote_missile_shoot)) {
+                // printf("yes1, no2 \n");
+                bool missile_exists = false;
+                list_clear(keys_pressed);
+                body_set_velocity(tank1_body, (vector_t) {0,0});
+                body_set_velocity(tank2_body, (vector_t) {0,0});
+                for (size_t i=0; i < scene_bodies(scene); i++) {
+                    if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE_1) {
+                        missile_exists = true;
+                        body_t *missile1 = scene_get_body(scene, i);
+                        list_clear(keys_pressed);
+                        if (type == KEY_RELEASED) {
+                            body_set_velocity(missile1, (vector_t){0, 0});
+                            body_set_velocity(tank2_body, (vector_t) {0,0});
+                            list_clear(keys_pressed);
+                        } else if (type == KEY_PRESSED) {
+                            vector_t speed1 = {0, 0};
+                            list_add(keys_pressed, (char *) key);
+                            for (size_t i = 0; i < list_size(keys_pressed); i++) {
+                                char key_pressed = (char) list_get(keys_pressed, i);
+                                if (key_pressed == 's') {
+                                    speed1.x = -INIT_VEL * cos(body_get_orientation(missile1));
+                                    speed1.y = -INIT_VEL * sin(body_get_orientation(missile1));
+                                }
+                                if (key_pressed == 'w') {
+                                    speed1.x = INIT_VEL * cos(body_get_orientation(missile1));
+                                    speed1.y = INIT_VEL * sin(body_get_orientation(missile1));
+                                }
+                                if (key_pressed == 'd') {
+                                    body_set_rotation(missile1, body_get_orientation(missile1) + ANGLE_OFFSET / (2*i + 1));
+                                }
+                                if (key_pressed == 'a') {
+                                    body_set_rotation(missile1, body_get_orientation(missile1) - ANGLE_OFFSET / (2*i + 1));
+                                }
+                            }
+                            body_set_velocity(missile1, speed1);
+                        }
+                    }
+                    if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE_2) {
+                        missile_exists = true;
+                        body_t *missile2 = scene_get_body(scene, i);
+                        list_clear(keys_pressed);
+                        if (type == KEY_RELEASED) {
+                            body_set_velocity(missile2, (vector_t){0, 0});
+                            body_set_velocity(tank1_body, (vector_t) {0,0});
+                            list_clear(keys_pressed);
+                        } else if (type == KEY_PRESSED) {
+                            vector_t speed2 = {0, 0};
+                            list_add(keys_pressed, (char *) key);
+                            for (size_t i = 0; i < list_size(keys_pressed); i++) {
+                                char key_pressed = (char) list_get(keys_pressed, i);
+                                if (key_pressed == DOWN_ARROW) {
+                                    speed2.x = -INIT_VEL * cos(body_get_orientation(missile2));
+                                    speed2.y = -INIT_VEL * sin(body_get_orientation(missile2));
+                                }
+                                if (key_pressed == UP_ARROW) {
+                                    speed2.x = INIT_VEL * cos(body_get_orientation(missile2));
+                                    speed2.y = INIT_VEL * sin(body_get_orientation(missile2));
+                                }
+                                if (key == RIGHT_ARROW) {
+                                    body_set_rotation(missile2, body_get_orientation(missile2) + ANGLE_OFFSET / (2*i + 1));
+                                }
+                                if (key_pressed == LEFT_ARROW) {
+                                    body_set_rotation(missile2, body_get_orientation(missile2) - ANGLE_OFFSET / (2*i + 1));
+                                }
+                            }
+                            body_set_velocity(missile2, speed2);
+                        }
+                    }
                 }
             }
             else {
@@ -544,8 +625,8 @@ int main(int argc, char *argv[]) {
 
             // Shoot a power-up at an interval of time.
             if (time_passed > TANK_POWER_UP_TIME) {
-                make_tank_power_up(temp_scene, rand() % NUM_POWERUPS, tank1, tank2);
-                // make_tank_power_up(temp_scene, 5, tank1, tank2);
+                // make_tank_power_up(temp_scene, rand() % NUM_POWERUPS, tank1, tank2);
+                make_tank_power_up(temp_scene, 4, tank1, tank2);
                 time_passed = 0;
             }
         } else {

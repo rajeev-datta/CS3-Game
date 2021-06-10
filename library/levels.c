@@ -18,15 +18,13 @@ static const int FIRST_LEVEL = 1;
 static const int SECOND_LEVEL = 2;
 static const int THIRD_LEVEL = 3;
 
-void put_forces(scene_t *scene) { //should work for different levels because scene is argument
+void put_forces(scene_t *scene) {
     for(size_t i = 0; i < scene_bodies(scene); i++) {
         for(size_t j = 0; j < scene_bodies(scene); j++) {
             if(*(body_types_t *) body_get_info(scene_get_body(scene, i)) == BULLET) {
                 if(*(body_types_t *) body_get_info(scene_get_body(scene, j)) == TANK_1
                 || *(body_types_t *) body_get_info(scene_get_body(scene, j)) == TANK_2
                 || *(body_types_t *) body_get_info(scene_get_body(scene, j)) == ENEMY_TANK) {
-                    //bullet disappears because tanks have lives, so they survive
-                    //need to write code to check for lives
                     create_partial_destructive_collision(scene, scene_get_body(scene, j), scene_get_body(scene, i));
                 }
                 if(*(body_types_t *) body_get_info(scene_get_body(scene, j)) == WALL) {
@@ -44,6 +42,27 @@ void put_forces(scene_t *scene) { //should work for different levels because sce
     }
 }
 
+void set_boundaries(vector_t top_right, scene_t *scene) {
+    body_types_t *wall_info = malloc(sizeof(body_types_t *));
+    *wall_info = WALL;
+
+    list_t *top_boundary = animate_rectangle((vector_t) {top_right.x/2, top_right.y+5}, top_right.x, 5);
+    body_t *top_boundary_body = body_init_with_info(top_boundary, INFINITY, color_get_red(), wall_info, free);
+    scene_add_body(scene, top_boundary_body);
+
+    list_t *bottom_boundary = animate_rectangle((vector_t) {top_right.x/2, -5}, top_right.x, 5);
+    body_t *bottom_boundary_body = body_init_with_info(bottom_boundary, INFINITY, color_get_red(), wall_info, free);
+    scene_add_body(scene, bottom_boundary_body);
+
+    list_t *left_boundary = animate_rectangle((vector_t) {-5, top_right.y/2}, 5, top_right.y);
+    body_t *left_boundary_body = body_init_with_info(left_boundary, INFINITY, color_get_red(), wall_info, free);
+    scene_add_body(scene, left_boundary_body);
+    
+    list_t *right_boundary = animate_rectangle((vector_t) {top_right.x+5, top_right.y/2}, 5, top_right.y);
+    body_t *right_boundary_body = body_init_with_info(right_boundary, INFINITY, color_get_red(), wall_info, free);
+    scene_add_body(scene, right_boundary_body);
+}
+
 void level_1(vector_t top_right, double wall_length, double wall_height, scene_t *scene, bool *multi) {
     if (!*multi) {
         vector_t *enemy_center = malloc(sizeof(vector_t));
@@ -51,8 +70,11 @@ void level_1(vector_t top_right, double wall_length, double wall_height, scene_t
         screen_set_new_enemy(scene, enemy_center);
     }
 
+    set_boundaries(top_right, scene);
+
     body_types_t *wall_info = malloc(sizeof(body_types_t *));
     *wall_info = WALL;
+
     list_t *center_wall = animate_rectangle((vector_t) {top_right.x/2, top_right.y/2}, wall_length, wall_height*2);
     body_t *center_wall_body = body_init_with_info(center_wall, INFINITY, color_get_red(), wall_info, free);
     scene_add_body(scene, center_wall_body);
@@ -89,6 +111,9 @@ void level_2(vector_t top_right, double wall_length, double wall_height, scene_t
     
     body_types_t *wall_info = malloc(sizeof(body_types_t *));
     *wall_info = WALL;
+
+    set_boundaries(top_right, scene);
+
     list_t *center_top_wall = animate_rectangle((vector_t) {top_right.x/2, (top_right.y*3.5)/10}, wall_height, wall_length);
     body_t *center_top_wall_body = body_init_with_info(center_top_wall, INFINITY, color_get_red(), wall_info, free);
     scene_add_body(scene, center_top_wall_body);
@@ -141,6 +166,9 @@ void level_3(vector_t top_right, double wall_length, double wall_height, scene_t
     
     body_types_t *wall_info = malloc(sizeof(body_types_t *));
     *wall_info = WALL;
+
+    set_boundaries(top_right, scene);   
+
     list_t *left_center_top_wall = animate_rectangle((vector_t) {(top_right.x*7)/20, (top_right.y*3)/4}, wall_length, wall_height*2);
     body_t *left_center_top_wall_body = body_init_with_info(left_center_top_wall, INFINITY, color_get_red(), wall_info, free);
     scene_add_body(scene, left_center_top_wall_body);

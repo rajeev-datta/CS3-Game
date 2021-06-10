@@ -12,6 +12,7 @@ typedef enum powerups{
     LAND_MINE,
     FORCE_FIELD,
     REMOTE_MISSILE,
+    INC_LIVES,
 } powerups_t;
 
 // bullets might be destroying powerups because the corresponding values for the powerups and body types are equal and thus
@@ -36,6 +37,8 @@ void land_mine_shoot(scene_t *scene, body_t *body);
 void force_field_shoot(scene_t *scene, body_t *body);
 
 void remote_missile_shoot(scene_t *scene, body_t *body);
+
+void increase_lives(body_t *body);
 
 void create_tank_powerup_collision(scene_t *scene, tank_t *tank, body_t *powerup, powerups_t type);
 

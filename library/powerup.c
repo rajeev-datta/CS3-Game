@@ -278,7 +278,7 @@ void tank_powerup_fxn(body_t *body1, body_t *body2, vector_t axis, void *aux) {
         // force field power up
         tank_set_new_range(((tank_powerup_aux_t *)aux)->tank, FORCE_FIELD_TIME_LIMIT);
         tank_set_shooting_handler(((tank_powerup_aux_t *)aux)->tank, (shooting_handler_t) force_field_shoot);
-    } else {
+    } else if (((tank_powerup_aux_t *)aux)->type == REMOTE_MISSILE) {
         // remote controlled missile power up
         tank_set_new_reload_time(((tank_powerup_aux_t *)aux)->tank, MISSILE_RELOAD_TIME);
         tank_set_new_range(((tank_powerup_aux_t *)aux)->tank, MISSILE_RANGE);
@@ -310,10 +310,13 @@ void make_tank_power_up(scene_t *scene, int type, tank_t *tank, tank_t *tank_2) 
     } else if (type == 3) {
         powerup_type = FORCE_FIELD;
         color = (rgb_color_t) {0.3, 0.0, 0.4};
-    }
-    else {
+    } else if (type == 4) {
         powerup_type = REMOTE_MISSILE;
         color = (rgb_color_t) {165.0/255, 104.0/255, 42.0/255};
+    }
+    else {
+        powerup_type = INC_LIVES;
+        color = (rgb_color_t) {10.0/255, 78.0/255, 68.0/255};
     }
     vector_t power_up_center = {rand() % (int)get_top_right().x,
                                 rand() % (int)get_top_right().y};
@@ -325,11 +328,17 @@ void make_tank_power_up(scene_t *scene, int type, tank_t *tank, tank_t *tank_2) 
     body_set_is_powerup(power_up_body, true);
     scene_add_body(scene, power_up_body);
 
-    create_tank_powerup_collision(scene, tank, power_up_body, type);
-    create_partial_destructive_collision(scene, tank_get_body(tank), power_up_body);
+    if (powerup_type != INC_LIVES) {
+        create_tank_powerup_collision(scene, tank, power_up_body, type);
+        create_partial_destructive_collision(scene, tank_get_body(tank), power_up_body);
 
-    create_tank_powerup_collision(scene, tank_2, power_up_body, type);
-    create_partial_destructive_collision(scene, tank_get_body(tank_2), power_up_body);
+        create_tank_powerup_collision(scene, tank_2, power_up_body, type);
+        create_partial_destructive_collision(scene, tank_get_body(tank_2), power_up_body);  
+    } else {
+        body_set_is_inc_lives_pow(power_up_body, true);
+        create_partial_destructive_collision(scene, tank_get_body(tank), power_up_body);
+        create_partial_destructive_collision(scene, tank_get_body(tank_2), power_up_body);
+    }
 
     // create_tank_powerup_collision(scene, scene_get_body(scene, 1), power_up_body, type);
     // create_partial_destructive_collision(scene, scene_get_body(scene, 1), power_up_body);

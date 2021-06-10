@@ -111,12 +111,20 @@ void destructive_fxn(body_t *body1, body_t *body2, vector_t axis, void *aux) {
     if (*(bool *)aux) {
         if (body_is_tank(body2)) {
             body_set_lives(body2, body_get_lives(body2) - 1);
-        } else {
+        }
+
+        else if (body_is_inc_lives_pow(body2) && body_is_tank(body1)) {
+            printf("collision should happen!\n");
+            body_set_lives(body1, body_get_lives(body1) + 1);
+            body_remove(body2);
+        }
+        
+        else {
             if (*(body_types_t *)body_get_info(body1) == TANK_FORCE_FIELD) {
                 body_set_velocity(body2, (vector_t) {0, 0});
             }
             body_remove(body2);
-        }
+        } 
     }
     else {
         if (body_is_tank(body1)) {

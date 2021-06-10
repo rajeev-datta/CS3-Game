@@ -27,6 +27,7 @@ typedef struct body {
     bool play_sound;
     bool has_force_field;
     bool is_enemy_tank;
+    bool inc_lives_pow;
 } body_t;
 
 body_t *body_init(list_t *shape, double mass, rgb_color_t color) {
@@ -53,6 +54,7 @@ body_t *body_init(list_t *shape, double mass, rgb_color_t color) {
     body_obj->play_sound = true;
     body_obj->has_force_field = false;
     body_obj->is_enemy_tank = false;
+    body_obj->inc_lives_pow = false;
     return body_obj;
 }
 
@@ -255,4 +257,12 @@ void body_set_is_enemy_tank(body_t *body, bool bool_enemy_tank) {
 
 void body_set_color(body_t *body, rgb_color_t color) {
     body->color = color;
+}
+
+bool body_is_inc_lives_pow(body_t *body) {
+    return body->inc_lives_pow;
+}
+
+void body_set_is_inc_lives_pow(body_t *body, bool bool_inc_lives) {
+    body->inc_lives_pow = bool_inc_lives;
 }

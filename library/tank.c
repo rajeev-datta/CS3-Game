@@ -167,14 +167,27 @@ void enemy_tank_shoot(scene_t *scene, int *level, vector_t player) {
     else if (*level == get_second_level()) {
         for(int i = 0; i < scene_bodies(scene); i++) {
             if(*(body_types_t *)body_get_info(scene_get_body(scene, i)) == ENEMY_TANK) {
-                
+                // if(body_get_centroid(scene_get_body(scene, i)).x == ___) {
+                //     enemy_tank_helper(scene, scene_get_body(scene, i), __, __, player);
+                // }
+                // else if(body_get_centroid(scene_get_body(scene, i)).x == ___) {
+                //     enemy_tank_helper(scene, scene_get_body(scene, i), __, __, player);
+                // }
             }
         }
     }
     else if (*level == get_third_level()) {
         for(int i = 0; i < scene_bodies(scene); i++) {
             if(*(body_types_t *)body_get_info(scene_get_body(scene, i)) == ENEMY_TANK) {
-                
+                // if(body_get_centroid(scene_get_body(scene, i)).x == ___) {
+                //     enemy_tank_helper(scene, scene_get_body(scene, i), __, __, player);
+                // }
+                // else if(body_get_centroid(scene_get_body(scene, i)).x == ___) {
+                //     enemy_tank_helper(scene, scene_get_body(scene, i), __, __, player);
+                // }
+                // else if(body_get_centroid(scene_get_body(scene, i)).x == ___) {
+                //     enemy_tank_helper(scene, scene_get_body(scene, i), __, __, player);
+                // }
             }
         }
     }

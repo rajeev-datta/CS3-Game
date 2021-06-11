@@ -13,11 +13,9 @@ void load_sound() {
     }
     MUSIC = Mix_LoadMUS("sounds/music.wav");
     if (!MUSIC) {
-        printf("Mix_LoadMUS: %s\n", Mix_GetError());
         return;
     }
     if (Mix_PlayMusic(MUSIC, -1) == -1) {
-        printf("Mix_PlayMusic: %s\n", Mix_GetError());
         return;
     }
     REMOVE_SOUND = Mix_LoadWAV("sounds/remove_sound.wav");

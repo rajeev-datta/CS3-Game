@@ -230,9 +230,14 @@ void remote_missile_shoot(scene_t *scene, body_t *body) {
     list_t *missile = animate_rectangle(bullet_center, MISSILE_LENGTH,
                                        MISSILE_HEIGHT);
     body_types_t *tank_missile_info = malloc(sizeof(body_types_t *));
-    *tank_missile_info = TANK_REMOTE_MISSILE_1;
+    if (*(body_types_t *) body_get_info(body) == TANK_1) {
+        *tank_missile_info = TANK_REMOTE_MISSILE_1;
+    }
+    else if (*(body_types_t *) body_get_info(body) == TANK_2) {
+        *tank_missile_info = TANK_REMOTE_MISSILE_2;
+    }
     body_t *missile_body = body_init_with_info(missile, BULLET_MASS,
-                                              color_get_purple(), tank_missile_info, free);
+                                               color_get_purple(), tank_missile_info, free);
 
     // vector_t tank_bullet_init_velocity;
     // tank_bullet_init_velocity.x = TANK_BULLET_INIT_VEL * cos(body_get_orientation(body));
@@ -247,10 +252,6 @@ void remote_missile_shoot(scene_t *scene, body_t *body) {
         }
         if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == ENEMY_TANK) {
             create_destructive_collision(scene, missile_body, scene_get_body(scene, i));
-        }
-
-        if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == WALL) {
-            create_physics_collision(scene, BULLET_ELASTICITY, missile_body, scene_get_body(scene, i));
         }
     }
     scene_add_body(scene, missile_body);
@@ -386,8 +387,10 @@ void update_and_check_projectiles_and_tanks(scene_t *scene, tank_t *tank, double
                 }
             }
 
-            if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE_1
-                || *(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE_2) {
+            if ((*(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE_1
+                && *(body_types_t *)body_get_info(tank_get_body(tank)) == TANK_1) ||
+                (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE_2
+                && *(body_types_t *)body_get_info(tank_get_body(tank)) == TANK_2)) {
                 body_increase_time(scene_get_body(scene, i), dt);
                 double curr_time = body_get_time(scene_get_body(scene, i));
 
@@ -395,6 +398,16 @@ void update_and_check_projectiles_and_tanks(scene_t *scene, tank_t *tank, double
                     body_remove(scene_get_body(scene, i));
                 }
             }
+
+            // if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE_2
+            //     && *(body_types_t *)body_get_info(tank_get_body(tank)) == TANK_2) {
+            //     body_increase_time(scene_get_body(scene, i), dt);
+            //     double curr_time = body_get_time(scene_get_body(scene, i));
+
+            //     if (curr_time > curr_range) {
+            //         body_remove(scene_get_body(scene, i));
+            //     }
+            // }
         } else {
             if (body_is_tank(scene_get_body(scene, i))) {
                 body_increase_time(scene_get_body(scene, i), dt);

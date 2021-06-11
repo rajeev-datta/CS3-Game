@@ -3,6 +3,7 @@
 
 #include "body.h"
 #include "list.h"
+#include <stdbool.h>
 
 typedef enum body_types {
     TANK_1,
@@ -161,5 +162,7 @@ void scene_erase(scene_t *scene);
 void scene_erase_some(scene_t *scene, int index);
 
 void scene_body_detonate(scene_t *scene, body_t *body);
+
+bool scene_check_for_info(scene_t *scene, body_types_t info);
 
 #endif // #ifndef __SCENE_H__

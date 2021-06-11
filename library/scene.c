@@ -174,3 +174,11 @@ void scene_body_detonate(scene_t *scene, body_t *body) {
     body_remove(body);
 }
 
+bool scene_check_for_info(scene_t *scene, body_types_t info) {
+    for (size_t i = 0; i < scene_bodies; i++) {
+        if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == info) {
+            return true;
+        }
+    }
+    return false;
+}

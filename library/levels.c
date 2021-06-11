@@ -47,19 +47,19 @@ void set_boundaries(vector_t top_right, scene_t *scene) {
     *wall_info = WALL;
 
     list_t *top_boundary = animate_rectangle((vector_t) {top_right.x/2, top_right.y+5}, top_right.x, 5);
-    body_t *top_boundary_body = body_init_with_info(top_boundary, INFINITY, color_get_red(), wall_info, free);
+    body_t *top_boundary_body = body_init_with_info(top_boundary, INFINITY, color_get_white(), wall_info, free);
     scene_add_body(scene, top_boundary_body);
 
     list_t *bottom_boundary = animate_rectangle((vector_t) {top_right.x/2, -5}, top_right.x, 5);
-    body_t *bottom_boundary_body = body_init_with_info(bottom_boundary, INFINITY, color_get_red(), wall_info, free);
+    body_t *bottom_boundary_body = body_init_with_info(bottom_boundary, INFINITY, color_get_white(), wall_info, free);
     scene_add_body(scene, bottom_boundary_body);
 
     list_t *left_boundary = animate_rectangle((vector_t) {-5, top_right.y/2}, 5, top_right.y);
-    body_t *left_boundary_body = body_init_with_info(left_boundary, INFINITY, color_get_red(), wall_info, free);
+    body_t *left_boundary_body = body_init_with_info(left_boundary, INFINITY, color_get_white(), wall_info, free);
     scene_add_body(scene, left_boundary_body);
     
     list_t *right_boundary = animate_rectangle((vector_t) {top_right.x+5, top_right.y/2}, 5, top_right.y);
-    body_t *right_boundary_body = body_init_with_info(right_boundary, INFINITY, color_get_red(), wall_info, free);
+    body_t *right_boundary_body = body_init_with_info(right_boundary, INFINITY, color_get_white(), wall_info, free);
     scene_add_body(scene, right_boundary_body);
 }
 

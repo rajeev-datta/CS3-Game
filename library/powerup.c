@@ -234,9 +234,6 @@ void remote_missile_shoot(scene_t *scene, body_t *body) {
     body_t *missile_body = body_init_with_info(missile, BULLET_MASS,
                                               color_get_purple(), tank_missile_info, free);
 
-    // vector_t tank_bullet_init_velocity;
-    // tank_bullet_init_velocity.x = TANK_BULLET_INIT_VEL * cos(body_get_orientation(body));
-    // tank_bullet_init_velocity.y = TANK_BULLET_INIT_VEL * sin(body_get_orientation(body));
     body_set_velocity(missile_body, (vector_t) {0, 0});
     body_set_rotation(missile_body, body_get_orientation(body));
 
@@ -257,7 +254,7 @@ void remote_missile_shoot(scene_t *scene, body_t *body) {
 }
 
 void tank_powerup_fxn(body_t *body1, body_t *body2, vector_t axis, void *aux) {
-    body_set_time(body1, 0); // or maybe should set to reload amount?
+    body_set_time(body1, 0);
 
     if (((tank_powerup_aux_t *)aux)->type == MACHINE_GUN) {
         // machine gun power up
@@ -339,9 +336,6 @@ void make_tank_power_up(scene_t *scene, int type, tank_t *tank, tank_t *tank_2) 
         create_partial_destructive_collision(scene, tank_get_body(tank), power_up_body);
         create_partial_destructive_collision(scene, tank_get_body(tank_2), power_up_body);
     }
-
-    // create_tank_powerup_collision(scene, scene_get_body(scene, 1), power_up_body, type);
-    // create_partial_destructive_collision(scene, scene_get_body(scene, 1), power_up_body);
 }
 
 void update_and_check_projectiles_and_tanks(scene_t *scene, tank_t *tank, double dt) {

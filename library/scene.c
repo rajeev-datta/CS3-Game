@@ -119,7 +119,7 @@ void scene_tick(scene_t *scene, double dt) {
         body_t *body = list_get(scene->bodies, i);
         if (body_is_removed(body)) {
             if (*(body_types_t *) body_get_info(body) == ENEMY_TANK
-               && body_get_play_sound(body)) {
+               && !body_is_powerup(body) && body_get_play_sound(body)) {
                 play_remove_sound();
             }
             body_t *removed = list_remove(scene->bodies, i);

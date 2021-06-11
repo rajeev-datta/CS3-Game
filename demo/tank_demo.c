@@ -612,7 +612,7 @@ int main(int argc, char *argv[]) {
             wall_boundary(scene, tank2);
 
             for(size_t i = 0; i < scene_bodies(scene); i++) { 
-                if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == ENEMY_TANK) {
+                if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == ENEMY_TANK && !body_is_powerup(scene_get_body(scene, i))) {
                     body_hit_boundary_check(scene_get_body(scene, i), get_bottom_left(), get_top_right(), dt);
                 }
             }

@@ -101,7 +101,7 @@ void default_gun_shoot(scene_t *scene, body_t *body) {
                     if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == WALL) {
                         create_physics_collision(scene, BULLET_ELASTICITY, bullet_body, scene_get_body(scene, i));
                     }
-                    if(*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_FORCE_FIELD) {
+                    if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_FORCE_FIELD) {
                         create_partial_destructive_collision(scene, scene_get_body(scene, i), bullet_body);
                     }
                 }
@@ -117,7 +117,7 @@ void default_gun_shoot(scene_t *scene, body_t *body) {
                     if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == WALL) {
                         create_physics_collision(scene, BULLET_ELASTICITY, bullet_body, scene_get_body(scene, i));
                     }
-                    if(*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_FORCE_FIELD) {
+                    if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_FORCE_FIELD) {
                         create_partial_destructive_collision(scene, scene_get_body(scene, i), bullet_body);
                     }
                 }

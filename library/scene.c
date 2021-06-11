@@ -117,8 +117,8 @@ void scene_tick(scene_t *scene, double dt) {
 
     for (size_t i = 0; i < scene_bodies(scene); i++) {
         body_t *body = list_get(scene->bodies, i);
-        if(body_is_removed(body)) {
-            if(*(body_types_t *) body_get_info(body) == ENEMY_TANK
+        if (body_is_removed(body)) {
+            if (*(body_types_t *) body_get_info(body) == ENEMY_TANK
                && body_get_play_sound(body)) {
                 play_remove_sound();
             }

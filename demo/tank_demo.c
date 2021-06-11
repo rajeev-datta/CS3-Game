@@ -580,10 +580,10 @@ int main(int argc, char *argv[]) {
             shoot_time += dt;
         
             //have the enemy tank(s) shoot after a certain period of time
-            if(shoot_time >= TANK_SHOOT_TIME) {
+            if (shoot_time >= TANK_SHOOT_TIME) {
                 vector_t player_loc;
                 for(int i = 0; i < scene_bodies(scene); i++) {
-                    if(*(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_1) {
+                    if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_1) {
                         player_loc = body_get_centroid(scene_get_body(scene, i));
                     }
                 }
@@ -605,7 +605,7 @@ int main(int argc, char *argv[]) {
             wall_boundary(scene, tank_get_body(tank1));
 
             for(size_t i = 0; i < scene_bodies(scene); i++) { 
-                if(*(body_types_t *)body_get_info(scene_get_body(scene, i)) == ENEMY_TANK) {
+                if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == ENEMY_TANK && !body_is_powerup(scene_get_body(scene, i))) {
                     body_hit_boundary_check(scene_get_body(scene, i), get_bottom_left(), get_top_right(), dt);
                 }
             }

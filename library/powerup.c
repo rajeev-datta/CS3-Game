@@ -40,13 +40,13 @@ static const double MISSILE_LENGTH = 20;
 static const double MISSILE_HEIGHT = 10;
 static const double MISSILE_RELOAD_TIME = 10;
 static const double MISSILE_RANGE = 10;
-static const double FORCE_FIELD_FACTOR = 80;
+static const double FORCE_FIELD_FACTOR = 45;
 static const double INIT_POWERUP_LENGTH = 10;
 static const double INIT_POWERUP_HEIGHT = 10;
 static const double POWERUP_MASS = 50;
 static const double POWERUP_LIFESPAN = 5;
-static const double FORCE_FIELD_INNER_RADIUS = 60;
-static const double FORCE_FIELD_OUTER_RADIUS = 70;
+static const double FORCE_FIELD_INNER_RADIUS = 35;
+static const double FORCE_FIELD_OUTER_RADIUS = 40;
 static const double FORCE_FIELD_MASS = 50;
 static const int MAX_CIRC_PTS = 128;
 
@@ -101,7 +101,7 @@ void default_gun_shoot(scene_t *scene, body_t *body) {
                     if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == WALL) {
                         create_physics_collision(scene, BULLET_ELASTICITY, bullet_body, scene_get_body(scene, i));
                     }
-                    if(*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_FORCE_FIELD) {
+                    if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_FORCE_FIELD) {
                         create_partial_destructive_collision(scene, scene_get_body(scene, i), bullet_body);
                     }
                 }
@@ -117,7 +117,7 @@ void default_gun_shoot(scene_t *scene, body_t *body) {
                     if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == WALL) {
                         create_physics_collision(scene, BULLET_ELASTICITY, bullet_body, scene_get_body(scene, i));
                     }
-                    if(*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_FORCE_FIELD) {
+                    if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_FORCE_FIELD) {
                         create_partial_destructive_collision(scene, scene_get_body(scene, i), bullet_body);
                     }
                 }
@@ -239,9 +239,6 @@ void remote_missile_shoot(scene_t *scene, body_t *body) {
     body_t *missile_body = body_init_with_info(missile, BULLET_MASS,
                                                color_get_purple(), tank_missile_info, free);
 
-    // vector_t tank_bullet_init_velocity;
-    // tank_bullet_init_velocity.x = TANK_BULLET_INIT_VEL * cos(body_get_orientation(body));
-    // tank_bullet_init_velocity.y = TANK_BULLET_INIT_VEL * sin(body_get_orientation(body));
     body_set_velocity(missile_body, (vector_t) {0, 0});
     body_set_rotation(missile_body, body_get_orientation(body));
 
@@ -258,7 +255,7 @@ void remote_missile_shoot(scene_t *scene, body_t *body) {
 }
 
 void tank_powerup_fxn(body_t *body1, body_t *body2, vector_t axis, void *aux) {
-    body_set_time(body1, 0); // or maybe should set to reload amount?
+    body_set_time(body1, 0);
 
     if (((tank_powerup_aux_t *)aux)->type == MACHINE_GUN) {
         // machine gun power up
@@ -340,9 +337,6 @@ void make_tank_power_up(scene_t *scene, int type, tank_t *tank, tank_t *tank_2) 
         create_partial_destructive_collision(scene, tank_get_body(tank), power_up_body);
         create_partial_destructive_collision(scene, tank_get_body(tank_2), power_up_body);
     }
-
-    // create_tank_powerup_collision(scene, scene_get_body(scene, 1), power_up_body, type);
-    // create_partial_destructive_collision(scene, scene_get_body(scene, 1), power_up_body);
 }
 
 void update_and_check_projectiles_and_tanks(scene_t *scene, tank_t *tank, double dt) {

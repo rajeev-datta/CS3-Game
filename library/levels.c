@@ -21,20 +21,20 @@ static const int THIRD_LEVEL = 3;
 void put_forces(scene_t *scene) {
     for(size_t i = 0; i < scene_bodies(scene); i++) {
         for(size_t j = 0; j < scene_bodies(scene); j++) {
-            if(*(body_types_t *) body_get_info(scene_get_body(scene, i)) == BULLET) {
-                if(*(body_types_t *) body_get_info(scene_get_body(scene, j)) == TANK_1
+            if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == BULLET) {
+                if (*(body_types_t *) body_get_info(scene_get_body(scene, j)) == TANK_1
                 || *(body_types_t *) body_get_info(scene_get_body(scene, j)) == TANK_2
                 || *(body_types_t *) body_get_info(scene_get_body(scene, j)) == ENEMY_TANK) {
                     create_partial_destructive_collision(scene, scene_get_body(scene, j), scene_get_body(scene, i));
                 }
-                if(*(body_types_t *) body_get_info(scene_get_body(scene, j)) == WALL) {
+                if (*(body_types_t *) body_get_info(scene_get_body(scene, j)) == WALL) {
                     create_physics_collision(scene, ELASTICITY, scene_get_body(scene, i), scene_get_body(scene, j));
                 }
             }
-            if(*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_1
+            if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_1
             || *(body_types_t *) body_get_info(scene_get_body(scene, j)) == TANK_2
             || *(body_types_t *) body_get_info(scene_get_body(scene, j)) == ENEMY_TANK) {
-                if(*(body_types_t *) body_get_info(scene_get_body(scene, j)) == WALL) {
+                if (*(body_types_t *) body_get_info(scene_get_body(scene, j)) == WALL) {
                     create_physics_collision(scene, ELASTICITY, scene_get_body(scene, i), scene_get_body(scene, j));
                 }
             }

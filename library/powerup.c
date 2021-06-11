@@ -40,13 +40,13 @@ static const double MISSILE_LENGTH = 20;
 static const double MISSILE_HEIGHT = 10;
 static const double MISSILE_RELOAD_TIME = 10;
 static const double MISSILE_RANGE = 10;
-static const double FORCE_FIELD_FACTOR = 80;
+static const double FORCE_FIELD_FACTOR = 45;
 static const double INIT_POWERUP_LENGTH = 10;
 static const double INIT_POWERUP_HEIGHT = 10;
 static const double POWERUP_MASS = 50;
 static const double POWERUP_LIFESPAN = 5;
-static const double FORCE_FIELD_INNER_RADIUS = 60;
-static const double FORCE_FIELD_OUTER_RADIUS = 70;
+static const double FORCE_FIELD_INNER_RADIUS = 35;
+static const double FORCE_FIELD_OUTER_RADIUS = 40;
 static const double FORCE_FIELD_MASS = 50;
 static const int MAX_CIRC_PTS = 128;
 

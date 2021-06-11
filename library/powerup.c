@@ -76,15 +76,16 @@ void default_gun_shoot(scene_t *scene, body_t *body) {
     list_t *bullet = animate_circle(bullet_center, BULLET_RADIUS,
                                        CIRCLE_PTS);
     body_types_t *tank_bullet_info = malloc(sizeof(body_types_t *));
-    if (!body_is_enemy_tank(body)) {
-        *tank_bullet_info = BULLET;
-        body_t *bullet_body = body_init_with_info(bullet, BULLET_MASS,
+    *tank_bullet_info = BULLET;
+    body_t *bullet_body = body_init_with_info(bullet, BULLET_MASS,
                                               color_get_green(), tank_bullet_info, free);
-    } else {
+
+    if (body_is_enemy_tank(body)) {
         *tank_bullet_info = ENEMY_BULLET;
-        body_t *bullet_body = body_init_with_info(bullet, BULLET_MASS,
-                                              color_get_blue(), tank_bullet_info, free);
+        body_set_info(bullet_body, tank_bullet_info);
+        body_set_color(bullet_body, color_get_blue());
     }
+    
     vector_t tank_bullet_init_velocity;
     tank_bullet_init_velocity.x = TANK_BULLET_INIT_VEL * cos(body_get_orientation(body));
     tank_bullet_init_velocity.y = TANK_BULLET_INIT_VEL * sin(body_get_orientation(body));

@@ -60,9 +60,11 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                         } else if (type == KEY_PRESSED) {
                             wall_boundary(scene, missile);
                             vector_t speed = {0, 0};
-                            list_add(keys_pressed, (char *) key);
+                            char *key_tap = malloc(sizeof(char));
+                            *key_tap = key;
+                            list_add(keys_pressed, key_tap);
                             for (size_t i = 0; i < list_size(keys_pressed); i++) {
-                                char key_pressed = (char) list_get(keys_pressed, i);
+                                char key_pressed = *(char *) list_get(keys_pressed, i);
                                 if (key_pressed == 's') {
                                     speed.x = -INIT_VEL * cos(body_get_orientation(missile));
                                     speed.y = -INIT_VEL * sin(body_get_orientation(missile));
@@ -94,9 +96,11 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                     list_clear(keys_pressed);
                 } else if (type == KEY_PRESSED) {
                     vector_t speed1 = {0, 0};
-                    list_add(keys_pressed, (char *) key);
+                    char *key_tap = malloc(sizeof(char));
+                    *key_tap = key;
+                    list_add(keys_pressed, key_tap);
                     for (size_t i = 0; i < list_size(keys_pressed); i++) {
-                        char key_pressed = (char) list_get(keys_pressed, i);
+                        char key_pressed = *(char *) list_get(keys_pressed, i);
                         if (key_pressed == 's') {
                             speed1.x = -INIT_VEL * cos(body_get_orientation(tank1_body));
                             speed1.y = -INIT_VEL * sin(body_get_orientation(tank1_body));
@@ -139,7 +143,6 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                     for (size_t i=0; i < scene_bodies(scene); i++) {
                         if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE_1) {
                             missile1 = scene_get_body(scene, i);
-                            tank_set_remote_missile(tank1, true);
                         }
                     }
                 }
@@ -151,9 +154,11 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                 } else if (type == KEY_PRESSED) {
                     vector_t speed1 = {0, 0};
                     vector_t speed2 = {0, 0};
-                    list_add(keys_pressed, (char *) key);
+                    char *key_tap = malloc(sizeof(char));
+                    *key_tap = key;
+                    list_add(keys_pressed, key_tap);
                     for (size_t i = 0; i < list_size(keys_pressed); i++) {
-                        char key_pressed = (char) list_get(keys_pressed, i);
+                        char key_pressed = *(char *) list_get(keys_pressed, i);
                         if (key_pressed == 's') {
                             speed1.x = -INIT_VEL * cos(body_get_orientation(missile1));
                             speed1.y = -INIT_VEL * sin(body_get_orientation(missile1));
@@ -219,9 +224,11 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                 } else if (type == KEY_PRESSED) {
                     vector_t speed1 = {0, 0};
                     vector_t speed2 = {0, 0};
-                    list_add(keys_pressed, (char *) key);
+                    char *key_tap = malloc(sizeof(char));
+                    *key_tap = key;
+                    list_add(keys_pressed, key_tap);
                     for (size_t i = 0; i < list_size(keys_pressed); i++) {
-                        char key_pressed = (char) list_get(keys_pressed, i);
+                        char key_pressed = *(char *) list_get(keys_pressed, i);
                         if (key_pressed == 's') {
                             speed1.x = -INIT_VEL * cos(body_get_orientation(tank1_body));
                             speed1.y = -INIT_VEL * sin(body_get_orientation(tank1_body));
@@ -301,9 +308,11 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                 } else if (type == KEY_PRESSED) {
                     vector_t speed1 = {0, 0};
                     vector_t speed2 = {0, 0};
-                    list_add(keys_pressed, (char *) key);
+                    char *key_tap = malloc(sizeof(char));
+                    *key_tap = key;
+                    list_add(keys_pressed, key_tap);
                     for (size_t i = 0; i < list_size(keys_pressed); i++) {
-                        char key_pressed = (char) list_get(keys_pressed, i);
+                        char key_pressed = *(char *) list_get(keys_pressed, i);
                         if (key_pressed == 's') {
                             speed1.x = -INIT_VEL * cos(body_get_orientation(missile1));
                             speed1.y = -INIT_VEL * sin(body_get_orientation(missile1));
@@ -345,9 +354,11 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                 } else if (type == KEY_PRESSED) {
                     vector_t speed1 = {0, 0};
                     vector_t speed2 = {0, 0};
-                    list_add(keys_pressed, key);
+                    char *key_tap = malloc(sizeof(char));
+                    *key_tap = key;
+                    list_add(keys_pressed, key_tap);
                     for (size_t i = 0; i < list_size(keys_pressed); i++) {
-                        char key_pressed = list_get(keys_pressed, i);
+                        char key_pressed = *(char *) list_get(keys_pressed, i);
                         if (key_pressed == 's') {
                             speed1.x = -INIT_VEL * cos(body_get_orientation(tank1_body));
                             speed1.y = -INIT_VEL * sin(body_get_orientation(tank1_body));
@@ -497,9 +508,9 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
                 scene_remove_body(scene, WHITE_SCREEN);
                 *game_started = false;
             }
-            vector_t center = {get_top_right().x/2.0, 3*get_top_right().y/4.0};
+            vector_t center = {get_top_right().x/2.0, 3.0*get_top_right().y/4.0};
             screen_set_rect(scene, center, get_top_right().x,
-                              get_top_right().y/2, WHITE_SCREEN, color_get_white());
+                              get_top_right().y/2.0, WHITE_SCREEN, color_get_white());
         }
     }
 }
@@ -597,10 +608,10 @@ int main(int argc, char *argv[]) {
                 shoot_time = 0;
             }
 
-            update_and_check_projectiles_and_tanks(scene, tank1, dt, timer);
+            update_and_check_projectiles_and_tanks(scene, tank1, dt);
 
             if (*multi) {
-                update_and_check_projectiles_and_tanks(scene, tank2, dt, timer);
+                update_and_check_projectiles_and_tanks(scene, tank2, dt);
                 handle_force_field(scene, tank2, dt);
             }
 

@@ -28,7 +28,7 @@ static const double FRAG_BOMB_RADIUS = 7;
 static const double BULLET_MASS = 100;
 static const double FRAG_BOMB_RANGE = 1;
 static const double LAND_MINE_RELOAD_TIME = 1;
-static const double LAND_MINE_TIME_LIMIT = 10;
+static const double LAND_MINE_TIME_LIMIT = 20;
 static const double LAND_MINE_SIDE_LENGTH = 7;
 static const double FORCE_FIELD_TIME_LIMIT = 3;
 static const double FACTOR = 42.0;
@@ -435,6 +435,7 @@ void update_and_check_projectiles_and_tanks(scene_t *scene, tank_t *tank, double
         if (curr_time > tank_get_total_powerup_time(tank)) {
             tank_set_shooting_handler(tank, NULL);
             tank_set_powerup_time(tank, 0);
+            tank_set_new_range(tank, 0);
         }
     }
 }

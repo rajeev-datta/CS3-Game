@@ -277,7 +277,6 @@ int main(int argc, char *argv[]) {
     while (!sdl_is_done(scene, scene_get_body(scene, 0), NULL, NULL, NULL, multi, NULL,
                         NULL, NULL, NULL, NULL, NULL, NULL)) {
         double dt = time_since_last_tick();
-        side_boundary(scene, TOP_RIGHT_COORD, BOTTOM_LEFT_COORD, 25.0);
         sdl_render_scene(scene);
         //level_1_images(TOP_RIGHT_COORD, LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, wall);
         sdl_show();

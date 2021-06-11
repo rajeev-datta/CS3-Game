@@ -24,7 +24,7 @@ typedef struct tank {
     double new_range;
     double curr_powerup_time;
     double total_powerup_time;
-    bool remote_missile;
+    double timer;
 } tank_t;
 
 tank_t *tank_init(list_t *points, void* info) {
@@ -46,7 +46,7 @@ tank_t *tank_init(list_t *points, void* info) {
     tank_obj->new_range = 0;
     tank_obj->total_powerup_time = POWERUP_TIME;
     tank_obj->curr_powerup_time = 0;
-    tank_obj->remote_missile = false;
+    tank_obj->timer = 0;
     return tank_obj;
 }
 
@@ -144,10 +144,6 @@ double tank_get_curr_powerup_time(tank_t *tank) {
     return tank->curr_powerup_time;
 }
 
-bool tank_get_remote_missile(tank_t *tank) {
-    return tank->remote_missile;
-}
-
 void tank_set_powerup_time(tank_t *tank, double time) {
     tank->curr_powerup_time = time;
 }
@@ -164,8 +160,18 @@ void tank_set_body_time(tank_t *tank, double time) {
     body_set_time(tank_get_body(tank), time);
 }
 
-void tank_set_remote_missile(tank_t *tank, bool *missile) {
-    tank->remote_missile = missile;
+void tank_set_timer(tank_t *tank, double time) {
+    tank->timer = time;
+}
+
+void tank_increase_timer(tank_t *tank, double dt) {
+    double curr_time = tank_get_timer(tank);
+    curr_time += dt;
+    tank_set_timer(tank, curr_time);
+}
+
+double tank_get_timer(tank_t *tank) {
+    return tank->timer;
 }
 
 void enemy_tank_shoot(scene_t *scene, int *level, vector_t player) {

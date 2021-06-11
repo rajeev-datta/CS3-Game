@@ -58,6 +58,7 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                             body_set_velocity(missile, (vector_t){0, 0});
                             list_clear(keys_pressed);
                         } else if (type == KEY_PRESSED) {
+                            wall_boundary(scene, missile);
                             vector_t speed = {0, 0};
                             list_add(keys_pressed, (char *) key);
                             for (size_t i = 0; i < list_size(keys_pressed); i++) {
@@ -93,7 +94,6 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                     list_clear(keys_pressed);
                 } else if (type == KEY_PRESSED) {
                     vector_t speed1 = {0, 0};
-                    vector_t speed2 = {0, 0};
                     list_add(keys_pressed, (char *) key);
                     for (size_t i = 0; i < list_size(keys_pressed); i++) {
                         char key_pressed = (char) list_get(keys_pressed, i);
@@ -127,7 +127,6 @@ void on_key_push(char key, key_event_type_t type, double held_time,
 
             if ((tank_get_weapon(tank1) == (shooting_handler_t) remote_missile_shoot) && 
                 (tank_get_weapon(tank2) != (shooting_handler_t) remote_missile_shoot)) {
-                // printf("yes1, no2 \n");
                 body_t *missile1 = NULL;
                 body_set_velocity(tank1_body, (vector_t) {0,0});
                 for (size_t i=0; i < scene_bodies(scene); i++) {
@@ -278,7 +277,12 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                         }
                 }
                 if (missile1 == NULL || missile2 == NULL) {
-                    tank_shoot(scene, tank2);
+                    if (missile1 == NULL) {
+                        tank_shoot(scene, tank1);
+                    }
+                    if (missile2 == NULL) {
+                        tank_shoot(scene, tank2);
+                    }
                     for (size_t i=0; i < scene_bodies(scene); i++) {
                         if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE_1) {
                             missile1 = scene_get_body(scene, i);
@@ -549,6 +553,8 @@ int main(int argc, char *argv[]) {
     list_t *keys_pressed = list_init(0, free);
     int win;
 
+    double timer = 0;
+
     load_sound();
 
     while (!sdl_is_done(temp_scene, scene_get_body(temp_scene, 0), play, scenes, level,
@@ -591,18 +597,17 @@ int main(int argc, char *argv[]) {
                 shoot_time = 0;
             }
 
-            update_and_check_projectiles_and_tanks(scene, tank1, dt);
+            update_and_check_projectiles_and_tanks(scene, tank1, dt, timer);
 
             if (*multi) {
-                update_and_check_projectiles_and_tanks(scene, tank2, dt);
+                update_and_check_projectiles_and_tanks(scene, tank2, dt, timer);
                 handle_force_field(scene, tank2, dt);
             }
 
             handle_force_field(scene, tank1, dt);
             
-            // side_boundary(scene, get_top_right(), get_bottom_left(), 25.0);
             wall_boundary(scene, tank_get_body(tank1));
-            wall_boundary(scene, tank_get_body(tank1));
+            wall_boundary(scene, tank_get_body(tank2));
 
             for(size_t i = 0; i < scene_bodies(scene); i++) { 
                 if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == ENEMY_TANK && !body_is_powerup(scene_get_body(scene, i))) {
@@ -612,7 +617,7 @@ int main(int argc, char *argv[]) {
 
             // Shoot a power-up at an interval of time.
             if (time_passed > TANK_POWER_UP_TIME) {
-                // make_tank_power_up(temp_scene, rand() % NUM_POWERUPS, tank1, tank2);
+                //make_tank_power_up(temp_scene, rand() % NUM_POWERUPS, tank1, tank2);
                 make_tank_power_up(temp_scene, 4, tank1, tank2);
                 time_passed = 0;
             }

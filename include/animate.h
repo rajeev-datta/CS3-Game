@@ -108,8 +108,6 @@ void wrapping_boundary(scene_t *scene, vector_t top_right,
 void stop_boundary(scene_t *scene, vector_t top_right, vector_t bottom_left,
                    double radius);
 
-void side_boundary(scene_t *scene, vector_t top_right, vector_t bottom_left, double tank_width);
-
 void wall_boundary(scene_t *scene, body_t *tank_body);
 
 #endif // #ifndef __ANIMATE_H__

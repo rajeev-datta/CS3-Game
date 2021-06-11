@@ -39,15 +39,17 @@ double tank_get_total_powerup_time(tank_t *tank);
 
 double tank_get_curr_powerup_time(tank_t *tank);
 
-bool tank_get_remote_missile(tank_t *tank);
-
 void tank_set_powerup_time(tank_t *tank, double time);
 
 void tank_increase_body_time(tank_t *tank, double time_increment);
 
 void tank_set_body_time(tank_t *tank, double time);
 
-void tank_set_remote_missile(tank_t *tank, bool *missile);
+void tank_set_timer(tank_t *tank, double time);
+
+void tank_increase_timer(tank_t *tank, double dt);
+
+double tank_get_timer(tank_t *tank);
 
 void enemy_tank_shoot(scene_t *scene, int *level, vector_t player);
 

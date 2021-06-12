@@ -3,8 +3,10 @@
 
 #include "scene.h"
 
+// An aux for powerups
 typedef struct powerup_aux powerup_aux_t;
 
+// An aux for collisions
 typedef struct collision_aux collision_aux_t;
 
 /**

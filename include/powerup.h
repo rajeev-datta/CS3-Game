@@ -4,8 +4,10 @@
 #include "scene.h"
 #include "tank.h"
 
+// An aux that helps in powerups
 typedef struct tank_powerup_aux tank_powerup_aux_t;
 
+// The enum struct that specifies the info of the powerups
 typedef enum powerups{
     MACHINE_GUN,
     FRAG_BOMB,

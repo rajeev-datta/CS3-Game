@@ -585,7 +585,7 @@ int main(int argc, char *argv[]) {
     bool *game_started = malloc(sizeof(bool));
     *game_started = true;
     int *unlocked_level = malloc(sizeof(int));
-    *unlocked_level = get_third_level();
+    *unlocked_level = get_first_level();
     text_open_font();
     image_load();
     

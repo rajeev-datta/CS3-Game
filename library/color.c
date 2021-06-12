@@ -8,6 +8,9 @@ const rgb_color_t PURPLE = {0.5, 0, 0.5};
 const rgb_color_t MAROON = {128.0/255, 0, 0};
 const rgb_color_t BLUE = {0, 0, 1};
 const rgb_color_t WHITE = {1, 1, 1};
+const rgb_color_t LIME = {156/255.0, 212/256.0, 15/255.0};
+const rgb_color_t TEAL = {15/255.0, 212/255.0, 166/255.0};
+const rgb_color_t PINK = {255/255.0, 15/255.0, 219/255.0};
 
 rgb_color_t color_get_red() {
     return RED;
@@ -35,6 +38,18 @@ rgb_color_t color_get_blue() {
 
 rgb_color_t color_get_white() {
     return WHITE;
+}
+
+rgb_color_t color_get_lime() {
+    return LIME;
+}
+
+rgb_color_t color_get_teal() {
+    return TEAL;
+}
+
+rgb_color_t color_get_pink() {
+    return PINK;
 }
 
 rgb_color_t color_random() {

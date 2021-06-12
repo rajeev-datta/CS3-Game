@@ -17,7 +17,6 @@ static SDL_Surface *LEVEL1_SURFACE;
 static SDL_Surface *LEVEL2_SURFACE;
 static SDL_Surface *LEVEL3_SURFACE;
 static SDL_Surface *LOCK_SURFACE;
-static SDL_Surface *WALL_SURFACE;
 
 void image_load() {
     LEVEL1_SURFACE = IMG_Load("images/level1.png");
@@ -34,10 +33,6 @@ void image_load() {
     }
     LOCK_SURFACE = IMG_Load("images/lock.png");
     if (!LOCK_SURFACE) {
-        printf("IMG_LoadRW: %s\n", IMG_GetError());
-    }
-    WALL_SURFACE = IMG_Load("images/wall.png");
-    if (!WALL_SURFACE) {
         printf("IMG_LoadRW: %s\n", IMG_GetError());
     }
 }
@@ -92,6 +87,5 @@ void image_free() {
     SDL_FreeSurface(LEVEL1_SURFACE);
     SDL_FreeSurface(LEVEL2_SURFACE);
     SDL_FreeSurface(LEVEL3_SURFACE);
-    SDL_FreeSurface(WALL_SURFACE);
     SDL_FreeSurface(LOCK_SURFACE);
 }

@@ -253,7 +253,6 @@ void remote_missile_shoot(scene_t *scene, body_t *body) {
         if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == ENEMY_TANK) {
             create_destructive_collision(scene, missile_body, scene_get_body(scene, i));
         }
-        // test thing for now, but seems to work
         if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == WALL) {
             create_partial_destructive_collision(scene, scene_get_body(scene, i), missile_body);
         }
@@ -392,8 +391,6 @@ void update_and_check_projectiles_and_tanks(scene_t *scene, tank_t *tank, double
                 && *(body_types_t *)body_get_info(tank_get_body(tank)) == TANK_1) ||
                 (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE_2
                 && *(body_types_t *)body_get_info(tank_get_body(tank)) == TANK_2)) {
-                // body_increase_time(scene_get_body(scene, i), dt);
-                // double curr_time = body_get_time(scene_get_body(scene, i));
                 tank_increase_timer(tank, dt);
                 double curr_time = tank_get_timer(tank);
 
@@ -402,16 +399,6 @@ void update_and_check_projectiles_and_tanks(scene_t *scene, tank_t *tank, double
                     tank_set_timer(tank, 0);
                 }
             }
-
-            // if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE_2
-            //     && *(body_types_t *)body_get_info(tank_get_body(tank)) == TANK_2) {
-            //     body_increase_time(scene_get_body(scene, i), dt);
-            //     double curr_time = body_get_time(scene_get_body(scene, i));
-
-            //     if (curr_time > curr_range) {
-            //         body_remove(scene_get_body(scene, i));
-            //     }
-            // }
         } else {
             if (body_is_tank(scene_get_body(scene, i))) {
                 body_increase_time(scene_get_body(scene, i), dt);

@@ -9,15 +9,20 @@
 #include "collision.h"
 #include <float.h>
 #include "tank.h"
+#include "screen_set.h"
 
-const double ELLIPSE_SCALE = 1.0/3;
-const char INVADER_INFORMATION = 'i';
-const char SPACESHIP_INFORMATION = 's';
-const char WALL_INFORMATION = 'w';
-const char PADDLE_INFORMATION = 'p';
-const int RECT_PTS = 4;
-const int TANK_PTS = 8;
-const int TANK_SIZE = 30;
+static const double ELLIPSE_SCALE = 1.0/3;
+static const char INVADER_INFORMATION = 'i';
+static const char SPACESHIP_INFORMATION = 's';
+static const char WALL_INFORMATION = 'w';
+static const char PADDLE_INFORMATION = 'p';
+static const int RECT_PTS = 4;
+static const int TANK_PTS = 8;
+static const int TANK_SIZE = 30;
+static const int FIRST_PT = 0;
+static const int INIT_ANGLE = 0;
+static const int VELOCITY_BOUNDARY = 0;
+static const int ZEROTH_INDEX = 0;
 
 list_t *animate_tank(vector_t *coord) {
     list_t *tank = list_init(TANK_PTS, free);
@@ -55,7 +60,7 @@ list_t *animate_tank(vector_t *coord) {
 
 list_t *animate_ellipse(vector_t *center, double major, double minor, int points) {
     list_t *ellipse = animate_circle(*center, major, points);
-    double init_y = ((vector_t *)list_get(ellipse, 0))->y;
+    double init_y = ((vector_t *)list_get(ellipse, FIRST_PT))->y;
     for(int i = 0; i < points; i++) {
         vector_t *point = list_get(ellipse, i);
         point->y = (point->y - init_y) * ELLIPSE_SCALE + init_y;
@@ -65,7 +70,7 @@ list_t *animate_ellipse(vector_t *center, double major, double minor, int points
 
 list_t *animate_circle(vector_t center, double radius, int points) {
     list_t *circle = list_init(points, free);
-    double angle = 0;
+    double angle = INIT_ANGLE;
     for (int j = 0; j < points; j++) {
         vector_t *point = malloc(sizeof(vector_t));
         point->x = center.x + radius * cos(angle);
@@ -76,12 +81,13 @@ list_t *animate_circle(vector_t center, double radius, int points) {
     return circle;
 }
 
-list_t *animate_ring(vector_t center, double inner_radius, double outer_radius, int points) {
+list_t *animate_ring(vector_t center, double inner_radius, double outer_radius,
+                     int points) {
     list_t *ring = list_init(2*points, free);
 
     list_t *inner_circle = list_init(points, free);
     list_t *outer_circle = list_init(points, free);
-    double angle = 0;
+    double angle = INIT_ANGLE;
 
     for (int j = 0; j < points; j++) {
         vector_t *point = malloc(sizeof(vector_t));
@@ -109,7 +115,7 @@ list_t *animate_ring(vector_t center, double inner_radius, double outer_radius, 
 
 list_t *animate_pacman(vector_t *center, double radius, int points) {
     list_t *circle = animate_circle(*center, radius, points);
-    list_t *pacman = list_init(points - points/4 + 1, free);
+    list_t *pacman = list_init(points - points/RECT_PTS + 1, free);
     list_add(pacman, center);
     for (int i = points/8; i <= points - points/8; i++) {
         vector_t *temp = malloc(sizeof(vector_t));
@@ -179,8 +185,8 @@ void hit_boundary_check(star_t *star, vector_t min, vector_t max, double dt) {
         vector_t *temp = list_get(star_get_vertices(star), i);
 
         //cases for boundaries and velocities (each case)
-        if ((temp->x > max.x && star_get_velocity(star)->x > 0) ||
-            (temp->x < min.x && star_get_velocity(star)->x < 0)) {
+        if ((temp->x > max.x && star_get_velocity(star)->x > VELOCITY_BOUNDARY) ||
+            (temp->x < min.x && star_get_velocity(star)->x < VELOCITY_BOUNDARY)) {
             star_get_velocity(star)->x *= -1;
             break;
         }
@@ -189,8 +195,8 @@ void hit_boundary_check(star_t *star, vector_t min, vector_t max, double dt) {
         vector_t *temp = list_get(star_get_vertices(star), i);
 
         //cases for boundaries and velocities (each case)
-        if ((temp->y > max.y && star_get_velocity(star)->y > 0) ||
-            (temp->y < min.y && star_get_velocity(star)->y < 0)) {
+        if ((temp->y > max.y && star_get_velocity(star)->y > VELOCITY_BOUNDARY) ||
+            (temp->y < min.y && star_get_velocity(star)->y < VELOCITY_BOUNDARY)) {
             star_get_velocity(star)->y *= -1;
             break;
         }
@@ -203,8 +209,8 @@ void body_hit_boundary_check(body_t *body, vector_t min, vector_t max, double dt
         vector_t *temp = list_get(body_get_real_shape(body), i);
         vector_t curr_vel = body_get_velocity(body);
         //cases for boundaries and velocities (each case)
-        if ((temp->y > max.y && curr_vel.y > 0) ||
-            (temp->y < min.y && curr_vel.y < 0)) {
+        if ((temp->y > max.y && curr_vel.y > VELOCITY_BOUNDARY) ||
+            (temp->y < min.y && curr_vel.y < VELOCITY_BOUNDARY)) {
             vector_t new_vel = {curr_vel.x, curr_vel.y * -1};
             body_set_velocity(body, new_vel);
             break;
@@ -214,8 +220,8 @@ void body_hit_boundary_check(body_t *body, vector_t min, vector_t max, double dt
         vector_t *temp = list_get(body_get_real_shape(body), i);
         vector_t curr_vel = body_get_velocity(body);
         //cases for boundaries and velocities (each case)
-        if ((temp->x > max.x && curr_vel.x > 0) ||
-            (temp->x < min.x && curr_vel.x < 0)) {
+        if ((temp->x > max.x && curr_vel.x > VELOCITY_BOUNDARY) ||
+            (temp->x < min.x && curr_vel.x < VELOCITY_BOUNDARY)) {
             vector_t new_vel = {curr_vel.x * -1, curr_vel.y};
             body_set_velocity(body, new_vel);
             break;
@@ -229,7 +235,7 @@ void bounce(star_t *star, double g, vector_t min, vector_t max, double dt, doubl
     list_t *points = star_get_vertices(star);
     for (size_t i = 0; i < list_size(points); i++) {
         vector_t *temp = list_get(points, i);
-        if (temp->y < min.y && star_get_velocity(star)->y < 0) {
+        if (temp->y < min.y && star_get_velocity(star)->y < VELOCITY_BOUNDARY) {
             star_get_velocity(star)->y *= (-1) * elasticity;
             break;
         }
@@ -239,7 +245,8 @@ void bounce(star_t *star, double g, vector_t min, vector_t max, double dt, doubl
 void remove_pellets(body_t *pacman, double pac_rad, double pel_rad, scene_t *scene) {
     int num_removed = 0;
     for (size_t i = 1; i < scene_bodies(scene); i++) {
-         if (find_collision_old(body_get_shape(pacman), body_get_shape(scene_get_body(scene, i)))) {
+         if (find_collision_old(body_get_shape(pacman),
+                                body_get_shape(scene_get_body(scene, i)))) {
              scene_remove_body(scene, i - num_removed);
              num_removed++;
          }
@@ -257,13 +264,13 @@ void continuous_boundary(body_t *pacman, vector_t top_right_coord) {
         if (point->x < top_right_coord.x) {
             crossed_right = false;
         }
-        if (point->x > 0) {
+        if (point->x > get_bottom_left().x) {
             crossed_left = false;
         }
         if (point->y < top_right_coord.y) {
             crossed_up = false;
         }
-        if (point->y > 0) {
+        if (point->y > get_bottom_left().y) {
             crossed_down = false;
         }
     }
@@ -296,10 +303,12 @@ void wrapping_boundary(scene_t *scene, vector_t top_right,
                 bool hit_left = false;
                 for (size_t j = 0; j < list_size(vectors); j++) {
                     vector_t *point = list_get(vectors, j);
-                    if (point->x > top_right.x - spacing && body_get_velocity(curr_body).x > 0) {
+                    if (point->x > top_right.x - spacing
+                        && body_get_velocity(curr_body).x > VELOCITY_BOUNDARY) {
                         hit_right = true;
                     }
-                    if (point->x < spacing && body_get_velocity(curr_body).x < 0) {
+                    if (point->x < spacing
+                        && body_get_velocity(curr_body).x < VELOCITY_BOUNDARY) {
                         hit_left = true;
                     }
                 }
@@ -315,16 +324,20 @@ void wrapping_boundary(scene_t *scene, vector_t top_right,
     }
 }
 
-void stop_boundary(scene_t *scene, vector_t top_right, vector_t bottom_left, double radius) {
-    if (scene != NULL && (*(char *) body_get_info(scene_get_body(scene, 0)) == SPACESHIP_INFORMATION
-        || *(char *) body_get_info(scene_get_body(scene, 0)) == PADDLE_INFORMATION)) {
-        vector_t space_ship_centroid = body_get_centroid(scene_get_body(scene, 0));
+void stop_boundary(scene_t *scene, vector_t top_right, vector_t bottom_left,
+                   double radius) {
+    if (scene != NULL && (*(char *) body_get_info(scene_get_body(scene, 0))
+                          == SPACESHIP_INFORMATION
+        || *(char *) body_get_info(scene_get_body(scene, ZEROTH_INDEX))
+                     == PADDLE_INFORMATION)) {
+        vector_t space_ship_centroid = body_get_centroid(
+                                                    scene_get_body(scene, ZEROTH_INDEX));
         if (space_ship_centroid.x + radius >= top_right.x) {
-            body_set_centroid(scene_get_body(scene, 0),
+            body_set_centroid(scene_get_body(scene, ZEROTH_INDEX),
             (vector_t) {top_right.x - radius, space_ship_centroid.y});
         }
         else if (space_ship_centroid.x - radius <= bottom_left.x) {
-            body_set_centroid(scene_get_body(scene, 0),
+            body_set_centroid(scene_get_body(scene, ZEROTH_INDEX),
             (vector_t) {radius, space_ship_centroid.y});
         }
     }
@@ -334,23 +347,37 @@ void wall_boundary(scene_t *scene, body_t *tank_body) {
     if (tank_body != NULL) {
         for (size_t i = 0; i < scene_bodies(scene); i++) {
             body_t *curr_body = scene_get_body(scene, i);
-            if (!body_is_powerup(curr_body) && *(body_types_t* )body_get_info(curr_body) == WALL) {
-                collision_info_t collision = find_collision(body_get_real_shape(tank_body), body_get_real_shape(curr_body));
+            if (!body_is_powerup(curr_body) && *(body_types_t* )body_get_info(curr_body)
+                                               == WALL) {
+                collision_info_t collision = find_collision(body_get_real_shape(tank_body),
+                                             body_get_real_shape(curr_body));
                 if (collision.collided) {
                     if (fabs(collision.axis.x) != 0.0) {
-                        if (body_get_centroid(tank_body).x - body_get_centroid(curr_body).x < 0) {
-                            body_set_centroid(tank_body, (vector_t) {body_get_centroid(tank_body).x - 10, body_get_centroid(tank_body).y});
+                        if (body_get_centroid(tank_body).x
+                            - body_get_centroid(curr_body).x < 0) {
+                            body_set_centroid(tank_body, 
+                            (vector_t) {body_get_centroid(tank_body).x
+                            - 10, body_get_centroid(tank_body).y});
                         }
-                        else if (body_get_centroid(tank_body).x - body_get_centroid(curr_body).x > 0) {
-                            body_set_centroid(tank_body, (vector_t) {body_get_centroid(tank_body).x + 10, body_get_centroid(tank_body).y});
+                        else if (body_get_centroid(tank_body).x
+                                 - body_get_centroid(curr_body).x > 0) {
+                            body_set_centroid(tank_body,
+                            (vector_t) {body_get_centroid(tank_body).x
+                            + 10, body_get_centroid(tank_body).y});
                         }
                     }
                     if (fabs(collision.axis.y) != 0.0) {
-                        if (body_get_centroid(tank_body).y - body_get_centroid(curr_body).y < 0) {
-                            body_set_centroid(tank_body, (vector_t) {body_get_centroid(tank_body).x, body_get_centroid(tank_body).y - 10});
+                        if (body_get_centroid(tank_body).y
+                            - body_get_centroid(curr_body).y < 0) {
+                            body_set_centroid(tank_body,
+                            (vector_t) {body_get_centroid(tank_body).x,
+                            body_get_centroid(tank_body).y - 10});
                         }
-                        else if (body_get_centroid(tank_body).y - body_get_centroid(curr_body).y > 0) {
-                            body_set_centroid(tank_body, (vector_t) {body_get_centroid(tank_body).x, body_get_centroid(tank_body).y + 10});
+                        else if (body_get_centroid(tank_body).y
+                                 - body_get_centroid(curr_body).y > 0) {
+                            body_set_centroid(tank_body,
+                            (vector_t) {body_get_centroid(tank_body).x,
+                            body_get_centroid(tank_body).y + 10});
                         }
                     }
                 }

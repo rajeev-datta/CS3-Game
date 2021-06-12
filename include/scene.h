@@ -5,6 +5,9 @@
 #include "list.h"
 #include <stdbool.h>
 
+/**
+ * Struct to define possible bodies on the screen
+ */
 typedef enum body_types {
     TANK_1,
     TANK_2,
@@ -40,10 +43,19 @@ typedef struct aux {
  */
 typedef void (*force_creator_t)(void *aux);
 
+/**
+ * Frees a force_data pointer
+ */
 void force_data_free(force_data_t *force_data);
 
+/**
+ * Initializes a force_data pointer
+ */
 force_data_t *force_data_init(force_creator_t force_funct, free_func_t free_funct, aux_t *aux_params);
 
+/**
+ * Adds a body to a force_data
+ */
 void force_data_add_body(force_data_t *force_data, body_t *body);
 
 /**
@@ -161,8 +173,9 @@ void scene_erase(scene_t *scene);
  */
 void scene_erase_some(scene_t *scene, int index);
 
+/**
+ * 
+ */
 void scene_body_detonate(scene_t *scene, body_t *body);
-
-bool scene_check_for_info(scene_t *scene, body_types_t info);
 
 #endif // #ifndef __SCENE_H__

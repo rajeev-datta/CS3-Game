@@ -40,7 +40,8 @@ void force_data_free(force_data_t *force_data) {
     free(force_data);
 }
 
-force_data_t *force_data_init(force_creator_t force_funct, free_func_t free_funct, aux_t *aux_params) {
+force_data_t *force_data_init(force_creator_t force_funct, free_func_t free_funct,
+                            aux_t *aux_params) {
     force_data_t *force_data = malloc(sizeof(force_data_t));
     force_data->aux_data = aux_params;
     force_data->force_fxn = force_funct;

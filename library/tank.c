@@ -115,7 +115,8 @@ double tank_get_default_range(tank_t *tank) {
 void tank_shoot(scene_t *scene, tank_t *tank) {
     play_shoot_sound();
     body_t *tank_body = tank_get_body(tank);
-    if (tank_get_weapon(tank) != NULL && tank_get_weapon(tank) != (shooting_handler_t) force_field_shoot) {
+    if (tank_get_weapon(tank) != NULL && tank_get_weapon(tank)
+        != (shooting_handler_t) force_field_shoot) {
         shooting_handler_t weapon = tank_get_weapon(tank);
         weapon(scene, tank_body);
     }
@@ -136,7 +137,8 @@ double tank_get_curr_reload(tank_t *tank) {
 }
 
 double tank_get_curr_range(tank_t *tank) {
-    if (tank->new_range == 0 || tank_get_weapon(tank) == (shooting_handler_t) force_field_shoot) {
+    if (tank->new_range == 0 ||
+        tank_get_weapon(tank) == (shooting_handler_t) force_field_shoot) {
         return tank->default_range;
     }
     else {
@@ -247,7 +249,8 @@ void enemy_tank_shoot(scene_t *scene, int *level, vector_t player) {
     }
 }
 
-void enemy_tank_helper(scene_t *scene, body_t *enemy, double max_y, double min_y, vector_t player) {
+void enemy_tank_helper(scene_t *scene, body_t *enemy, double max_y, double min_y,
+                    vector_t player) {
     if (body_get_centroid(enemy).y <= max_y && body_get_centroid(enemy).y >= min_y) {
         vector_t curr_vel = body_get_velocity(enemy);
         

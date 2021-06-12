@@ -30,7 +30,7 @@ game_outcomes_t gameplay_find_winner(scene_t *scene, tank_t *tank1, tank_t *tank
         // Condition where player 1 loses
         return SINGLE_PLAYER_LOSS;
     }
-    if (*multi && body_get_lives(tank_get_body(tank2)) <= get_min_lives_limit) {
+    if (*multi && body_get_lives(tank_get_body(tank2)) <= get_min_lives_limit()) {
         *game_over = true;
         play_remove_sound();
         // Condition where player 1 wins

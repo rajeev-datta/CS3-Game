@@ -233,7 +233,7 @@ void enemy_tank_helper(scene_t *scene, body_t *enemy, double max_y, double min_y
         vector_t curr_vel = body_get_velocity(enemy);
         
         //adjust to shoot
-        body_set_velocity(enemy, (vector_t){0, 0});
+        body_set_velocity(enemy, VEC_ZERO);
         double angle = atan(fabs(body_get_centroid(enemy).y - player.y) / 
                             fabs(body_get_centroid(enemy).x - player.x));
         if (body_get_centroid(enemy).y > player.y) {

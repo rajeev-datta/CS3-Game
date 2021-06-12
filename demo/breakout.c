@@ -23,7 +23,6 @@ const double BUFFER = 10;
 const double RECT_HEIGHT = 30;
 const double INIT_BALL_RADIUS = 10;
 const double INIT_PADDLE_LENGTH = 100;
-const rgb_color_t WHITE = {1, 1, 1};
 const int BALL_PTS = 16;
 const double BALL_MASS = 50;
 const vector_t INIT_BALL_VEL = {200, 200};
@@ -101,7 +100,7 @@ void set_up_board(scene_t *scene) {
     char *wall_info = malloc(sizeof(char *));
     *wall_info = WALL_INFO;
     body_t *left_wall_body = body_init_with_info(
-                                left_wall, INFINITY, WHITE, wall_info, free);
+                                left_wall, INFINITY, color_get_white(), wall_info, free);
     scene_add_body(scene, left_wall_body);
     create_physics_collision(scene, ELASTICITY, ball_body, left_wall_body);
 
@@ -109,7 +108,7 @@ void set_up_board(scene_t *scene) {
                                  .y = TOP_RIGHT_COORD.y / 2};
     list_t *right_wall = animate_rectangle(right_wall_center, BUFFER, TOP_RIGHT_COORD.y);
     body_t *right_wall_body = body_init_with_info(
-                                        right_wall, INFINITY, WHITE, wall_info, free);
+                                        right_wall, INFINITY, color_get_white(), wall_info, free);
     scene_add_body(scene, right_wall_body);
     create_physics_collision(scene, ELASTICITY, ball_body, right_wall_body);
 
@@ -117,7 +116,7 @@ void set_up_board(scene_t *scene) {
                                  .y = TOP_RIGHT_COORD.y - BUFFER/2};
     list_t *top_wall = animate_rectangle(top_wall_center, TOP_RIGHT_COORD.x, BUFFER);
     body_t *top_wall_body = body_init_with_info(
-                                        top_wall, INFINITY, WHITE, wall_info, free);
+                                        top_wall, INFINITY, color_get_white(), wall_info, free);
     scene_add_body(scene, top_wall_body);
     create_physics_collision(scene, ELASTICITY, ball_body, top_wall_body);
 
@@ -125,7 +124,7 @@ void set_up_board(scene_t *scene) {
                                  .y = BOTTOM_LEFT_COORD.y - BUFFER - 2*INIT_BALL_RADIUS};
     list_t *bottom_wall = animate_rectangle(bottom_wall_center, TOP_RIGHT_COORD.x, BUFFER);
     body_t *bottom_wall_body = body_init_with_info(
-                                        bottom_wall, INFINITY, WHITE, wall_info, free);
+                                        bottom_wall, INFINITY, color_get_white(), wall_info, free);
     scene_add_body(scene, bottom_wall_body);
 
     // Create the bricks.
@@ -153,9 +152,9 @@ void set_up_board(scene_t *scene) {
 void on_key_tap(char key, key_event_type_t type, double held_time,
                 void *object, scene_t *scene, bool *play) {
     if (type == KEY_RELEASED) {
-        body_set_velocity(object, (vector_t){0, 0});
+        body_set_velocity(object, VEC_ZERO);
     } else if (type == KEY_PRESSED) {
-        vector_t speed = {0, 0};
+        vector_t speed = VEC_ZERO;
         switch (key) {
             case LEFT_ARROW:
                 if (body_get_velocity(object).x == 0) {

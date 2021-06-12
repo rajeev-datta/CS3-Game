@@ -21,14 +21,6 @@ const double MASS_RATIO = 5;
 const double RADIUS_SCALE = 2;
 const double ANGLE = M_PI/2.5;
 
-rgb_color_t random_color() {
-    float red = (float)rand()/RAND_MAX;
-    float green = (float)rand()/RAND_MAX;
-    float blue = (float)rand()/RAND_MAX;
-    rgb_color_t color = {red, green, blue};
-    return color;
-}
-
 int main(int argc, char *argv[]) {
     sdl_init(BOTTOM_LEFT_COORD, TOP_RIGHT_COORD);
     scene_t *scene = scene_init();
@@ -40,7 +32,7 @@ int main(int argc, char *argv[]) {
         double outer_radius = inner_radius / RADIUS_SCALE;
         list_t *body_points = make_star(center, outer_radius, inner_radius, NUM_PTS);
         double mass = outer_radius * MASS_RATIO;
-        body_t *body = body_init(body_points, mass, random_color());
+        body_t *body = body_init(body_points, mass, color_random());
         body_set_rotation(body, ANGLE);
         body_set_velocity(body, STAR_VELOCITY);
         scene_add_body(scene, body);

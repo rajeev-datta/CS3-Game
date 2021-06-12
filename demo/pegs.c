@@ -231,7 +231,8 @@ void add_walls(scene_t *scene) {
     rect = rect_init(WALL_LENGTH, WALL_WIDTH);
     polygon_translate(rect, (vector_t) {.x = MAX.x - WALL_LENGTH / 2, .y = 0.0});
     polygon_rotate(rect, -WALL_ANGLE, (vector_t) {.x = MAX.x, .y = 0.0});
-    body = body_init_with_info(rect, INFINITY, WALL_COLOR, make_type_info(WALL), free);
+    body = body_init_with_info(rect, INFINITY, WALL_COLOR,
+                               make_type_info(PEG_WALL), free);
     scene_add_body(scene, body);
 
     // Ground is special; it freezes balls when they touch it

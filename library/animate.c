@@ -150,6 +150,10 @@ list_t *animate_rectangle(vector_t center, double length, double height) {
     return rectangle;
 }
 
+int get_num_rect_pts() {
+    return RECT_PTS;
+}
+
 list_t *make_star(vector_t center, double r1, double r2, int points) {
     list_t *star = list_init(points, free);
     double angle = M_PI / points;

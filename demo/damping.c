@@ -21,14 +21,6 @@ double const RADIUS = 15;
 const int CIRCLE_PTS = 16;
 const double BODY_MASS = 100;
 
-rgb_color_t random_color() {
-    float red = (float)rand()/RAND_MAX;
-    float green = (float)rand()/RAND_MAX;
-    float blue = (float)rand()/RAND_MAX;
-    rgb_color_t color = {red, green, blue};
-    return color;
-}
-
 int main(int argc, char *argv[]) {
     sdl_init(BOTTOM_LEFT_COORD, TOP_RIGHT_COORD);
     scene_t *scene = scene_init();
@@ -45,7 +37,7 @@ int main(int argc, char *argv[]) {
         vector_t body_center = {RADIUS * offset,
                                     (TOP_RIGHT_COORD.y - 5*i) / 2};
         list_t *body_circle = animate_circle(body_center, RADIUS, CIRCLE_PTS);
-        body_t *body = body_init(body_circle, BODY_MASS, random_color());
+        body_t *body = body_init(body_circle, BODY_MASS, color_random());
         body_set_velocity(body, (vector_t) {0, (NUM_BODIES - i) * INIT_VEL});
         scene_add_body(scene, body);
         

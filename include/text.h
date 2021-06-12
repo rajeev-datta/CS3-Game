@@ -4,6 +4,7 @@
 #include "scene.h"
 #include <stdbool.h>
 #include "sdl_wrapper.h"
+#include "screen_set.h"
 
 void text_open_font();
 

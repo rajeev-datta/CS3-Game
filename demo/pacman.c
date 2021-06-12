@@ -26,9 +26,9 @@ double const PELLET_TIME = 1;
 void on_key(char key, key_event_type_t type, double held_time, void *object,
             scene_t *scene, bool *play) {
     if (type == KEY_RELEASED) {
-        body_set_velocity(object, (vector_t){0, 0});
+        body_set_velocity(object, VEC_ZERO);
     } else if (type == KEY_PRESSED) {
-        vector_t speed = {0, 0};
+        vector_t speed = VEC_ZERO;
         switch (key) {
             case LEFT_ARROW:
                 if (body_get_velocity(object).x == 0) {

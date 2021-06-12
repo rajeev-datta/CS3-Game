@@ -120,7 +120,7 @@ void destructive_fxn(body_t *body1, body_t *body2, vector_t axis, void *aux) {
         
         else {
             if (*(body_types_t *)body_get_info(body1) == TANK_FORCE_FIELD) {
-                body_set_velocity(body2, (vector_t) {0, 0});
+                body_set_velocity(body2, VEC_ZERO);
             }
             body_remove(body2);
         } 
@@ -170,7 +170,7 @@ void physics_fxn(body_t *body1, body_t *body2, vector_t axis, void *aux) {
     vector_t u_a = vec_multiply(vec_dot(body_get_velocity(body1), axis), axis);
 
     if (body_get_mass(body1) == INFINITY && body_get_mass(body2) != INFINITY) {
-        body_add_impulse(body1, (vector_t) {0,0});
+        body_add_impulse(body1, VEC_ZERO);
         vector_t impulse_body1 = vec_multiply(body_get_mass(body2) * ((1.0 + *(double *)aux)),
                                               vec_subtract(u_b, u_a));
         body_add_impulse(body2, impulse_body1);
@@ -178,7 +178,7 @@ void physics_fxn(body_t *body1, body_t *body2, vector_t axis, void *aux) {
     }
     
     else if (body_get_mass(body2) == INFINITY && body_get_mass(body1) != INFINITY) {
-        body_add_impulse(body2, (vector_t) {0,0});
+        body_add_impulse(body2, VEC_ZERO);
         vector_t impulse_body1 = vec_multiply(body_get_mass(body1) * ((1.0 + *(double *)aux)),
                                               vec_subtract(u_b, u_a));
         body_add_impulse(body1, impulse_body1);

@@ -47,8 +47,12 @@ list_t *animate_rectangle(vector_t center, double length, double height);
 
 const typedef enum rect_corners{
     BOTTOM_LEFT_CORNER,
-    TOP_LEFT_CORNER
+    TOP_LEFT_CORNER,
+    TOP_RIGHT_CORNER,
+    BOTTOM_RIGHT_CORNER
 } rect_corners_t;
+
+int get_num_rect_pts();
 
 /**
  *  @brief Makes a star

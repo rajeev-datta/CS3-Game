@@ -36,10 +36,8 @@ int main(int argc, char *argv[]) {
     list_t *stars = list_init(NUM_STARS, (free_func_t)star_free); 
 
     int num_pts = INIT_POINTS;
-    float red = (float)rand()/RAND_MAX;
-    float green = (float)rand()/RAND_MAX;
-    float blue = (float)rand()/RAND_MAX;
-    star_t *star1 = star_init(num_pts, red, green, blue);
+    rgb_color_t rand_color = color_random();
+    star_t *star1 = star_init(num_pts, rand_color.r, rand_color.g, rand_color.b);
     star_set_vertices(star1, make_star(initial_pos, INNER_RADIUS, OUTER_RADIUS, 
                                        num_pts));
     star_get_velocity(star1)->x = INIT_X_VEL;
@@ -52,10 +50,8 @@ int main(int argc, char *argv[]) {
         star_t *last = list_get(stars, list_size(stars) - 1);
         if (polygon_centroid(star_get_vertices(last)).x >= NEXT) {
             num_pts += 2;
-            red = (float)rand()/RAND_MAX;
-            green = (float)rand()/RAND_MAX;
-            blue = (float)rand()/RAND_MAX;
-            star_t *star = star_init(num_pts, red, green, blue);
+            rgb_color_t rand_color = color_random();
+            star_t *star = star_init(num_pts, rand_color.r, rand_color.g, rand_color.b);
             star_set_vertices(star, make_star(initial_pos, INNER_RADIUS, OUTER_RADIUS,
                               num_pts));
             star_get_velocity(star)->x = INIT_X_VEL;

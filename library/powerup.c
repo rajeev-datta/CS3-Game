@@ -206,7 +206,7 @@ void land_mine_shoot(scene_t *scene, body_t *body) {
     body_t *land_mine_body = body_init_with_info(mine, BULLET_MASS,
                                               color_get_purple(), tank_land_mine_info, free);
 
-    body_set_velocity(land_mine_body, (vector_t) {0, 0});
+    body_set_velocity(land_mine_body, VEC_ZERO);
     for (size_t i = 0; i < scene_bodies(scene); i++) {
         if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_1 || *(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_2) {
             create_destructive_collision(scene, land_mine_body, scene_get_body(scene, i));
@@ -242,7 +242,7 @@ void remote_missile_shoot(scene_t *scene, body_t *body) {
     body_t *missile_body = body_init_with_info(missile, BULLET_MASS,
                                                color_get_purple(), tank_missile_info, free);
 
-    body_set_velocity(missile_body, (vector_t) {0, 0});
+    body_set_velocity(missile_body, VEC_ZERO);
     body_set_rotation(missile_body, body_get_orientation(body));
 
 
@@ -329,7 +329,7 @@ void make_tank_power_up(scene_t *scene, int type, tank_t *tank, tank_t *tank_2) 
     powerups_t *type_pt = malloc(sizeof(powerups_t));
     *type_pt = powerup_type;
     body_t *power_up_body = body_init_with_info(power_up, POWERUP_MASS, color, type_pt, free);
-    body_set_velocity(power_up_body, (vector_t) {0, 0});
+    body_set_velocity(power_up_body, VEC_ZERO);
     body_set_is_powerup(power_up_body, true);
     scene_add_body(scene, power_up_body);
 
@@ -450,7 +450,7 @@ body_t *create_new_force_field(scene_t *scene, tank_t *tank) {
     body_t *force_field_body = body_init_with_info(force_field_pts, FORCE_FIELD_MASS,
                                               color_get_blue(), tank_force_field_info, free);
 
-    body_set_velocity(force_field_body, (vector_t) {0, 0});
+    body_set_velocity(force_field_body, VEC_ZERO);
     for (size_t i = 0; i < scene_bodies(scene); i++) {
         if (!body_is_powerup(scene_get_body(scene, i))) {
             if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == BULLET) {

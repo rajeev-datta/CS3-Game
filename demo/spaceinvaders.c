@@ -92,9 +92,9 @@ void on_key_press(char key, key_event_type_t type, double held_time,
     if (object != NULL && !body_is_removed(object)
         && *(char *)body_get_info(object) == SPACESHIP_INFO) {
         if (type == KEY_RELEASED) {
-            body_set_velocity(object, (vector_t){0, 0});
+            body_set_velocity(object, VEC_ZERO);
         } else if (type == KEY_PRESSED) {
-            vector_t speed = {0, 0}; 
+            vector_t speed = VEC_ZERO; 
             switch (key) {
                 case LEFT_ARROW:
                     speed.x = -INIT_VEL.x;

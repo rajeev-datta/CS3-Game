@@ -1,4 +1,5 @@
 #include "color.h"
+#include <stdlib.h>
 
 const rgb_color_t RED = {1, 0, 0};
 const rgb_color_t BLACK = {0, 0, 0};
@@ -34,4 +35,12 @@ rgb_color_t color_get_blue() {
 
 rgb_color_t color_get_white() {
     return WHITE;
+}
+
+rgb_color_t color_random() {
+    float red = (float)rand()/(float)RAND_MAX;
+    float green = (float)rand()/(float)RAND_MAX;
+    float blue = (float)rand()/(float)RAND_MAX;
+    rgb_color_t color = {red, green, blue};
+    return color;
 }

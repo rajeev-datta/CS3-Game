@@ -30,9 +30,7 @@ static const int TANK_SHOOT_TIME = 1;
 static double const INIT_VEL = 200;
 static double const ANGLE_OFFSET = (10 * M_PI)/180;
 static const int NUM_SCENES = 2;
-static const int CIRC_PTS = 16;
 static const int FIRST_REMOVABLE_INDEX = 4;
-static const double BULLET_ELASTICITY = 0.9;
 static const int START_TIME = 0;
 
 typedef enum scenes{
@@ -49,7 +47,7 @@ void on_key_push(char key, key_event_type_t type, double held_time,
             if (tank_get_weapon(tank1) == (shooting_handler_t) remote_missile_shoot) {
                 bool missile_exists = false;
                 list_clear(keys_pressed);
-                body_set_velocity(tank1_body, (vector_t) {0,0});
+                body_set_velocity(tank1_body, VEC_ZERO);
                 for (size_t i=0; i < scene_bodies(scene); i++) {
                     if (*(body_types_t *) body_get_info(scene_get_body(scene, i))
                         == TANK_REMOTE_MISSILE_1) {
@@ -57,11 +55,11 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                         missile_exists = true;
                         list_clear(keys_pressed);
                         if (type == KEY_RELEASED) {
-                            body_set_velocity(missile, (vector_t){0, 0});
+                            body_set_velocity(missile, VEC_ZERO);
                             list_clear(keys_pressed);
                         } else if (type == KEY_PRESSED) {
                             wall_boundary(scene, missile);
-                            vector_t speed = {0, 0};
+                            vector_t speed = VEC_ZERO;
                             char *key_tap = malloc(sizeof(char));
                             *key_tap = key;
                             list_add(keys_pressed, key_tap);
@@ -102,10 +100,10 @@ void on_key_push(char key, key_event_type_t type, double held_time,
             else {
                 list_clear(keys_pressed);
                 if (type == KEY_RELEASED) {
-                    body_set_velocity(tank1_body, (vector_t){0, 0});
+                    body_set_velocity(tank1_body, VEC_ZERO);
                     list_clear(keys_pressed);
                 } else if (type == KEY_PRESSED) {
-                    vector_t speed1 = {0, 0};
+                    vector_t speed1 = VEC_ZERO;
                     char *key_tap = malloc(sizeof(char));
                     *key_tap = key;
                     list_add(keys_pressed, key_tap);
@@ -144,7 +142,7 @@ void on_key_push(char key, key_event_type_t type, double held_time,
             if ((tank_get_weapon(tank1) == (shooting_handler_t) remote_missile_shoot) && 
                 (tank_get_weapon(tank2) != (shooting_handler_t) remote_missile_shoot)) {
                 body_t *missile1 = NULL;
-                body_set_velocity(tank1_body, (vector_t) {0,0});
+                body_set_velocity(tank1_body, VEC_ZERO);
                 for (size_t i=0; i < scene_bodies(scene); i++) {
                         if (*(body_types_t *) body_get_info(scene_get_body(scene, i))
                             == TANK_REMOTE_MISSILE_1) {
@@ -162,12 +160,12 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                 }
                 wall_boundary(scene, missile1);
                 if (type == KEY_RELEASED) {
-                    body_set_velocity(missile1, (vector_t){0, 0});
-                    body_set_velocity(tank2_body, (vector_t) {0,0});
+                    body_set_velocity(missile1, VEC_ZERO);
+                    body_set_velocity(tank2_body, VEC_ZERO);
                     list_clear(keys_pressed);
                 } else if (type == KEY_PRESSED) {
-                    vector_t speed1 = {0, 0};
-                    vector_t speed2 = {0, 0};
+                    vector_t speed1 = VEC_ZERO;
+                    vector_t speed2 = VEC_ZERO;
                     char *key_tap = malloc(sizeof(char));
                     *key_tap = key;
                     list_add(keys_pressed, key_tap);
@@ -221,7 +219,7 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                  && (tank_get_weapon(tank2) == (shooting_handler_t) remote_missile_shoot))
                 {
                 body_t *missile2 = NULL;
-                body_set_velocity(tank2_body, (vector_t) {0,0});
+                body_set_velocity(tank2_body, VEC_ZERO);
                 for (size_t i=0; i < scene_bodies(scene); i++) {
                         if (*(body_types_t *) body_get_info(scene_get_body(scene, i))
                             == TANK_REMOTE_MISSILE_2) {
@@ -239,12 +237,12 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                 }
                 wall_boundary(scene, missile2);
                 if (type == KEY_RELEASED) {
-                    body_set_velocity(missile2, (vector_t) {0,0});
-                    body_set_velocity(tank1_body, (vector_t) {0,0});
+                    body_set_velocity(missile2, VEC_ZERO);
+                    body_set_velocity(tank1_body, VEC_ZERO);
                     list_clear(keys_pressed);
                 } else if (type == KEY_PRESSED) {
-                    vector_t speed1 = {0, 0};
-                    vector_t speed2 = {0, 0};
+                    vector_t speed1 = VEC_ZERO;
+                    vector_t speed2 = VEC_ZERO;
                     char *key_tap = malloc(sizeof(char));
                     *key_tap = key;
                     list_add(keys_pressed, key_tap);
@@ -299,8 +297,8 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                 {
                 body_t *missile1 = NULL;
                 body_t *missile2 = NULL;
-                body_set_velocity(tank1_body, (vector_t) {0,0});
-                body_set_velocity(tank2_body, (vector_t) {0,0});
+                body_set_velocity(tank1_body, VEC_ZERO);
+                body_set_velocity(tank2_body, VEC_ZERO);
                 for (size_t i=0; i < scene_bodies(scene); i++) {
                         if (*(body_types_t *) body_get_info(scene_get_body(scene, i))
                             == TANK_REMOTE_MISSILE_1) {
@@ -332,12 +330,12 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                 wall_boundary(scene, missile1);
                 wall_boundary(scene, missile2);
                 if (type == KEY_RELEASED) {
-                    body_set_velocity(missile1, (vector_t) {0,0});
-                    body_set_velocity(missile2, (vector_t) {0,0});
+                    body_set_velocity(missile1, VEC_ZERO);
+                    body_set_velocity(missile2, VEC_ZERO);
                     list_clear(keys_pressed);
                 } else if (type == KEY_PRESSED) {
-                    vector_t speed1 = {0, 0};
-                    vector_t speed2 = {0, 0};
+                    vector_t speed1 = VEC_ZERO;
+                    vector_t speed2 = VEC_ZERO;
                     char *key_tap = malloc(sizeof(char));
                     *key_tap = key;
                     list_add(keys_pressed, key_tap);
@@ -382,12 +380,12 @@ void on_key_push(char key, key_event_type_t type, double held_time,
             }
             else {
                 if (type == KEY_RELEASED) {
-                    body_set_velocity(tank1_body, (vector_t){0, 0});
-                    body_set_velocity(tank2_body, (vector_t){0, 0});
+                    body_set_velocity(tank1_body, VEC_ZERO);
+                    body_set_velocity(tank2_body, VEC_ZERO);
                     list_clear(keys_pressed);
                 } else if (type == KEY_PRESSED) {
-                    vector_t speed1 = {0, 0};
-                    vector_t speed2 = {0, 0};
+                    vector_t speed1 = VEC_ZERO;
+                    vector_t speed2 = VEC_ZERO;
                     char *key_tap = malloc(sizeof(char));
                     *key_tap = key;
                     list_add(keys_pressed, key_tap);
@@ -448,11 +446,11 @@ void on_key_push(char key, key_event_type_t type, double held_time,
 
 bool within_rect(body_t *body, vector_t point) {
     list_t *list = body_get_shape(body);
-    assert(list_size(list) == 4);
-    bool within = (point.x >= ((vector_t *)list_get(list, 0))->x
-                  && point.x <= ((vector_t *)list_get(list, 2))->x
-                  && point.y <= ((vector_t *)list_get(list, 1))->y
-                  && point.y >= ((vector_t *)list_get(list, 0))->y);
+    assert(list_size(list) == get_num_rect_pts());
+    bool within = (point.x >= ((vector_t *)list_get(list, BOTTOM_LEFT_CORNER))->x
+                  && point.x <= ((vector_t *)list_get(list, TOP_RIGHT_CORNER))->x
+                  && point.y <= ((vector_t *)list_get(list, TOP_LEFT_CORNER))->y
+                  && point.y >= ((vector_t *)list_get(list, BOTTOM_LEFT_CORNER))->y);
 
     list_free(list);
     return within;
@@ -609,8 +607,6 @@ int main(int argc, char *argv[]) {
     list_t *keys_pressed = list_init(0, free);
     game_outcomes_t win;
 
-    double timer = START_TIME;
-
     load_sound();
 
     while (!sdl_is_done(temp_scene, scene_get_body(temp_scene, 0), play, scenes, level,
@@ -643,7 +639,7 @@ int main(int argc, char *argv[]) {
             time_passed += dt;
             shoot_time += dt;
         
-            //have the enemy tank(s) shoot after a certain period of time
+            // Have the enemy tank(s) shoot after a certain period of time
             if (shoot_time >= TANK_SHOOT_TIME) {
                 vector_t player_loc;
                 for(int i = 0; i < scene_bodies(scene); i++) {
@@ -653,7 +649,7 @@ int main(int argc, char *argv[]) {
                     }
                 }
                 enemy_tank_shoot(scene, level, player_loc);
-                shoot_time = 0;
+                shoot_time = START_TIME;
             }
 
             update_and_check_projectiles_and_tanks(scene, tank1, dt);
@@ -679,12 +675,11 @@ int main(int argc, char *argv[]) {
             // Shoot a power-up at an interval of time.
             if (time_passed > TANK_POWER_UP_TIME) {
                 make_tank_power_up(temp_scene, rand() % NUM_POWERUPS, tank1, tank2);
-                // make_tank_power_up(temp_scene, 4, tank1, tank2);
-                time_passed = 0;
+                time_passed = START_TIME;
             }
         } else {
             temp_scene = pause_scene;
-            time_passed = 0;
+            time_passed = START_TIME;
         }
 
         sdl_render_scene(temp_scene);

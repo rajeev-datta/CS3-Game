@@ -12,37 +12,59 @@ typedef struct {
     float b;
 } rgb_color_t;
 
-// Returns the red color
+/**
+ * Returns an rgb_color_t for the color red
+ */
 rgb_color_t color_get_red();
 
-// Returns the black color
+/**
+ * Returns an rgb_color_t for the color black
+ */
 rgb_color_t color_get_black();
 
-// Returns the green color
+/**
+ * Returns an rgb_color_t for the color green
+ */
 rgb_color_t color_get_green();
 
-// Returns the purple color
+/**
+ * Returns an rgb_color_t for the color purple
+ */
 rgb_color_t color_get_purple();
 
-// Returns the maroon color
+/**
+ * Returns an rgb_color_t for the color maroon
+ */
 rgb_color_t color_get_maroon();
 
-// Returns the blue color
+/**
+ * Returns an rgb_color_t for the color blue
+ */
 rgb_color_t color_get_blue();
 
-// Returns the white color
+/**
+ * Returns an rgb_color_t for the color white
+ */
 rgb_color_t color_get_white();
 
-// Returns the lime color
+/**
+ * Returns an rgb_color_t for the color lime
+ */
 rgb_color_t color_get_lime();
 
-// Returns the teal color
+/**
+ * Returns an rgb_color_t for the color teal
+ */
 rgb_color_t color_get_teal();
 
-// Returns the pink color
+/**
+ * Returns an rgb_color_t for the color pink
+ */
 rgb_color_t color_get_pink();
 
-// Returns a random color
+/**
+ * Returns an rgb_color_t for a randomly generated color
+ */
 rgb_color_t color_random();
 
 #endif // #ifndef __COLOR_H__

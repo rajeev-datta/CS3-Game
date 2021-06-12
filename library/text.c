@@ -2,6 +2,7 @@
 #include "sdl_wrapper.h"
 #include "screen_set.h"
 #include <assert.h>
+#include "animate.h"
 
 static const double TEXT_SCALE = 0.8;
 static const SDL_Color WHITE_TEXT = {255, 255, 255};
@@ -30,7 +31,7 @@ void text_open_font() {
 
 void text_for_pause(scene_t *scene, bool *multi, bool *choosing_level, game_outcomes_t win, bool *game_started) {
     list_t *resume_shape = body_get_shape(scene_get_body(scene, RESUME_BUT));
-    assert(list_size(resume_shape) == 4);
+    assert(list_size(resume_shape) == get_num_rect_pts());
     int x = ((vector_t *)list_get(resume_shape, 0))->x + get_button_length() * (1 - TEXT_SCALE)/2;
     int y = ((vector_t *)list_get(resume_shape, 1))->y - get_button_height() * (1 - TEXT_SCALE)/2;
     int width = get_button_length() * TEXT_SCALE;
@@ -39,7 +40,7 @@ void text_for_pause(scene_t *scene, bool *multi, bool *choosing_level, game_outc
     sdl_write(x, y, width, height, FONT, WHITE_TEXT, resume_text);
 
     list_t *restart_shape = body_get_shape(scene_get_body(scene, RESTART_BUT));
-    assert(list_size(restart_shape) == 4);
+    assert(list_size(restart_shape) == get_num_rect_pts());
     y = ((vector_t *)list_get(restart_shape, 1))->y - get_button_height() * (1 - TEXT_SCALE)/2;
     char *restart_text = "Restart";
     sdl_write(x, y, width, height, FONT, WHITE_TEXT, restart_text);

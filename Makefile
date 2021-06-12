@@ -4,7 +4,7 @@ DEMOS = tank_demo
 STAFF_LIBS = test_util sdl_wrapper
 # List of C files in "libraries" that you will write.
 # This also defines the order in which the tests are run.
-STUDENT_LIBS = vector list polygon color body scene forces animate star collision tank powerup sound gameplay text screen_set image levels
+STUDENT_LIBS = vector list polygon color body scene forces animate collision tank powerup sound gameplay text screen_set image levels
 
 # If we're not on Windows...
 ifneq ($(OS), Windows_NT)

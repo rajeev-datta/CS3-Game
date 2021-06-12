@@ -3,7 +3,6 @@
 #include "sdl_wrapper.h"
 #include <stdbool.h>
 #include "animate.h"
-#include "star.h"
 #include "color.h"
 #include "list.h"
 #include "tank.h"

@@ -2,7 +2,6 @@
 #define __ANIMATE_H__
 
 #include "vector.h"
-#include "star.h"
 #include "list.h"
 #include "sdl_wrapper.h"
 #include "body.h"
@@ -70,44 +69,8 @@ const typedef enum rect_corners{
 
 int get_num_rect_pts();
 
-/**
- *  @brief Makes a star
- *
- *  @param center a vector_t representing the center of the star
- *  @param r1 a double representing the inner radius
- *  @param r2 a double representing the outer radius
- *  @param points an int representing two times the number of outer points in a star
- * 
- *  @return a vec_list_t representing the points of the star
- */
-list_t *make_star(vector_t center, double r1, double r2, int points);
-
-/**
- *  @brief Makes the star bounce around the screen
- *
- *  @param star a star_t representing the points on the star
- *  @param min a vector_t representing the minimum x and y coordinates of the screen
- *  @param max a vector_t representing the maximum x and y coordinates of the screen
- *  @param dt a double representing the change in time since last tick
- */
-void hit_boundary_check(star_t *star, vector_t min, vector_t max, double dt);
-
 //checks boundaries for enemy tanks, y velocity only
 void body_hit_boundary_check(body_t *body, vector_t min, vector_t max, double dt);
-
-/**
- *  @brief Makes an object fall due to gravity
- *
- *  @param star a star_t representing the points on the star
- *  @param g a double representing the acceleration due to gravity
- *  @param min a vector_t representing the minimum x and y coordinates of the screen
- *  @param max a vector_t representing the maximum x and y coordinates of the screen
- *  @param dt a double representing the change in time since last tick
- *  @param radius a double representing the radius of the star
- *  @param elasticity a double representing the elasticity of a bounce
- */
-void bounce(star_t *star, double g, vector_t min, vector_t max, double dt, 
-            double radius, double elasticity);
 
 /**
  *  @brief Does an action if specific keys are pressed

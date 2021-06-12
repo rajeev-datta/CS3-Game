@@ -111,12 +111,37 @@ void remove_pellets(body_t *pacman, double pac_rad, double pel_rad, scene_t *sce
  */
 void continuous_boundary(body_t *pacman, vector_t top_right_coord);
 
+/**
+ *  @brief Creates a boundary for the invaders that drops them down vertically if
+ *  a side boundary is hit
+ *
+ *  @param scene a scene_t representing the scene
+ *  @param top_right a vector_t representing the top right coordinate of the screen
+ *  @param spacing a double representing the spacing between two invaders
+ *  @param radius a double representing the radius of an invader
+ */
 void wrapping_boundary(scene_t *scene, vector_t top_right, 
                        double spacing, double radius);
 
+/**
+ *  @brief Creates a boundary for the spaceship that prevents it from going past
+ *  a boundary
+ *
+ *  @param scene a scene_t representing the scene
+ *  @param top_right a vector_t representing the top right coordinate of the screen
+ *  @param bottom_left a vector_t representing the bottom left coordinate of the screen
+ *  @param radius a double representing the radius of an invader
+ */
 void stop_boundary(scene_t *scene, vector_t top_right, vector_t bottom_left,
                    double radius);
 
+/**
+ *  @brief Creates a boundary for the tank that prevents it from going through a
+ *  wall
+ *
+ *  @param scene a scene_t representing the scene
+ *  @param tank_body a body_t representing the body of the input tank
+ */
 void wall_boundary(scene_t *scene, body_t *tank_body);
 
 #endif // #ifndef __ANIMATE_H__

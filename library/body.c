@@ -127,7 +127,8 @@ void body_set_velocity(body_t *body, vector_t v) {
 }
 
 void body_set_rotation(body_t *body, double angle) {
-    polygon_rotate(body_get_real_shape(body), angle - body->orientation, body_get_centroid(body));
+    polygon_rotate(body_get_real_shape(body), angle - body->orientation,
+                   body_get_centroid(body));
     body->orientation = angle;
 }
 
@@ -173,7 +174,8 @@ void body_tick(body_t *body, double dt) {
     body_add_impulse(body, vec_multiply(dt, net_force));
     vector_t change_velocity = vec_multiply(1.0 / (body->mass), body->impulse);
     vector_t after_velocity = vec_add(before_velocity, change_velocity);
-    vector_t translate_velocity = vec_multiply(1.0 / 2.0, vec_add(before_velocity, after_velocity));
+    vector_t translate_velocity = vec_multiply(1.0 / 2.0, vec_add(before_velocity,
+                                               after_velocity));
     body_set_velocity(body, after_velocity);
     vector_t translation = vec_multiply(dt, translate_velocity);
     body_set_centroid(body, vec_add(body->centroid, translation));

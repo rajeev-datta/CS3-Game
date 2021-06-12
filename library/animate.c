@@ -9,18 +9,20 @@
 #include "collision.h"
 #include <float.h>
 #include "tank.h"
+#include "screen_set.h"
 
-const double ELLIPSE_SCALE = 1.0/3;
-const char INVADER_INFORMATION = 'i';
-const char SPACESHIP_INFORMATION = 's';
-const char WALL_INFORMATION = 'w';
-const char PADDLE_INFORMATION = 'p';
-const int RECT_PTS = 4;
-const int TANK_PTS = 8;
-const int TANK_SIZE = 30;
-const int FIRST_PT = 0;
-const int INIT_ANGLE = 0;
-const int VELOCITY_BOUNDARY = 0;
+static const double ELLIPSE_SCALE = 1.0/3;
+static const char INVADER_INFORMATION = 'i';
+static const char SPACESHIP_INFORMATION = 's';
+static const char WALL_INFORMATION = 'w';
+static const char PADDLE_INFORMATION = 'p';
+static const int RECT_PTS = 4;
+static const int TANK_PTS = 8;
+static const int TANK_SIZE = 30;
+static const int FIRST_PT = 0;
+static const int INIT_ANGLE = 0;
+static const int VELOCITY_BOUNDARY = 0;
+static const int ZEROTH_INDEX = 0;
 
 list_t *animate_tank(vector_t *coord) {
     list_t *tank = list_init(TANK_PTS, free);
@@ -262,13 +264,13 @@ void continuous_boundary(body_t *pacman, vector_t top_right_coord) {
         if (point->x < top_right_coord.x) {
             crossed_right = false;
         }
-        if (point->x > 0) {
+        if (point->x > get_bottom_left().x) {
             crossed_left = false;
         }
         if (point->y < top_right_coord.y) {
             crossed_up = false;
         }
-        if (point->y > 0) {
+        if (point->y > get_bottom_left().y) {
             crossed_down = false;
         }
     }
@@ -326,14 +328,16 @@ void stop_boundary(scene_t *scene, vector_t top_right, vector_t bottom_left,
                    double radius) {
     if (scene != NULL && (*(char *) body_get_info(scene_get_body(scene, 0))
                           == SPACESHIP_INFORMATION
-        || *(char *) body_get_info(scene_get_body(scene, 0)) == PADDLE_INFORMATION)) {
-        vector_t space_ship_centroid = body_get_centroid(scene_get_body(scene, 0));
+        || *(char *) body_get_info(scene_get_body(scene, ZEROTH_INDEX))
+                     == PADDLE_INFORMATION)) {
+        vector_t space_ship_centroid = body_get_centroid(
+                                                    scene_get_body(scene, ZEROTH_INDEX));
         if (space_ship_centroid.x + radius >= top_right.x) {
-            body_set_centroid(scene_get_body(scene, 0),
+            body_set_centroid(scene_get_body(scene, ZEROTH_INDEX),
             (vector_t) {top_right.x - radius, space_ship_centroid.y});
         }
         else if (space_ship_centroid.x - radius <= bottom_left.x) {
-            body_set_centroid(scene_get_body(scene, 0),
+            body_set_centroid(scene_get_body(scene, ZEROTH_INDEX),
             (vector_t) {radius, space_ship_centroid.y});
         }
     }

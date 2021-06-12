@@ -21,6 +21,12 @@ static const double L3_ENEMY_MAX1 = 400;
 static const double L3_ENEMY_MIN1 = 300;
 static const double L3_ENEMY_MAX2 = 200;
 static const double L3_ENEMY_MIN2 = 100;
+static const double DISTANCE = 10;
+static const double L2_ENEMY1_POS = 389;
+static const double L2_ENEMY2_POS = 589;
+static const double L3_ENEMY1_POS = 239;
+static const double L3_ENEMY2_POS = 539;
+static const double L3_ENEMY3_POS = 889;
 
 typedef struct tank {
     body_t *shape;
@@ -196,15 +202,15 @@ void enemy_tank_shoot(scene_t *scene, int *level, vector_t player) {
         for(int i = 0; i < scene_bodies(scene); i++) {
             if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == ENEMY_TANK
                 && !body_is_powerup(scene_get_body(scene, i))) {
-                if (body_get_centroid(scene_get_body(scene, i)).x <= 400 && 
-                    body_get_centroid(scene_get_body(scene, i)).x >= 380) {
+                if (fabs(body_get_centroid(scene_get_body(scene, i)).x - L2_ENEMY1_POS)
+                    <= DISTANCE) {
                     enemy_tank_helper(scene, scene_get_body(scene, i), get_top_right().y,
                                       L2_ENEMY1_MIN, player);
                     enemy_tank_helper(scene, scene_get_body(scene, i), L2_ENEMY1_MAX,
                                       get_bottom_left().y, player);        
                 }
-                else if (body_get_centroid(scene_get_body(scene, i)).x <= 600 &&
-                        body_get_centroid(scene_get_body(scene, i)).x >= 580) {
+                else if (fabs(body_get_centroid(scene_get_body(scene, i)).x 
+                         - L2_ENEMY2_POS) <= DISTANCE) {
                     enemy_tank_helper(scene, scene_get_body(scene, i), get_top_right().y,
                                       get_bottom_left().y, player);
                 }
@@ -215,22 +221,22 @@ void enemy_tank_shoot(scene_t *scene, int *level, vector_t player) {
         for(int i = 0; i < scene_bodies(scene); i++) {
             if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == ENEMY_TANK
                 && !body_is_powerup(scene_get_body(scene, i))) {
-                if (body_get_centroid(scene_get_body(scene, i)).x <= 250 && 
-                   body_get_centroid(scene_get_body(scene, i)).x >= 230) {
+                if (fabs(body_get_centroid(scene_get_body(scene, i)).x - L3_ENEMY1_POS)
+                    <= DISTANCE) {
                     enemy_tank_helper(scene, scene_get_body(scene, i), L3_ENEMY_MAX1,
                                       L3_ENEMY_MIN1, player);
                     enemy_tank_helper(scene, scene_get_body(scene, i), L3_ENEMY_MAX2,
                                       L3_ENEMY_MIN2, player);           
                 }
-                else if (body_get_centroid(scene_get_body(scene, i)).x <= 550 &&
-                        body_get_centroid(scene_get_body(scene, i)).x >= 530) {
+                else if (fabs(body_get_centroid(scene_get_body(scene, i)).x
+                         - L3_ENEMY2_POS) <= DISTANCE) {
                     enemy_tank_helper(scene, scene_get_body(scene, i), get_top_right().y,
                                       L3_ENEMY_MAX1, player);
                     enemy_tank_helper(scene, scene_get_body(scene, i), L3_ENEMY_MIN2,
                                       get_bottom_left().y, player);
                 }
-                else if (body_get_centroid(scene_get_body(scene, i)).x <= 900 &&
-                        body_get_centroid(scene_get_body(scene, i)).x >= 880) {
+                else if (fabs(body_get_centroid(scene_get_body(scene, i)).x 
+                         - L3_ENEMY3_POS) <= DISTANCE) {
                     enemy_tank_helper(scene, scene_get_body(scene, i), L3_ENEMY_MAX1,
                                       L3_ENEMY_MIN1, player);
                     enemy_tank_helper(scene, scene_get_body(scene, i), L3_ENEMY_MAX2,

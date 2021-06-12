@@ -24,12 +24,10 @@ void load_sound() {
 
 void play_remove_sound() {
     Mix_PlayChannel(-1, REMOVE_SOUND, 0);
-    printf("playing remove sound \n");
 }
 
 void play_shoot_sound() {
     Mix_PlayChannel(-1, SHOOT_SOUND, 0);
-    printf("playing shoot sound \n");
 }
 
 void free_sound() {

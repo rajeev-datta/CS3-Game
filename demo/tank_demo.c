@@ -472,7 +472,6 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
             *play = true;
         } else if (!(*game_over || *game_started) && !(*choosing_level)
                    && within_rect(scene_get_body(scenes[PAUSE], RESTART_BUT), point)) {
-            printf("clicked restart\n");
             scene_erase_some(scenes[PLAY], FIRST_REMOVABLE_INDEX);
             screen_set_tanks(scenes[PLAY], multi, tank1, tank2);
             if (*level == 1) {
@@ -488,7 +487,6 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
             *play = true;
         } else if (within_rect(scene_get_body(scenes[PAUSE], EASY_BUT), point)
                    && *unlocked_level >= get_first_level()) {
-            printf("clicked easy\n");
             if (*choosing_level) {
                 scene_remove_body(scenes[PAUSE], WHITE_SCREEN);
                 *choosing_level = false;
@@ -507,7 +505,6 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
             *play = true;
         } else if (within_rect(scene_get_body(scenes[PAUSE], MEDIUM_BUT), point)
                    &&  *unlocked_level >= get_second_level()) {
-            printf("clicked medium\n");
             if (*choosing_level) {
                 scene_remove_body(scene, WHITE_SCREEN);
                 *choosing_level = false;
@@ -526,7 +523,6 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
             *play = true;
         } else if (within_rect(scene_get_body(scenes[PAUSE], HARD_BUT), point)
                    &&  *unlocked_level >= get_third_level()) {
-            printf("clicked hard\n");
             if (*choosing_level) {
                 scene_remove_body(scene, WHITE_SCREEN);
                 *choosing_level = false;

@@ -13,6 +13,14 @@ static const int MASS = 100;
 static const double default_reload_time = 1;
 static const double default_bullet_range = 7;
 static const double POWERUP_TIME = 10;
+static const double L1_ENEMY_MAX = 350;
+static const double L1_ENEMY_MIN = 150;
+static const double L2_ENEMY1_MIN = 300;
+static const double L2_ENEMY1_MAX = 200;
+static const double L3_ENEMY_MAX1 = 400;
+static const double L3_ENEMY_MIN1 = 300;
+static const double L3_ENEMY_MAX2 = 200;
+static const double L3_ENEMY_MIN2 = 100;
 
 typedef struct tank {
     body_t *shape;
@@ -179,7 +187,8 @@ void enemy_tank_shoot(scene_t *scene, int *level, vector_t player) {
         for(int i = 0; i < scene_bodies(scene); i++) {
             if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == ENEMY_TANK
                 && !body_is_powerup(scene_get_body(scene, i))) {
-                enemy_tank_helper(scene, scene_get_body(scene, i), 350, 150, player);
+                enemy_tank_helper(scene, scene_get_body(scene, i), L1_ENEMY_MAX, 
+                                  L1_ENEMY_MIN, player);
             }
         }
     }
@@ -190,9 +199,9 @@ void enemy_tank_shoot(scene_t *scene, int *level, vector_t player) {
                 if (body_get_centroid(scene_get_body(scene, i)).x <= 400 && 
                     body_get_centroid(scene_get_body(scene, i)).x >= 380) {
                     enemy_tank_helper(scene, scene_get_body(scene, i), get_top_right().y,
-                                      300, player);
-                    enemy_tank_helper(scene, scene_get_body(scene, i), 200,
-                                      get_bottom_left().y, player);           
+                                      L2_ENEMY1_MIN, player);
+                    enemy_tank_helper(scene, scene_get_body(scene, i), L2_ENEMY1_MAX,
+                                      get_bottom_left().y, player);        
                 }
                 else if (body_get_centroid(scene_get_body(scene, i)).x <= 600 &&
                         body_get_centroid(scene_get_body(scene, i)).x >= 580) {
@@ -208,20 +217,24 @@ void enemy_tank_shoot(scene_t *scene, int *level, vector_t player) {
                 && !body_is_powerup(scene_get_body(scene, i))) {
                 if (body_get_centroid(scene_get_body(scene, i)).x <= 250 && 
                    body_get_centroid(scene_get_body(scene, i)).x >= 230) {
-                    enemy_tank_helper(scene, scene_get_body(scene, i), 400, 300, player);
-                    enemy_tank_helper(scene, scene_get_body(scene, i), 200, 100, player);           
+                    enemy_tank_helper(scene, scene_get_body(scene, i), L3_ENEMY_MAX1,
+                                      L3_ENEMY_MIN1, player);
+                    enemy_tank_helper(scene, scene_get_body(scene, i), L3_ENEMY_MAX2,
+                                      L3_ENEMY_MIN2, player);           
                 }
                 else if (body_get_centroid(scene_get_body(scene, i)).x <= 550 &&
                         body_get_centroid(scene_get_body(scene, i)).x >= 530) {
                     enemy_tank_helper(scene, scene_get_body(scene, i), get_top_right().y,
-                                      400, player);
-                    enemy_tank_helper(scene, scene_get_body(scene, i), 100,
+                                      L3_ENEMY_MAX1, player);
+                    enemy_tank_helper(scene, scene_get_body(scene, i), L3_ENEMY_MIN2,
                                       get_bottom_left().y, player);
                 }
                 else if (body_get_centroid(scene_get_body(scene, i)).x <= 900 &&
                         body_get_centroid(scene_get_body(scene, i)).x >= 880) {
-                    enemy_tank_helper(scene, scene_get_body(scene, i), 400, 300, player);
-                    enemy_tank_helper(scene, scene_get_body(scene, i), 200, 100, player);
+                    enemy_tank_helper(scene, scene_get_body(scene, i), L3_ENEMY_MAX1,
+                                      L3_ENEMY_MIN1, player);
+                    enemy_tank_helper(scene, scene_get_body(scene, i), L3_ENEMY_MAX2,
+                                      L3_ENEMY_MIN2, player);
                 }
             }
         }

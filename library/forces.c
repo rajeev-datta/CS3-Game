@@ -111,33 +111,35 @@ void destructive_fxn(body_t *body1, body_t *body2, vector_t axis, void *aux) {
      * Aux represents a bool determining whether this is a partial or complete
      * destructive collision
      */
-    if (*(bool *)aux) {
-        if (body_is_tank(body2)) {
-            body_set_lives(body2, body_get_lives(body2) - 1);
-        }
-
-        else if (body_is_inc_lives_pow(body2) && body_is_tank(body1)) {
-            body_set_lives(body1, body_get_lives(body1) + 1);
-            body_remove(body2);
-        }
-        
-        else {
-            if (*(body_types_t *)body_get_info(body1) == TANK_FORCE_FIELD) {
-                body_set_velocity(body2, VEC_ZERO);
+    if (!body_is_pause_button(body1) && !body_is_pause_button(body2)) {
+        if (*(bool *)aux) {
+            if (body_is_tank(body2)) {
+                body_set_lives(body2, body_get_lives(body2) - 1);
             }
-            body_remove(body2);
-        } 
-    }
-    else {
-        if (body_is_tank(body1)) {
-            body_set_lives(body1, body_get_lives(body1) - 1);
-        } else {
-            body_remove(body1);
+
+            else if (body_is_inc_lives_pow(body2) && body_is_tank(body1)) {
+                body_set_lives(body1, body_get_lives(body1) + 1);
+                body_remove(body2);
+            }
+            
+            else {
+                if (*(body_types_t *)body_get_info(body1) == TANK_FORCE_FIELD) {
+                    body_set_velocity(body2, VEC_ZERO);
+                }
+                body_remove(body2);
+            } 
         }
-        if (body_is_tank(body2)) {
-            body_set_lives(body2, body_get_lives(body2) - 1);
-        } else {
-            body_remove(body2);
+        else {
+            if (body_is_tank(body1)) {
+                body_set_lives(body1, body_get_lives(body1) - 1);
+            } else {
+                body_remove(body1);
+            }
+            if (body_is_tank(body2)) {
+                body_set_lives(body2, body_get_lives(body2) - 1);
+            } else {
+                body_remove(body2);
+            }
         }
     }
 }

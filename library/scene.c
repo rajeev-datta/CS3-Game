@@ -161,11 +161,13 @@ void scene_body_detonate(scene_t *scene, body_t *body) {
         body_set_time(frag_body, 0);
 
         for (size_t i = 0; i < scene_bodies(scene); i++) {
-            if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_1 || *(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_2) {
+            if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_1
+                || *(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_2) {
                 create_destructive_collision(scene, frag_body, scene_get_body(scene, i));
             }
             if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == WALL) {
-                create_physics_collision(scene, FRAG_ELASTICITY, frag_body, scene_get_body(scene, i));
+                create_physics_collision(scene, FRAG_ELASTICITY, frag_body,
+                scene_get_body(scene, i));
             }
         }
         angle += 2 * M_PI / NUM_OF_BOMB_FRAGS;

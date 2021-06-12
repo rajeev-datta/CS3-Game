@@ -93,7 +93,7 @@ void list_add(list_t *list, void *value);
 void list_set(list_t *list, void *value, size_t idx);
 
 /**
- * Clears the list of all its values contained
+ * Clears the list of all its contained values
  *
  * @param list a pointer to a list returned from list_init()
  */

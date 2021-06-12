@@ -13,7 +13,7 @@
 void put_forces(scene_t *scene);
 
 /**
- *  @brief Creates boundaries on the sides of the screen
+ *  @brief Creates boundaries on all sides of the screen
  *
  *  @param scene a scene_t representing the scene
  */

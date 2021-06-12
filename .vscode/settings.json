@@ -50,6 +50,8 @@
         "__node_handle": "c",
         "cstdio": "c",
         "sdl.h": "c",
-        "screen_set.h": "c"
+        "screen_set.h": "c",
+        "list.h": "c",
+        "polygon.h": "c"
     }
 }

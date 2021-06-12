@@ -95,7 +95,8 @@ void default_gun_shoot(scene_t *scene, body_t *body) {
         for (size_t i = 0; i < scene_bodies(scene); i++) {
             if (!body_is_powerup(scene_get_body(scene, i))) {
                 if (!body_is_pause_button(scene_get_body(scene, i))) {
-                    if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_1 || *(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_2) {
+                    if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_1
+                    || *(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_2) {
                     create_destructive_collision(scene, bullet_body, scene_get_body(scene, i));
                     }
                     if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == ENEMY_TANK) {
@@ -114,7 +115,8 @@ void default_gun_shoot(scene_t *scene, body_t *body) {
         for (size_t i = 0; i < scene_bodies(scene); i++) {
             if (!body_is_powerup(scene_get_body(scene, i))) {
                 if (!body_is_pause_button(scene_get_body(scene, i))) {
-                    if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_1 || *(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_2) {
+                    if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_1
+                    || *(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_2) {
                     create_destructive_collision(scene, bullet_body, scene_get_body(scene, i));
                     }
                     if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == WALL) {
@@ -149,7 +151,8 @@ void machine_gun_shoot(scene_t *scene, body_t *body) {
     body_set_velocity(bullet_body, tank_bullet_init_velocity);
 
     for (size_t i = 0; i < scene_bodies(scene); i++) {
-        if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_1 || *(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_2) {
+        if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_1
+        || *(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_2) {
             create_destructive_collision(scene, bullet_body, scene_get_body(scene, i));
         }
         if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == ENEMY_TANK) {
@@ -180,7 +183,8 @@ void frag_bomb_shoot(scene_t *scene, body_t *body) {
 
     body_set_velocity(frag_bomb_body, tank_bullet_init_velocity);
     for (size_t i = 0; i < scene_bodies(scene); i++) {
-        if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_1 || *(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_2) {
+        if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_1
+        || *(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_2) {
             create_destructive_collision(scene, frag_bomb_body, scene_get_body(scene, i));
         }
         if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == ENEMY_TANK) {
@@ -208,7 +212,8 @@ void land_mine_shoot(scene_t *scene, body_t *body) {
 
     body_set_velocity(land_mine_body, VEC_ZERO);
     for (size_t i = 0; i < scene_bodies(scene); i++) {
-        if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_1 || *(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_2) {
+        if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_1
+        || *(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_2) {
             create_destructive_collision(scene, land_mine_body, scene_get_body(scene, i));
         }
         if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == ENEMY_TANK) {
@@ -247,13 +252,13 @@ void remote_missile_shoot(scene_t *scene, body_t *body) {
 
 
     for (size_t i = 0; i < scene_bodies(scene); i++) {
-        if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_1 || *(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_2) {
+        if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_1
+        || *(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_2) {
             create_destructive_collision(scene, missile_body, scene_get_body(scene, i));
         }
         if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == ENEMY_TANK) {
             create_destructive_collision(scene, missile_body, scene_get_body(scene, i));
         }
-        // test thing for now, but seems to work
         if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == WALL) {
             create_partial_destructive_collision(scene, scene_get_body(scene, i), missile_body);
         }
@@ -268,26 +273,31 @@ void tank_powerup_fxn(body_t *body1, body_t *body2, vector_t axis, void *aux) {
         // machine gun power up
         tank_set_new_reload_time(((tank_powerup_aux_t *)aux)->tank, MACHINE_GUN_RELOAD_TIME);
         tank_set_new_range(((tank_powerup_aux_t *)aux)->tank, MACHINE_GUN_RANGE);
-        tank_set_shooting_handler(((tank_powerup_aux_t *)aux)->tank, (shooting_handler_t) machine_gun_shoot);
+        tank_set_shooting_handler(((tank_powerup_aux_t *)aux)->tank,
+                                    (shooting_handler_t) machine_gun_shoot);
     } else if (((tank_powerup_aux_t *)aux)->type == FRAG_BOMB) {
         //frag bomb power up
         tank_set_new_reload_time(((tank_powerup_aux_t *)aux)->tank, FRAG_BOMB_RELOAD_TIME);
         tank_set_new_range(((tank_powerup_aux_t *)aux)->tank, FRAG_BOMB_RANGE);
-        tank_set_shooting_handler(((tank_powerup_aux_t *)aux)->tank, (shooting_handler_t) frag_bomb_shoot);
+        tank_set_shooting_handler(((tank_powerup_aux_t *)aux)->tank,
+                                    (shooting_handler_t) frag_bomb_shoot);
     } else if (((tank_powerup_aux_t *)aux)->type == LAND_MINE) {
         //land mine power up
         tank_set_new_reload_time(((tank_powerup_aux_t *)aux)->tank, LAND_MINE_RELOAD_TIME);
         tank_set_new_range(((tank_powerup_aux_t *)aux)->tank, LAND_MINE_TIME_LIMIT);
-        tank_set_shooting_handler(((tank_powerup_aux_t *)aux)->tank, (shooting_handler_t) land_mine_shoot);
+        tank_set_shooting_handler(((tank_powerup_aux_t *)aux)->tank,
+                                    (shooting_handler_t) land_mine_shoot);
     } else if (((tank_powerup_aux_t *)aux)->type == FORCE_FIELD) {
         // force field power up
         tank_set_new_range(((tank_powerup_aux_t *)aux)->tank, FORCE_FIELD_TIME_LIMIT);
-        tank_set_shooting_handler(((tank_powerup_aux_t *)aux)->tank, (shooting_handler_t) force_field_shoot);
+        tank_set_shooting_handler(((tank_powerup_aux_t *)aux)->tank,
+                                    (shooting_handler_t) force_field_shoot);
     } else if (((tank_powerup_aux_t *)aux)->type == REMOTE_MISSILE) {
         // remote controlled missile power up
         tank_set_new_reload_time(((tank_powerup_aux_t *)aux)->tank, MISSILE_RELOAD_TIME);
         tank_set_new_range(((tank_powerup_aux_t *)aux)->tank, MISSILE_RANGE);
-        tank_set_shooting_handler(((tank_powerup_aux_t *)aux)->tank, (shooting_handler_t) remote_missile_shoot);
+        tank_set_shooting_handler(((tank_powerup_aux_t *)aux)->tank,
+                                    (shooting_handler_t) remote_missile_shoot);
     }
 
     body_remove(body2);
@@ -325,10 +335,12 @@ void make_tank_power_up(scene_t *scene, int type, tank_t *tank, tank_t *tank_2) 
     }
     vector_t power_up_center = {rand() % (int)get_top_right().x,
                                 rand() % (int)get_top_right().y};
-    list_t *power_up = animate_rectangle(power_up_center, INIT_POWERUP_LENGTH, INIT_POWERUP_HEIGHT);
+    list_t *power_up = animate_rectangle(power_up_center, INIT_POWERUP_LENGTH,
+                                        INIT_POWERUP_HEIGHT);
     powerups_t *type_pt = malloc(sizeof(powerups_t));
     *type_pt = powerup_type;
-    body_t *power_up_body = body_init_with_info(power_up, POWERUP_MASS, color, type_pt, free);
+    body_t *power_up_body = body_init_with_info(power_up, POWERUP_MASS, color, type_pt,
+                                                free);
     body_set_velocity(power_up_body, VEC_ZERO);
     body_set_is_powerup(power_up_body, true);
     scene_add_body(scene, power_up_body);
@@ -338,11 +350,13 @@ void make_tank_power_up(scene_t *scene, int type, tank_t *tank, tank_t *tank_2) 
         create_partial_destructive_collision(scene, tank_get_body(tank), power_up_body);
 
         create_tank_powerup_collision(scene, tank_2, power_up_body, type);
-        create_partial_destructive_collision(scene, tank_get_body(tank_2), power_up_body);  
+        create_partial_destructive_collision(scene, tank_get_body(tank_2),
+                                            power_up_body);
     } else {
         body_set_is_inc_lives_pow(power_up_body, true);
         create_partial_destructive_collision(scene, tank_get_body(tank), power_up_body);
-        create_partial_destructive_collision(scene, tank_get_body(tank_2), power_up_body);
+        create_partial_destructive_collision(scene, tank_get_body(tank_2),
+                                            power_up_body);
     }
 }
 
@@ -350,7 +364,8 @@ void update_and_check_projectiles_and_tanks(scene_t *scene, tank_t *tank, double
     double curr_range = tank_get_curr_range(tank);
     
     for (size_t i=0; i < scene_bodies(scene); i++) {
-        if (!body_is_powerup(scene_get_body(scene, i)) && !body_is_pause_button(scene_get_body(scene, i)) &&
+        if (!body_is_powerup(scene_get_body(scene, i))
+            && !body_is_pause_button(scene_get_body(scene, i)) &&
             !body_is_tank(scene_get_body(scene, i))) {
             if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == BULLET) {
                 body_increase_time(scene_get_body(scene, i), dt);
@@ -361,7 +376,7 @@ void update_and_check_projectiles_and_tanks(scene_t *scene, tank_t *tank, double
                 }
             }
 
-            if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == ENEMY_BULLET) {
+            if (*(body_types_t *)body_get_info(scene_get_body(scene, i))==ENEMY_BULLET) {
                 body_increase_time(scene_get_body(scene, i), dt);
                 double curr_time = body_get_time(scene_get_body(scene, i));
 
@@ -370,7 +385,8 @@ void update_and_check_projectiles_and_tanks(scene_t *scene, tank_t *tank, double
                 }
             }
 
-            if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_FRAG_BOMB) {
+            if (*(body_types_t *)body_get_info(scene_get_body(scene, i))
+                == TANK_FRAG_BOMB) {
                 body_increase_time(scene_get_body(scene, i), dt);
                 double curr_time = body_get_time(scene_get_body(scene, i));
 
@@ -379,7 +395,8 @@ void update_and_check_projectiles_and_tanks(scene_t *scene, tank_t *tank, double
                 }
             }
 
-            if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_LAND_MINE) {
+            if (*(body_types_t *)body_get_info(scene_get_body(scene, i))
+                == TANK_LAND_MINE) {
                 body_increase_time(scene_get_body(scene, i), dt);
                 double curr_time = body_get_time(scene_get_body(scene, i));
 
@@ -392,8 +409,6 @@ void update_and_check_projectiles_and_tanks(scene_t *scene, tank_t *tank, double
                 && *(body_types_t *)body_get_info(tank_get_body(tank)) == TANK_1) ||
                 (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE_2
                 && *(body_types_t *)body_get_info(tank_get_body(tank)) == TANK_2)) {
-                // body_increase_time(scene_get_body(scene, i), dt);
-                // double curr_time = body_get_time(scene_get_body(scene, i));
                 tank_increase_timer(tank, dt);
                 double curr_time = tank_get_timer(tank);
 
@@ -402,16 +417,6 @@ void update_and_check_projectiles_and_tanks(scene_t *scene, tank_t *tank, double
                     tank_set_timer(tank, 0);
                 }
             }
-
-            // if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE_2
-            //     && *(body_types_t *)body_get_info(tank_get_body(tank)) == TANK_2) {
-            //     body_increase_time(scene_get_body(scene, i), dt);
-            //     double curr_time = body_get_time(scene_get_body(scene, i));
-
-            //     if (curr_time > curr_range) {
-            //         body_remove(scene_get_body(scene, i));
-            //     }
-            // }
         } else {
             if (body_is_tank(scene_get_body(scene, i))) {
                 body_increase_time(scene_get_body(scene, i), dt);
@@ -442,19 +447,23 @@ void update_and_check_projectiles_and_tanks(scene_t *scene, tank_t *tank, double
 
 body_t *create_new_force_field(scene_t *scene, tank_t *tank) {
     body_t *tank_body = tank_get_body(tank);
-    list_t *force_field_pts = animate_ring(body_get_centroid(tank_body), FORCE_FIELD_INNER_RADIUS, FORCE_FIELD_OUTER_RADIUS, MAX_CIRC_PTS);
+    list_t *force_field_pts = animate_ring(body_get_centroid(tank_body),
+                                        FORCE_FIELD_INNER_RADIUS,
+                                        FORCE_FIELD_OUTER_RADIUS, MAX_CIRC_PTS);
 
     body_types_t *tank_force_field_info = malloc(sizeof(body_types_t *));
     *tank_force_field_info = TANK_FORCE_FIELD;
 
     body_t *force_field_body = body_init_with_info(force_field_pts, FORCE_FIELD_MASS,
-                                              color_get_blue(), tank_force_field_info, free);
+                                              color_get_blue(), tank_force_field_info,
+                                              free);
 
     body_set_velocity(force_field_body, VEC_ZERO);
     for (size_t i = 0; i < scene_bodies(scene); i++) {
         if (!body_is_powerup(scene_get_body(scene, i))) {
             if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == BULLET) {
-                create_partial_destructive_collision(scene, force_field_body, scene_get_body(scene, i));
+                create_partial_destructive_collision(scene, force_field_body,
+                                                    scene_get_body(scene, i));
             }
         }
     }
@@ -468,7 +477,8 @@ void handle_force_field(scene_t *scene, tank_t *tank, double dt) {
         bool force_field_exists = false;
         for (size_t i=0; i < scene_bodies(scene); i++) {
             if (!body_is_powerup(scene_get_body(scene, i))) {
-                if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_FORCE_FIELD) {
+                if (*(body_types_t *)body_get_info(scene_get_body(scene, i))
+                    == TANK_FORCE_FIELD) {
                     force_field_exists = true;
                     body_t *force_field = scene_get_body(scene, i);
                     body_increase_time(force_field, dt);
@@ -477,7 +487,8 @@ void handle_force_field(scene_t *scene, tank_t *tank, double dt) {
                     if (curr_time > tank_get_curr_range(tank)) {
                         body_remove(force_field);
                     } else {
-                        body_set_centroid(force_field, body_get_centroid(tank_get_body(tank)));
+                        body_set_centroid(force_field,
+                                        body_get_centroid(tank_get_body(tank)));
                     }
                 }
             }
@@ -492,7 +503,8 @@ void handle_force_field(scene_t *scene, tank_t *tank, double dt) {
         body_set_has_force_field(tank_get_body(tank), false);
         for (size_t i=0; i < scene_bodies(scene); i++) {
             if (!body_is_powerup(scene_get_body(scene, i))) {
-                if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_FORCE_FIELD) {
+                if (*(body_types_t *)body_get_info(scene_get_body(scene, i))
+                    == TANK_FORCE_FIELD) {
                     body_remove(scene_get_body(scene, i));
                 }
             }

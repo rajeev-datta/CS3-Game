@@ -85,8 +85,10 @@ void screen_set_pause_button(scene_t *scene) {
     double width = PAUSE_SCALE * PAUSE_HEIGHT;
     vector_t pause_center = {BOTTOM_LEFT_COORD.x + width/2.0 + 3 * BUFFER,
                              TOP_RIGHT_COORD.y - PAUSE_HEIGHT/2.0 - 3 * BUFFER};
-    screen_set_rect(scene, pause_center, width, PAUSE_HEIGHT, PAUSE_BUTTON, color_get_red());
-    screen_set_rect(scene, pause_center, width/3.0, PAUSE_HEIGHT, PAUSE_BUTTON_WHITE, color_get_white());
+    screen_set_rect(scene, pause_center, width, PAUSE_HEIGHT, PAUSE_BUTTON,
+                    color_get_black());
+    screen_set_rect(scene, pause_center, width/3.0, PAUSE_HEIGHT, PAUSE_BUTTON_WHITE,
+                    color_get_white());
 }
 
 void screen_set_rect(scene_t *scene, vector_t center, int width, int height,

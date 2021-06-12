@@ -76,23 +76,23 @@ void level_1(vector_t top_right, double wall_length, double wall_height, scene_t
     *wall_info = WALL;
 
     list_t *center_wall = animate_rectangle((vector_t) {top_right.x/2, top_right.y/2}, wall_length, wall_height*2);
-    body_t *center_wall_body = body_init_with_info(center_wall, INFINITY, color_get_red(), wall_info, free);
+    body_t *center_wall_body = body_init_with_info(center_wall, INFINITY, color_get_lime(), wall_info, free);
     scene_add_body(scene, center_wall_body);
 
     list_t *left_top_wall = animate_rectangle((vector_t) {top_right.x/4, top_right.y - (wall_height/2)}, wall_length, wall_height);
-    body_t *left_top_wall_body = body_init_with_info(left_top_wall, INFINITY, color_get_red(), wall_info, free);
+    body_t *left_top_wall_body = body_init_with_info(left_top_wall, INFINITY, color_get_lime(), wall_info, free);
     scene_add_body(scene, left_top_wall_body);
 
     list_t *left_bottom_wall = animate_rectangle((vector_t) {top_right.x/4, wall_height/2}, wall_length, wall_height);
-    body_t *left_bottom_wall_body = body_init_with_info(left_bottom_wall, INFINITY, color_get_red(), wall_info, free);
+    body_t *left_bottom_wall_body = body_init_with_info(left_bottom_wall, INFINITY, color_get_lime(), wall_info, free);
     scene_add_body(scene, left_bottom_wall_body);
 
     list_t *right_top_wall = animate_rectangle((vector_t) {(top_right.x*3)/4, top_right.y - (wall_height/2)}, wall_length, wall_height);
-    body_t *right_top_wall_body = body_init_with_info(right_top_wall, INFINITY, color_get_red(), wall_info, free);
+    body_t *right_top_wall_body = body_init_with_info(right_top_wall, INFINITY, color_get_lime(), wall_info, free);
     scene_add_body(scene, right_top_wall_body);
 
     list_t *right_bottom_wall = animate_rectangle((vector_t) {(top_right.x*3)/4, wall_height/2}, wall_length, wall_height);
-    body_t *right_bottom_wall_body = body_init_with_info(right_bottom_wall, INFINITY, color_get_red(), wall_info, free);
+    body_t *right_bottom_wall_body = body_init_with_info(right_bottom_wall, INFINITY, color_get_lime(), wall_info, free);
     scene_add_body(scene, right_bottom_wall_body);
 
     put_forces(scene);
@@ -115,35 +115,35 @@ void level_2(vector_t top_right, double wall_length, double wall_height, scene_t
     set_boundaries(top_right, scene);
 
     list_t *center_top_wall = animate_rectangle((vector_t) {top_right.x/2, (top_right.y*3.5)/10}, wall_height, wall_length);
-    body_t *center_top_wall_body = body_init_with_info(center_top_wall, INFINITY, color_get_red(), wall_info, free);
+    body_t *center_top_wall_body = body_init_with_info(center_top_wall, INFINITY, color_get_teal(), wall_info, free);
     scene_add_body(scene, center_top_wall_body);
 
     list_t *center_bottom_wall = animate_rectangle((vector_t) {top_right.x/2, (top_right.y*6.5)/10}, wall_height, wall_length);
-    body_t *center_bottom_wall_body = body_init_with_info(center_bottom_wall, INFINITY, color_get_red(), wall_info, free);
+    body_t *center_bottom_wall_body = body_init_with_info(center_bottom_wall, INFINITY, color_get_teal(), wall_info, free);
     scene_add_body(scene, center_bottom_wall_body);
 
     list_t *left_top_wall = animate_rectangle((vector_t) {(top_right.x*3)/10, (top_right.y*4)/5}, wall_height, wall_length);
-    body_t *left_top_wall_body = body_init_with_info(left_top_wall, INFINITY, color_get_red(), wall_info, free);
+    body_t *left_top_wall_body = body_init_with_info(left_top_wall, INFINITY, color_get_teal(), wall_info, free);
     scene_add_body(scene, left_top_wall_body);
 
     list_t *left_center_wall = animate_rectangle((vector_t) {(top_right.x*3)/10, (top_right.y)/2}, wall_length, wall_height);
-    body_t *left_center_wall_body = body_init_with_info(left_center_wall, INFINITY, color_get_red(), wall_info, free);
+    body_t *left_center_wall_body = body_init_with_info(left_center_wall, INFINITY, color_get_teal(), wall_info, free);
     scene_add_body(scene, left_center_wall_body);
 
     list_t *left_bottom_wall = animate_rectangle((vector_t) {(top_right.x*3)/10, (top_right.y)/5}, wall_height, wall_length);
-    body_t *left_bottom_wall_body = body_init_with_info(left_bottom_wall, INFINITY, color_get_red(), wall_info, free);
+    body_t *left_bottom_wall_body = body_init_with_info(left_bottom_wall, INFINITY, color_get_teal(), wall_info, free);
     scene_add_body(scene, left_bottom_wall_body);
 
     list_t *right_top_wall = animate_rectangle((vector_t) {(top_right.x*7)/10, (top_right.y*4)/5}, wall_height, wall_length);
-    body_t *right_top_wall_body = body_init_with_info(right_top_wall, INFINITY, color_get_red(), wall_info, free);
+    body_t *right_top_wall_body = body_init_with_info(right_top_wall, INFINITY, color_get_teal(), wall_info, free);
     scene_add_body(scene, right_top_wall_body);
 
     list_t *right_center_wall = animate_rectangle((vector_t) {(top_right.x*7)/10, (top_right.y)/2}, wall_length, wall_height);
-    body_t *right_center_wall_body = body_init_with_info(right_center_wall, INFINITY, color_get_red(), wall_info, free);
+    body_t *right_center_wall_body = body_init_with_info(right_center_wall, INFINITY, color_get_teal(), wall_info, free);
     scene_add_body(scene, right_center_wall_body);
 
     list_t *right_bottom_wall = animate_rectangle((vector_t) {(top_right.x*7)/10, (top_right.y)/5}, wall_height, wall_length);
-    body_t *right_bottom_wall_body = body_init_with_info(right_bottom_wall, INFINITY, color_get_red(), wall_info, free);
+    body_t *right_bottom_wall_body = body_init_with_info(right_bottom_wall, INFINITY, color_get_teal(), wall_info, free);
     scene_add_body(scene, right_bottom_wall_body);
 
     put_forces(scene);
@@ -170,47 +170,47 @@ void level_3(vector_t top_right, double wall_length, double wall_height, scene_t
     set_boundaries(top_right, scene);   
 
     list_t *left_center_top_wall = animate_rectangle((vector_t) {(top_right.x*7)/20, (top_right.y*3)/4}, wall_length, wall_height*2);
-    body_t *left_center_top_wall_body = body_init_with_info(left_center_top_wall, INFINITY, color_get_red(), wall_info, free);
+    body_t *left_center_top_wall_body = body_init_with_info(left_center_top_wall, INFINITY, color_get_purple(), wall_info, free);
     scene_add_body(scene, left_center_top_wall_body);
 
     list_t *left_center_bottom_wall = animate_rectangle((vector_t) {(top_right.x*7)/20, (top_right.y)/4}, wall_length, wall_height);
-    body_t *left_center_bottom_wall_body = body_init_with_info(left_center_bottom_wall, INFINITY, color_get_red(), wall_info, free);
+    body_t *left_center_bottom_wall_body = body_init_with_info(left_center_bottom_wall, INFINITY, color_get_purple(), wall_info, free);
     scene_add_body(scene, left_center_bottom_wall_body);
 
     list_t *right_center_top_wall = animate_rectangle((vector_t) {(top_right.x*13)/20, (top_right.y*3)/4}, wall_length, wall_height);
-    body_t *right_center_top_wall_body = body_init_with_info(right_center_top_wall, INFINITY, color_get_red(), wall_info, free);
+    body_t *right_center_top_wall_body = body_init_with_info(right_center_top_wall, INFINITY, color_get_purple(), wall_info, free);
     scene_add_body(scene, right_center_top_wall_body);
 
     list_t *right_center_bottom_wall = animate_rectangle((vector_t) {(top_right.x*13)/20, (top_right.y)/4}, wall_length, wall_height*2);
-    body_t *right_center_bottom_wall_body = body_init_with_info(right_center_bottom_wall, INFINITY, color_get_red(), wall_info, free);
+    body_t *right_center_bottom_wall_body = body_init_with_info(right_center_bottom_wall, INFINITY, color_get_purple(), wall_info, free);
     scene_add_body(scene, right_center_bottom_wall_body);
 
     list_t *center_wall = animate_rectangle((vector_t) {(top_right.x)/2, (top_right.y)/2}, wall_length, wall_height*3.5);
-    body_t *center_wall_body = body_init_with_info(center_wall, INFINITY, color_get_red(), wall_info, free);
+    body_t *center_wall_body = body_init_with_info(center_wall, INFINITY, color_get_purple(), wall_info, free);
     scene_add_body(scene, center_wall_body);
 
     list_t *left_top_wall = animate_rectangle((vector_t) {(top_right.x)*3/20, (top_right.y*9)/10}, wall_length, wall_height);
-    body_t *left_top_wall_body = body_init_with_info(left_top_wall, INFINITY, color_get_red(), wall_info, free);
+    body_t *left_top_wall_body = body_init_with_info(left_top_wall, INFINITY, color_get_purple(), wall_info, free);
     scene_add_body(scene, left_top_wall_body);
 
     list_t *left_center_wall = animate_rectangle((vector_t) {(top_right.x*3)/20, (top_right.y)/2}, wall_length, wall_height);
-    body_t *left_center_wall_body = body_init_with_info(left_center_wall, INFINITY, color_get_red(), wall_info, free);
+    body_t *left_center_wall_body = body_init_with_info(left_center_wall, INFINITY, color_get_purple(), wall_info, free);
     scene_add_body(scene, left_center_wall_body);
 
     list_t *left_bottom_wall = animate_rectangle((vector_t) {(top_right.x*3)/20, (top_right.y)/10}, wall_length, wall_height);
-    body_t *left_bottom_wall_body = body_init_with_info(left_bottom_wall, INFINITY, color_get_red(), wall_info, free);
+    body_t *left_bottom_wall_body = body_init_with_info(left_bottom_wall, INFINITY, color_get_purple(), wall_info, free);
     scene_add_body(scene, left_bottom_wall_body);
 
     list_t *right_top_wall = animate_rectangle((vector_t) {(top_right.x*17)/20, (top_right.y*9)/10}, wall_length, wall_height);
-    body_t *right_top_wall_body = body_init_with_info(right_top_wall, INFINITY, color_get_red(), wall_info, free);
+    body_t *right_top_wall_body = body_init_with_info(right_top_wall, INFINITY, color_get_purple(), wall_info, free);
     scene_add_body(scene, right_top_wall_body);
 
     list_t *right_center_wall = animate_rectangle((vector_t) {(top_right.x*17)/20, (top_right.y)/2}, wall_length, wall_height);
-    body_t *right_center_wall_body = body_init_with_info(right_center_wall, INFINITY, color_get_red(), wall_info, free);
+    body_t *right_center_wall_body = body_init_with_info(right_center_wall, INFINITY, color_get_purple(), wall_info, free);
     scene_add_body(scene, right_center_wall_body);
 
     list_t *right_bottom_wall = animate_rectangle((vector_t) {(top_right.x*17)/20, (top_right.y)/10}, wall_length, wall_height);
-    body_t *right_bottom_wall_body = body_init_with_info(right_bottom_wall, INFINITY, color_get_red(), wall_info, free);
+    body_t *right_bottom_wall_body = body_init_with_info(right_bottom_wall, INFINITY, color_get_purple(), wall_info, free);
     scene_add_body(scene, right_bottom_wall_body);
 }
 

@@ -26,6 +26,12 @@ rgb_color_t color_get_blue();
 
 rgb_color_t color_get_white();
 
+rgb_color_t color_get_lime();
+
+rgb_color_t color_get_teal();
+
+rgb_color_t color_get_pink();
+
 rgb_color_t color_random();
 
 #endif // #ifndef __COLOR_H__

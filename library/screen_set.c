@@ -20,6 +20,9 @@ static const vector_t TANK2_INIT_POS = {950, 250};
 static const vector_t TANK2_OFF_SCREEN = {1200, 700};
 static const int INIT_LIVES = 3;
 static const int MIN_LIVES_LIMIT = 0;
+static const vector_t ENEMY_VELOCITY = {0, 150};
+static const int TANK1_INIT_ROTATION = 0;
+static const int TANK2_INIT_ROTATION = M_PI;
 
 double get_button_length() {
     return BUTTON_LENGTH;
@@ -101,16 +104,16 @@ void screen_set_rect(scene_t *scene, vector_t center, int width, int height,
     scene_add_body(scene, rect_body);
 }
 
-void screen_set_tanks(scene_t *scene, bool *multi, tank_t *tank1, tank_t* tank2) {
+void screen_set_tanks(scene_t *scene, bool *multi, tank_t *tank1, tank_t *tank2) {
     body_set_centroid(scene_get_body(scene, TANK1), TANK1_INIT_POS);
-    body_set_rotation(scene_get_body(scene, TANK1), 0);
+    body_set_rotation(scene_get_body(scene, TANK1), TANK1_INIT_ROTATION);
     body_set_lives(scene_get_body(scene, TANK1), INIT_LIVES);
     tank_set_shooting_handler(tank1, NULL);
     tank_set_shooting_handler(tank2, NULL);
 
     if (*multi) {
         body_set_centroid(scene_get_body(scene, TANK2), TANK2_INIT_POS);
-        body_set_rotation(scene_get_body(scene, TANK2), M_PI);
+        body_set_rotation(scene_get_body(scene, TANK2), TANK2_INIT_ROTATION);
         body_set_lives(scene_get_body(scene, TANK2), INIT_LIVES);
     } else {
         body_set_centroid(scene_get_body(scene, TANK2), TANK2_OFF_SCREEN);
@@ -120,29 +123,33 @@ void screen_set_tanks(scene_t *scene, bool *multi, tank_t *tank1, tank_t* tank2)
 void screen_set_pause_screen(scene_t *scene) {
     vector_t resume_center = {get_top_right().x / 2.0,
                               get_top_right().y - 1.5 * get_button_height()};
-    screen_set_rect(scene, resume_center, get_button_length(), get_button_height(), RESUME_BUT,
-                      color_get_maroon());
+    screen_set_rect(scene, resume_center, get_button_length(), get_button_height(),
+                    RESUME_BUT, color_get_maroon());
     vector_t restart_center = {resume_center.x,
                               resume_center.y - 1.5 * get_button_height()};
-    screen_set_rect(scene, restart_center, get_button_length(), get_button_height(), RESTART_BUT,
-                      color_get_maroon());
+    screen_set_rect(scene, restart_center, get_button_length(), get_button_height(),
+                    RESTART_BUT, color_get_maroon());
 
     double level_width = get_top_right().x / 3.0 - get_level_buffer();
     double level_height = level_width/2;
-    vector_t medium_center = {get_top_right().x / 2.0, get_top_right().y/2 - 2.5 * get_button_height()};
+    vector_t medium_center = {get_top_right().x / 2.0,
+                              get_top_right().y / 2.0 - 2.5 * get_button_height()};
     screen_set_rect(scene, medium_center, level_width, level_height, MEDIUM_BUT,
                       color_get_maroon());
-    vector_t easy_center = {medium_center.x - get_level_buffer() - level_width, medium_center.y};
+    vector_t easy_center = {medium_center.x - get_level_buffer() - level_width,
+                            medium_center.y};
     screen_set_rect(scene, easy_center, level_width, level_height, EASY_BUT,
                       color_get_maroon());
-    vector_t hard_center = {medium_center.x + get_level_buffer() + level_width, medium_center.y};
+    vector_t hard_center = {medium_center.x + get_level_buffer() + level_width,
+                            medium_center.y};
     screen_set_rect(scene, hard_center, level_width, level_height, HARD_BUT,
                       color_get_maroon());
 
     vector_t player_selection_center = {get_top_right().x / 2.0,
                                     restart_center.y - 1.5 * get_button_height()};
     screen_set_rect(scene, player_selection_center, get_choose_player_box_width(),
-                      get_choose_player_box_height(), CHOOSE_PLAYER_BOX, color_get_maroon());
+                      get_choose_player_box_height(), CHOOSE_PLAYER_BOX,
+                      color_get_maroon());
 }
 
 tank_t *screen_set_new_tank(scene_t *scene, body_types_t info, vector_t center) {
@@ -160,7 +167,7 @@ tank_t *screen_set_new_tank(scene_t *scene, body_types_t info, vector_t center) 
 void screen_set_new_enemy(scene_t *scene, vector_t *center) {
     body_types_t *enemy_tank_info = malloc(sizeof(body_types_t *));
     *enemy_tank_info = ENEMY_TANK;
-    vector_t speed = (vector_t) {0, 150};
+    vector_t speed = ENEMY_VELOCITY;
     list_t *enemy_tank_points = animate_tank(center);
     tank_t *enemy_tank = enemy_tank_init(enemy_tank_points, speed, enemy_tank_info);
     scene_add_body(scene, tank_get_body(enemy_tank));

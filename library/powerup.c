@@ -49,6 +49,11 @@ static const double FORCE_FIELD_INNER_RADIUS = 35;
 static const double FORCE_FIELD_OUTER_RADIUS = 40;
 static const double FORCE_FIELD_MASS = 50;
 static const int MAX_CIRC_PTS = 128;
+static const rgb_color_t FRAG_BOMB_POW_COLOR = {0.0, 0.5, 0.0};
+static const rgb_color_t LAND_MINE_POW_COLOR = {0.0, 0.0, 0.5};
+static const rgb_color_t FORCE_FIELD_POW_COLOR = {0.3, 0.0, 0.4};
+static const rgb_color_t REMOTE_MISSILE_POW_COLOR = {165.0/255, 104.0/255, 42.0/255};
+static const rgb_color_t INC_LIVES_POW_COLOR = {10.0/255, 78.0/255, 68.0/255};
 
 typedef struct tank_powerup_aux {
     tank_t *tank;
@@ -343,23 +348,23 @@ void make_tank_power_up(scene_t *scene, int type, tank_t *tank, tank_t *tank_2) 
     powerups_t powerup_type;
     if (type == 0) {
         powerup_type = MACHINE_GUN;
-        color = (rgb_color_t) {0.0, 0.0, 0.0};
+        color = color_get_black();
     } else if (type == 1) {
         powerup_type = FRAG_BOMB;
-        color = (rgb_color_t) {0.0, 0.5, 0.0};
+        color = FRAG_BOMB_POW_COLOR;
     } else if (type == 2) {
         powerup_type = LAND_MINE;
-        color = (rgb_color_t) {0.0, 0.0, 0.5};
+        color = LAND_MINE_POW_COLOR;
     } else if (type == 3) {
         powerup_type = FORCE_FIELD;
-        color = (rgb_color_t) {0.3, 0.0, 0.4};
+        color = FORCE_FIELD_POW_COLOR;
     } else if (type == 4) {
         powerup_type = REMOTE_MISSILE;
-        color = (rgb_color_t) {165.0/255, 104.0/255, 42.0/255};
+        color = REMOTE_MISSILE_POW_COLOR;
     }
     else {
         powerup_type = INC_LIVES;
-        color = (rgb_color_t) {10.0/255, 78.0/255, 68.0/255};
+        color = INC_LIVES_POW_COLOR;
     }
     vector_t power_up_center = {rand() % (int)get_top_right().x,
                                 rand() % (int)get_top_right().y};

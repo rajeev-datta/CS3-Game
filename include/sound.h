@@ -4,7 +4,7 @@
 #include "sdl_wrapper.h"
 
 /**
- * Loads all necessary libraries and files before playing sounds
+ * Loads all necessary libraries/functionality before playing sounds
  */
 void load_sound();
 

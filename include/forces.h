@@ -97,9 +97,11 @@ void create_collision(
  */
 void create_destructive_collision(scene_t *scene, body_t *body1, body_t *body2);
 
-void create_partial_destructive_collision(scene_t *scene, body_t *body1, body_t *body_being_removed);
+void create_partial_destructive_collision(scene_t *scene, body_t *body1,
+                                          body_t *body_being_removed);
 
-void create_powerup_collision(scene_t *scene, body_t *body1, body_t *body2, body_t *ball, char type);
+void create_powerup_collision(scene_t *scene, body_t *body1, body_t *body2,
+                              body_t *ball, char type);
 
 /**
  * Adds a force creator to a scene that applies impulses

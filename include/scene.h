@@ -51,7 +51,8 @@ void force_data_free(force_data_t *force_data);
 /**
  * Initializes a force_data pointer
  */
-force_data_t *force_data_init(force_creator_t force_funct, free_func_t free_funct, aux_t *aux_params);
+force_data_t *force_data_init(force_creator_t force_funct,
+                              free_func_t free_funct, aux_t *aux_params);
 
 /**
  * Adds a body to a force_data

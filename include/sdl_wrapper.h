@@ -124,8 +124,10 @@ void sdl_draw_polygon(list_t *points, rgb_color_t color);
 
 /**
  * Writes text to the screen
- * @param x an integer representing the x-coordinate of the upper-left corner of the text box
- * @param y an integer representing the y-coordinate of the upper-left corner of the text box
+ * @param x an integer representing the x-coordinate of the upper-left
+ *          corner of the text box
+ * @param y an integer representing the y-coordinate of the upper-left
+ *          corner of the text box
  * @param width an integer representing the width of the text box
  * @param height an integer representing the height of the text box
  * @param font the font

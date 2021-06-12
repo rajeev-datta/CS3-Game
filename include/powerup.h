@@ -92,7 +92,8 @@ void remote_missile_shoot(scene_t *scene, body_t *body);
  * @param powerup body of powerup
  * @param type the type of powerup being collided with
  */
-void create_tank_powerup_collision(scene_t *scene, tank_t *tank, body_t *powerup, powerups_t type);
+void create_tank_powerup_collision(scene_t *scene, tank_t *tank,
+                                   body_t *powerup, powerups_t type);
 
 /**
  * Method that handles creating powerups in the scene

@@ -29,11 +29,14 @@ void text_open_font() {
     }
 }
 
-void text_for_pause(scene_t *scene, bool *multi, bool *choosing_level, game_outcomes_t win, bool *game_started) {
+void text_for_pause(scene_t *scene, bool *multi, bool *choosing_level,
+                    game_outcomes_t win, bool *game_started) {
     list_t *resume_shape = body_get_shape(scene_get_body(scene, RESUME_BUT));
     assert(list_size(resume_shape) == get_num_rect_pts());
-    int x = ((vector_t *)list_get(resume_shape, 0))->x + get_button_length() * (1 - TEXT_SCALE)/2;
-    int y = ((vector_t *)list_get(resume_shape, 1))->y - get_button_height() * (1 - TEXT_SCALE)/2;
+    int x = ((vector_t *)list_get(resume_shape, BOTTOM_LEFT_CORNER))->x
+            + get_button_length() * (1 - TEXT_SCALE)/2;
+    int y = ((vector_t *)list_get(resume_shape, TOP_LEFT_CORNER))->y
+            - get_button_height() * (1 - TEXT_SCALE)/2;
     int width = get_button_length() * TEXT_SCALE;
     int height = get_button_height() * TEXT_SCALE;
     char *resume_text = "Resume";
@@ -41,7 +44,8 @@ void text_for_pause(scene_t *scene, bool *multi, bool *choosing_level, game_outc
 
     list_t *restart_shape = body_get_shape(scene_get_body(scene, RESTART_BUT));
     assert(list_size(restart_shape) == get_num_rect_pts());
-    y = ((vector_t *)list_get(restart_shape, 1))->y - get_button_height() * (1 - TEXT_SCALE)/2;
+    y = ((vector_t *)list_get(restart_shape, TOP_LEFT_CORNER))->y
+        - get_button_height() * (1 - TEXT_SCALE)/2;
     char *restart_text = "Restart";
     sdl_write(x, y, width, height, FONT, WHITE_TEXT, restart_text);
 
@@ -61,51 +65,59 @@ void text_for_pause(scene_t *scene, bool *multi, bool *choosing_level, game_outc
     sdl_write(hard_x,levels_y, HARD_TEXT_WIDTH, LEVEL_TEXT_HEIGHT, FONT,
               BLACK_TEXT, hard_text);
 
-    list_t *choose_players_shape = body_get_shape(scene_get_body(scene, CHOOSE_PLAYER_BOX));
-    assert(list_size(restart_shape) == 4);
-    double cp_x = ((vector_t *)list_get(choose_players_shape, 0))->x + get_buffer();
-    double cp_y = ((vector_t *)list_get(choose_players_shape, 1))->y;
+    list_t *choose_players_shape = body_get_shape(scene_get_body(scene,
+                                                                 CHOOSE_PLAYER_BOX));
+    assert(list_size(restart_shape) == get_num_rect_pts());
+    double cp_x = ((vector_t *)list_get(choose_players_shape, BOTTOM_LEFT_CORNER))->x
+                  + get_buffer();
+    double cp_y = ((vector_t *)list_get(choose_players_shape, TOP_LEFT_CORNER))->y;
     if (*multi) {
         char *cp_text = "Switch to Single Player";
-        sdl_write(cp_x, cp_y, get_choose_player_box_width() - 2 * get_buffer(), get_choose_player_box_height(),
-                  FONT, WHITE_TEXT, cp_text);
+        sdl_write(cp_x, cp_y, get_choose_player_box_width() - 2 * get_buffer(),
+                  get_choose_player_box_height(), FONT, WHITE_TEXT, cp_text);
     } else {
         char *cp_text = "Switch to Multiplayer";
-        sdl_write(cp_x, cp_y, get_choose_player_box_width() - 2 * get_buffer(), get_choose_player_box_height(),
-                  FONT, WHITE_TEXT, cp_text);
+        sdl_write(cp_x, cp_y, get_choose_player_box_width() - 2 * get_buffer(),
+                  get_choose_player_box_height(), FONT, WHITE_TEXT, cp_text);
     }
 
     if (*choosing_level) {
         char *text = "Choose Your Level:";
         sdl_write(get_top_right().x/2 - get_choose_level_width()/2,
                   get_top_right().y - get_choose_level_height()/2,
-                  get_choose_level_width(), get_choose_level_height(), FONT, MAROON_TEXT, text);
+                  get_choose_level_width(), get_choose_level_height(),
+                  FONT, MAROON_TEXT, text);
     } else {
         if (win == SINGLE_PLAYER_LOSS) {
             char *text = "You Lose!";
             sdl_write(get_top_right().x/2 - get_choose_level_width()/2,
                     get_top_right().y - get_choose_level_height()/2,
-                    get_choose_level_width(), get_choose_level_height(), FONT, MAROON_TEXT, text);
+                    get_choose_level_width(), get_choose_level_height(),
+                    FONT, MAROON_TEXT, text);
         } else if (win == PLAYER1_WIN) {
             char *text = "Red Player Wins!";
             sdl_write(get_top_right().x/2 - get_choose_level_width()/2,
                     get_top_right().y - get_choose_level_height()/2,
-                    get_choose_level_width(), get_choose_level_height(), FONT, MAROON_TEXT, text);
+                    get_choose_level_width(), get_choose_level_height(),
+                    FONT, MAROON_TEXT, text);
         } else if (win == PLAYER2_WIN) {
             char *text = "Blue Player Wins!";
             sdl_write(get_top_right().x/2 - get_choose_level_width()/2,
                     get_top_right().y - get_choose_level_height()/2,
-                    get_choose_level_width(), get_choose_level_height(), FONT, MAROON_TEXT, text);
+                    get_choose_level_width(), get_choose_level_height(),
+                    FONT, MAROON_TEXT, text);
         } else if (win == SINGLE_PLAYER_WIN) {
             char *text = "You Win!";
             sdl_write(get_top_right().x/2 - get_choose_level_width()/2,
                     get_top_right().y - get_choose_level_height()/2,
-                    get_choose_level_width(), get_choose_level_height(), FONT, MAROON_TEXT, text);
+                    get_choose_level_width(), get_choose_level_height(),
+                    FONT, MAROON_TEXT, text);
         } else if (*game_started) {
             char *text = "Start Game";
             sdl_write(get_top_right().x/2 - get_choose_level_width()/2,
                     get_top_right().y - get_choose_level_height()/2,
-                    get_choose_level_width(), get_choose_level_height(), FONT, MAROON_TEXT, text);
+                    get_choose_level_width(), get_choose_level_height(),
+                    FONT, MAROON_TEXT, text);
         }
     }
 

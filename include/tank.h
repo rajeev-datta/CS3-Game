@@ -114,6 +114,7 @@ double tank_get_timer(tank_t *tank);
 void enemy_tank_shoot(scene_t *scene, int *level, vector_t player);
 
 // The method that helps in the enemy tank shooting
-void enemy_tank_helper(scene_t *scene, body_t *enemy, double max_y, double min_y, vector_t player);
+void enemy_tank_helper(scene_t *scene, body_t *enemy, double max_y, double min_y,
+                       vector_t player);
 
 #endif // #ifndef __TANK_H__

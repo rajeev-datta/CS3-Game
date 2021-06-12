@@ -4,8 +4,10 @@
 #include "scene.h"
 #include "tank.h"
 
+// An aux that helps in powerups
 typedef struct tank_powerup_aux tank_powerup_aux_t;
 
+// The enum struct that specifies the info of the powerups
 typedef enum powerups{
     MACHINE_GUN,
     FRAG_BOMB,
@@ -90,7 +92,8 @@ void remote_missile_shoot(scene_t *scene, body_t *body);
  * @param powerup body of powerup
  * @param type the type of powerup being collided with
  */
-void create_tank_powerup_collision(scene_t *scene, tank_t *tank, body_t *powerup, powerups_t type);
+void create_tank_powerup_collision(scene_t *scene, tank_t *tank,
+                                   body_t *powerup, powerups_t type);
 
 /**
  * Method that handles creating powerups in the scene

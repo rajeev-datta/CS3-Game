@@ -66,11 +66,11 @@ void text_for_pause(scene_t *scene, bool *multi, bool *choosing_level, game_outc
     double cp_y = ((vector_t *)list_get(choose_players_shape, 1))->y;
     if (*multi) {
         char *cp_text = "Switch to Single Player";
-        sdl_write(cp_x, cp_y, get_choose_player_box_width() - 2* get_buffer(), get_choose_player_box_height(),
+        sdl_write(cp_x, cp_y, get_choose_player_box_width() - 2 * get_buffer(), get_choose_player_box_height(),
                   FONT, WHITE_TEXT, cp_text);
     } else {
         char *cp_text = "Switch to Multiplayer";
-        sdl_write(cp_x, cp_y, get_choose_player_box_width() - 2* get_buffer(), get_choose_player_box_height(),
+        sdl_write(cp_x, cp_y, get_choose_player_box_width() - 2 * get_buffer(), get_choose_player_box_height(),
                   FONT, WHITE_TEXT, cp_text);
     }
 

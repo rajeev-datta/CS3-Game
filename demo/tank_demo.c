@@ -7,7 +7,6 @@
 #include <assert.h>
 #include "animate.h"
 #include "polygon.h"
-#include "star.h"
 #include "color.h"
 #include "list.h"
 #include "tank.h"

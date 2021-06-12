@@ -21,8 +21,8 @@ static const vector_t TANK2_OFF_SCREEN = {1200, 700};
 static const int INIT_LIVES = 3;
 static const int MIN_LIVES_LIMIT = 0;
 static const vector_t ENEMY_VELOCITY = {0, 150};
-static const int TANK1_INIT_ROTATION = 0;
-static const int TANK2_INIT_ROTATION = M_PI;
+static const double TANK1_INIT_ROTATION = 0;
+static const double TANK2_INIT_ROTATION = M_PI;
 
 double get_button_length() {
     return BUTTON_LENGTH;

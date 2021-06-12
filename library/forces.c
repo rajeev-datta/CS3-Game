@@ -107,7 +107,10 @@ void drag_fxn(aux_t *aux) {
 }
 
 void destructive_fxn(body_t *body1, body_t *body2, vector_t axis, void *aux) {
-    // aux represents a bool determining whether this is a partial or complete destructive collision
+    /** 
+     * Aux represents a bool determining whether this is a partial or complete
+     * destructive collision
+     */
     if (*(bool *)aux) {
         if (body_is_tank(body2)) {
             body_set_lives(body2, body_get_lives(body2) - 1);
@@ -152,13 +155,14 @@ void powerup_fxn(body_t *body1, body_t *body2, vector_t axis, void *aux) {
         double length = ((vector_t *)list_get(points, 1))->x
                          - ((vector_t *)list_get(points, 2))->x;
         length *= PADDLE_GROW;
-        list_t *new_rect = animate_rectangle(body_get_centroid(body1), length, RECTANGLE_HEIGHT);
+        list_t *new_rect = animate_rectangle(body_get_centroid(body1), length,
+                                             RECTANGLE_HEIGHT);
         body_set_shape(body1, new_rect);
     } else {
         // Increase the size of the ball.
         list_t *points = body_get_shape(((powerup_aux_t *)aux)->ball);
         double diameter = vec_magnitude(vec_subtract(*(vector_t *)list_get(points, 0),
-                                        *(vector_t *)list_get(points, BALL_POINTS/2 - 1)));
+                                    *(vector_t *)list_get(points, BALL_POINTS/2 - 1)));
         list_t *new_ball = animate_circle(body_get_centroid(((powerup_aux_t *)aux)->ball),
                                           0.5 * diameter * BALL_GROW, BALL_POINTS);
         body_set_shape(((powerup_aux_t *)aux)->ball, new_ball);
@@ -171,7 +175,8 @@ void physics_fxn(body_t *body1, body_t *body2, vector_t axis, void *aux) {
 
     if (body_get_mass(body1) == INFINITY && body_get_mass(body2) != INFINITY) {
         body_add_impulse(body1, VEC_ZERO);
-        vector_t impulse_body1 = vec_multiply(body_get_mass(body2) * ((1.0 + *(double *)aux)),
+        vector_t impulse_body1 = vec_multiply(body_get_mass(body2)
+                                              * ((1.0 + *(double *)aux)),
                                               vec_subtract(u_b, u_a));
         body_add_impulse(body2, impulse_body1);
 
@@ -179,14 +184,17 @@ void physics_fxn(body_t *body1, body_t *body2, vector_t axis, void *aux) {
     
     else if (body_get_mass(body2) == INFINITY && body_get_mass(body1) != INFINITY) {
         body_add_impulse(body2, VEC_ZERO);
-        vector_t impulse_body1 = vec_multiply(body_get_mass(body1) * ((1.0 + *(double *)aux)),
+        vector_t impulse_body1 = vec_multiply(body_get_mass(body1)
+                                              * ((1.0 + *(double *)aux)),
                                               vec_subtract(u_b, u_a));
         body_add_impulse(body1, impulse_body1);
     }
 
     else {
-        vector_t impulse_body1 = vec_multiply(((body_get_mass(body1) * body_get_mass(body2) * (1.0 + *(double *)aux)) /
-                                        (body_get_mass(body1) + body_get_mass(body2))), vec_subtract(u_b, u_a));
+        vector_t impulse_body1 = vec_multiply(((body_get_mass(body1)
+                                 * body_get_mass(body2) * (1.0 + *(double *)aux))
+                                 / (body_get_mass(body1) + body_get_mass(body2))),
+                                 vec_subtract(u_b, u_a));
         vector_t impulse_body2 = vec_negate(impulse_body1);
         body_add_impulse(body1, impulse_body1);
         body_add_impulse(body2, impulse_body2);
@@ -223,7 +231,8 @@ void detect_collision(collision_aux_t *col_aux) {
     list_t *bodies = col_aux->bodies;
     body_t *body1 = list_get(bodies, 0);
     body_t *body2 = list_get(bodies, 1);
-    collision_info_t collision = find_collision(body_get_real_shape(body1), body_get_real_shape(body2));
+    collision_info_t collision = find_collision(body_get_real_shape(body1),
+                                                body_get_real_shape(body2));
     if (body1 != NULL && body2 != NULL && collision.collided) {
         if (!col_aux->just_collided) {
             col_aux->handler(body1, body2, collision.axis, col_aux->aux);
@@ -246,7 +255,8 @@ void create_collision(
     list_t *bodies = list_init(2, NULL);
     list_add(bodies, body1);
     list_add(bodies, body2);
-    collision_aux_t *aux_obj = collision_aux_init(bodies, (collision_handler_t) handler, aux);
+    collision_aux_t *aux_obj = collision_aux_init(bodies,
+                                                  (collision_handler_t) handler, aux);
     scene_add_bodies_force_creator(scene, (force_creator_t)detect_collision, aux_obj,
                                    bodies, (free_func_t)freer);
 }
@@ -258,14 +268,17 @@ void create_destructive_collision(scene_t *scene, body_t *body1, body_t *body2) 
                      partial_destruction, (free_func_t) free);
 }
 
-void create_partial_destructive_collision(scene_t *scene, body_t *body1, body_t *body_being_removed) {
+void create_partial_destructive_collision(scene_t *scene, body_t *body1,
+                                          body_t *body_being_removed) {
     bool *partial_destruction = malloc(sizeof(bool));
     *partial_destruction = true;
-    create_collision(scene, body1, body_being_removed, (collision_handler_t) destructive_fxn,
+    create_collision(scene, body1, body_being_removed,
+                    (collision_handler_t) destructive_fxn,
                      partial_destruction, (free_func_t) free);
 }
 
-void create_powerup_collision(scene_t *scene, body_t *body1, body_t *body2, body_t *ball, char type) {
+void create_powerup_collision(scene_t *scene, body_t *body1, body_t *body2,
+                              body_t *ball, char type) {
     powerup_aux_t *pow_aux = powerup_aux_init(ball, type);
     create_collision(scene, body1, body2, (collision_handler_t) powerup_fxn,
                      pow_aux, (free_func_t) free);

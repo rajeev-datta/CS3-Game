@@ -2,7 +2,6 @@
 #include <math.h>
 #include "polygon.h"
 #include <stdlib.h>
-#include "star.h"
 #include "list.h"
 #include "body.h"
 #include <assert.h>
@@ -14,7 +13,6 @@
 static const double ELLIPSE_SCALE = 1.0/3;
 static const char INVADER_INFORMATION = 'i';
 static const char SPACESHIP_INFORMATION = 's';
-static const char WALL_INFORMATION = 'w';
 static const char PADDLE_INFORMATION = 'p';
 static const int RECT_PTS = 4;
 static const int TANK_PTS = 8;
@@ -159,49 +157,7 @@ list_t *animate_rectangle(vector_t center, double length, double height) {
 int get_num_rect_pts() {
     return RECT_PTS;
 }
-
-list_t *make_star(vector_t center, double r1, double r2, int points) {
-    list_t *star = list_init(points, free);
-    double angle = M_PI / points;
-
-    for (int i = 1; i <= points; i++) {
-        vector_t *v = malloc(sizeof(*v));
-        if (i % 2) {
-            *v = (vector_t) {center.x + r2*cos(angle), center.y + r2*sin(angle)};
-        }
-        else {
-            *v = (vector_t) {center.x + r1*cos(angle), center.y + r1*sin(angle)};
-        }
-        list_add(star, v);
-        angle += M_PI / points * 2;
-    }
-
-    return star;
-}
-
-void hit_boundary_check(star_t *star, vector_t min, vector_t max, double dt) {
-    list_t *points = star_get_vertices(star);
-    for (size_t i = 0; i < list_size(points); i++) {
-        vector_t *temp = list_get(star_get_vertices(star), i);
-
-        //cases for boundaries and velocities (each case)
-        if ((temp->x > max.x && star_get_velocity(star)->x > VELOCITY_BOUNDARY) ||
-            (temp->x < min.x && star_get_velocity(star)->x < VELOCITY_BOUNDARY)) {
-            star_get_velocity(star)->x *= -1;
-            break;
-        }
-    }
-    for (size_t i = 0; i < list_size(points); i++) {
-        vector_t *temp = list_get(star_get_vertices(star), i);
-
-        //cases for boundaries and velocities (each case)
-        if ((temp->y > max.y && star_get_velocity(star)->y > VELOCITY_BOUNDARY) ||
-            (temp->y < min.y && star_get_velocity(star)->y < VELOCITY_BOUNDARY)) {
-            star_get_velocity(star)->y *= -1;
-            break;
-        }
-    }
-}
+ 
 
 void body_hit_boundary_check(body_t *body, vector_t min, vector_t max, double dt) {
     list_t *points = body_get_real_shape(body);
@@ -224,19 +180,6 @@ void body_hit_boundary_check(body_t *body, vector_t min, vector_t max, double dt
             (temp->x < min.x && curr_vel.x < VELOCITY_BOUNDARY)) {
             vector_t new_vel = {curr_vel.x * -1, curr_vel.y};
             body_set_velocity(body, new_vel);
-            break;
-        }
-    }
-}
-
-void bounce(star_t *star, double g, vector_t min, vector_t max, double dt, double radius,
-            double elasticity) {
-    star_get_velocity(star)->y -= g * dt;
-    list_t *points = star_get_vertices(star);
-    for (size_t i = 0; i < list_size(points); i++) {
-        vector_t *temp = list_get(points, i);
-        if (temp->y < min.y && star_get_velocity(star)->y < VELOCITY_BOUNDARY) {
-            star_get_velocity(star)->y *= (-1) * elasticity;
             break;
         }
     }
@@ -349,8 +292,9 @@ void wall_boundary(scene_t *scene, body_t *tank_body) {
             body_t *curr_body = scene_get_body(scene, i);
             if (!body_is_powerup(curr_body) && *(body_types_t* )body_get_info(curr_body)
                                                == WALL) {
-                collision_info_t collision = find_collision(body_get_real_shape(tank_body),
-                                             body_get_real_shape(curr_body));
+                collision_info_t collision =
+                    find_collision(body_get_real_shape(tank_body),
+                                   body_get_real_shape(curr_body));
                 if (collision.collided) {
                     if (fabs(collision.axis.x) != 0.0) {
                         if (body_get_centroid(tank_body).x

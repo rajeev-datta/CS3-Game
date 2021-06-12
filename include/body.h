@@ -108,6 +108,12 @@ rgb_color_t body_get_color(body_t *body);
  */
 void *body_get_info(body_t *body);
 
+/**
+ * Gets the orientation associated with a body.
+ *
+ * @param body a pointer to a body returned from body_init()
+ * @return the orientation passed to body_init()
+ */
 double body_get_orientation(body_t *body);
 
 /**
@@ -140,6 +146,12 @@ void body_set_velocity(body_t *body, vector_t v);
  */
 void body_set_rotation(body_t *body, double angle);
 
+/**
+ * Changes the information associated with the body
+ *
+ * @param body a pointer to a body returned from body_init()
+ * @param new_info a pointer to the new information
+ */
 void body_set_info(body_t *body, void *new_info);
 
 /**
@@ -164,8 +176,20 @@ void body_add_force(body_t *body, vector_t force);
  */
 void body_add_impulse(body_t *body, vector_t impulse);
 
+/**
+ * Changes the impulse for a body
+ *
+ * @param body a pointer to a body returned from body_init()
+ * @param new_impulse the new impulse vector to apply
+ */
 void body_set_impulse(body_t *body, vector_t new_impulse);
 
+/**
+ * Changes the force associated with the body
+ *
+ * @param body a pointer to a body returned from body_init()
+ * @param new_force the new force vector to apply
+ */
 void body_set_force(body_t *body, vector_t new_force);
 
 /**
@@ -200,44 +224,153 @@ void body_remove(body_t *body);
  */
 bool body_is_removed(body_t *body);
 
+/**
+ * Returns the time associated with the body
+ *
+ * @param body the body to check
+ * @return the double value for the body
+ */
 double body_get_time(body_t *body);
 
+/**
+ * Changes the time associated with the body
+ *
+ * @param body the body to check
+ */
 void body_set_time(body_t *body, double time);
 
+/**
+ * Increases the time associated with the body
+ *
+ * @param body the body to check
+ */
 void body_increase_time(body_t *body, double time_increment);
 
+/**
+ * Changes the number of lives associated with the body
+ *
+ * @param body the body to check
+ */
 void body_set_lives(body_t *body, int lives);
 
+/**
+ * Returns the number of lives associated with the body
+ *
+ * @param body the body to check
+ * @return the int value for the number of lives
+ */
 int body_get_lives(body_t *body);
 
+/**
+ * Returns whether the body is a powerup body
+ *
+ * @param body the body to check
+ * @return if the body is a powerup
+ */
 bool body_is_powerup(body_t *body);
 
+/**
+ * Changes the number of lives associated with the body
+ *
+ * @param body the body to check
+ */
 void body_set_is_powerup(body_t *body, bool bool_powerup);
 
+/**
+ * Returns whether the body is a pause button body
+ *
+ * @param body the body to check
+ * @return if the body is a pause button
+ */
 bool body_is_pause_button(body_t *body);
 
+/**
+ * Changes the boolean that determines if the body is a pause button
+ *
+ * @param body the body to check
+ */
 void body_set_is_pause_button(body_t *body, bool bool_pause);
 
+/**
+ * Returns whether the body is a tank body
+ *
+ * @param body the body to check
+ * @return if the body is a tank
+ */
 bool body_is_tank(body_t *body);
 
+/**
+ * Changes the boolean that determines if the body is a tank
+ *
+ * @param body the body to check
+ */
 void body_set_is_tank(body_t *body, bool bool_pause);
 
+/**
+ * Changes the boolean that determines if the body is playing a sound
+ *
+ * @param body the body to check
+ */
 void body_set_play_sound(body_t *body, bool play_sound);
 
+/**
+ * Returns whether the body is playing a sound
+ *
+ * @param body the body to check
+ * @return if the body is playing a sound
+ */
 bool body_get_play_sound(body_t *body);
 
+/**
+ * Returns whether the body has a force field powerup
+ *
+ * @param body the body to check
+ * @return if the body has a force field
+ */
 bool body_has_force_field(body_t *body);
 
+/**
+ * Changes the boolean that determines if the body has a force field
+ *
+ * @param body the body to check
+ */
 void body_set_has_force_field(body_t *body, bool bool_force_field);
 
+/**
+ * Returns whether the body is an enemy tank
+ *
+ * @param body the body to check
+ * @return if the body is an enemy tank
+ */
 bool body_is_enemy_tank(body_t *body);
 
+/**
+ * Changes the boolean that determines if the body is an enemy tank
+ *
+ * @param body the body to check
+ */
 void body_set_is_enemy_tank(body_t *body, bool bool_enemy_tank);
 
+/**
+ * Changes the color associated with the body
+ *
+ * @param body the body to check
+ */
 void body_set_color(body_t *body, rgb_color_t color);
 
+/**
+ * Returns whether the body is an increase life powerup
+ *
+ * @param body the body to check
+ * @return if the body is an increase life powerup
+ */
 bool body_is_inc_lives_pow(body_t *body);
 
+/**
+ * Changes the boolean that determines if the body is an increase life powerup
+ *
+ * @param body the body to check
+ */
 void body_set_is_inc_lives_pow(body_t *body, bool bool_inc_lives);
 
 #endif // #ifndef __BODY_H__

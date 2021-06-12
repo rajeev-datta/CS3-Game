@@ -8,24 +8,40 @@
 #include "body.h"
 #include "tank.h"
 
-///Animates a tank
+/**
+ *  @brief Animates a tank
+ *
+ *  @param coord a vector_t representing the position of the tank
+ * 
+ *  @return a list_t representing the points of the tank
+ */
 list_t *animate_tank(vector_t *coord);
 
-// Animates an ellipse
+/**
+ *  @brief Makes a ellipse
+ *
+ *  @param center a vector_t representing the center of the ellipse
+ *  @param major a double representing the major axis
+ *  @param minor a double representing the minor axis
+ *  @param points an int representing the number of points making up the ellipse
+ * 
+ *  @return a list_t representing the points of the ellipse
+ */
 list_t *animate_ellipse(vector_t *center, double major, double minor, int points);
 
 /**
  *  @brief Makes a circle
  *
- *  @param center a vector_t representing the center of the star
+ *  @param center a vector_t representing the center of the circle
  *  @param radius a double representing the radius
  *  @param points an int representing the number of points making up the circle
  * 
- *  @return a vec_list_t representing the points of the circle
+ *  @return a list_t representing the points of the circle
  */
 list_t *animate_circle(vector_t center, double radius, int points);
 
-list_t *animate_ring(vector_t center, double inner_radius, double outer_radius, int points);
+list_t *animate_ring(vector_t center, double inner_radius, double outer_radius,
+                     int points);
 
 /**
  *  @brief Makes Pacman

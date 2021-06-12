@@ -40,7 +40,8 @@ void force_data_free(force_data_t *force_data) {
     free(force_data);
 }
 
-force_data_t *force_data_init(force_creator_t force_funct, free_func_t free_funct, aux_t *aux_params) {
+force_data_t *force_data_init(force_creator_t force_funct, free_func_t free_funct,
+                            aux_t *aux_params) {
     force_data_t *force_data = malloc(sizeof(force_data_t));
     force_data->aux_data = aux_params;
     force_data->force_fxn = force_funct;
@@ -174,13 +175,4 @@ void scene_body_detonate(scene_t *scene, body_t *body) {
         scene_add_body(scene, frag_body);
     }
     body_remove(body);
-}
-
-bool scene_check_for_info(scene_t *scene, body_types_t info) {
-    for (size_t i = 0; i < scene_bodies(scene); i++) {
-        if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == info) {
-            return true;
-        }
-    }
-    return false;
 }

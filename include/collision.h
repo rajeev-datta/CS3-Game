@@ -43,12 +43,16 @@ collision_info_t find_collision(list_t *shape1, list_t *shape2);
 // @deprecated Use find_collision() instead
 bool find_collision_old(list_t *shape1, list_t *shape2);
 
+// Finds the perpendicular edge of 2 vertices
 vector_t find_perp_edge(vector_t vertex1, vector_t vertex2);
 
+// Gives the projection of the shape onto the specified vector_t.
 vector_t find_projection(list_t *shape, vector_t proj_dest);
 
+// Determines if there is an overlap between two shapes.
 collision_overlap_t is_overlap(list_t *shape1, list_t *shape2);
 
+// Determines if the overlap is a pre-existing one.
 bool is_overlap_old(list_t *shape1, list_t *shape2);
 
 #endif // #ifndef __COLLISION_H__

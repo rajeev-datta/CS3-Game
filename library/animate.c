@@ -61,7 +61,7 @@ list_t *animate_tank(vector_t *coord) {
 list_t *animate_ellipse(vector_t *center, double major, double minor, int points) {
     list_t *ellipse = animate_circle(*center, major, points);
     double init_y = ((vector_t *)list_get(ellipse, FIRST_PT))->y;
-    for(int i = 0; i < points; i++) {
+    for (int i = 0; i < points; i++) {
         vector_t *point = list_get(ellipse, i);
         point->y = (point->y - init_y) * ELLIPSE_SCALE + init_y;
     }

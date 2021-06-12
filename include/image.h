@@ -10,7 +10,7 @@
 void image_load();
 
 /**
- * Shows pause screen
+ * Shows pause screen images
  */
 void image_pause_screen(scene_t *scene, int *unlocked_level);
 

@@ -190,7 +190,7 @@ double tank_get_timer(tank_t *tank) {
 
 void enemy_tank_shoot(scene_t *scene, int *level, vector_t player) {
     if (*level == get_first_level()) {
-        for(int i = 0; i < scene_bodies(scene); i++) {
+        for (int i = 0; i < scene_bodies(scene); i++) {
             if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == ENEMY_TANK
                 && !body_is_powerup(scene_get_body(scene, i))) {
                 enemy_tank_helper(scene, scene_get_body(scene, i), L1_ENEMY_MAX, 
@@ -199,7 +199,7 @@ void enemy_tank_shoot(scene_t *scene, int *level, vector_t player) {
         }
     }
     else if (*level == get_second_level()) {
-        for(int i = 0; i < scene_bodies(scene); i++) {
+        for (int i = 0; i < scene_bodies(scene); i++) {
             if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == ENEMY_TANK
                 && !body_is_powerup(scene_get_body(scene, i))) {
                 if (fabs(body_get_centroid(scene_get_body(scene, i)).x - L2_ENEMY1_POS)
@@ -218,7 +218,7 @@ void enemy_tank_shoot(scene_t *scene, int *level, vector_t player) {
         }
     }
     else if (*level == get_third_level()) {
-        for(int i = 0; i < scene_bodies(scene); i++) {
+        for (int i = 0; i < scene_bodies(scene); i++) {
             if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == ENEMY_TANK
                 && !body_is_powerup(scene_get_body(scene, i))) {
                 if (fabs(body_get_centroid(scene_get_body(scene, i)).x - L3_ENEMY1_POS)

@@ -19,8 +19,8 @@ static const int SECOND_LEVEL = 2;
 static const int THIRD_LEVEL = 3;
 
 void put_forces(scene_t *scene) {
-    for(size_t i = 0; i < scene_bodies(scene); i++) {
-        for(size_t j = 0; j < scene_bodies(scene); j++) {
+    for (size_t i = 0; i < scene_bodies(scene); i++) {
+        for (size_t j = 0; j < scene_bodies(scene); j++) {
             if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == BULLET) {
                 if (*(body_types_t *) body_get_info(scene_get_body(scene, j)) == TANK_1
                 || *(body_types_t *) body_get_info(scene_get_body(scene, j)) == TANK_2

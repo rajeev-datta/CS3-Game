@@ -28,7 +28,7 @@ void text_open_font() {
     }
 }
 
-void text_for_pause(scene_t *scene, bool *multi, bool *choosing_level, int win, bool *game_started) {
+void text_for_pause(scene_t *scene, bool *multi, bool *choosing_level, game_outcomes_t win, bool *game_started) {
     list_t *resume_shape = body_get_shape(scene_get_body(scene, RESUME_BUT));
     assert(list_size(resume_shape) == 4);
     int x = ((vector_t *)list_get(resume_shape, 0))->x + get_button_length() * (1 - TEXT_SCALE)/2;
@@ -80,22 +80,22 @@ void text_for_pause(scene_t *scene, bool *multi, bool *choosing_level, int win, 
                   get_top_right().y - get_choose_level_height()/2,
                   get_choose_level_width(), get_choose_level_height(), FONT, MAROON_TEXT, text);
     } else {
-        if (win == 0) {
+        if (win == SINGLE_PLAYER_LOSS) {
             char *text = "You Lose!";
             sdl_write(get_top_right().x/2 - get_choose_level_width()/2,
                     get_top_right().y - get_choose_level_height()/2,
                     get_choose_level_width(), get_choose_level_height(), FONT, MAROON_TEXT, text);
-        } else if (win == 1) {
+        } else if (win == PLAYER1_WIN) {
             char *text = "Red Player Wins!";
             sdl_write(get_top_right().x/2 - get_choose_level_width()/2,
                     get_top_right().y - get_choose_level_height()/2,
                     get_choose_level_width(), get_choose_level_height(), FONT, MAROON_TEXT, text);
-        } else if (win == 2) {
+        } else if (win == PLAYER2_WIN) {
             char *text = "Blue Player Wins!";
             sdl_write(get_top_right().x/2 - get_choose_level_width()/2,
                     get_top_right().y - get_choose_level_height()/2,
                     get_choose_level_width(), get_choose_level_height(), FONT, MAROON_TEXT, text);
-        } else if (win == 3) {
+        } else if (win == SINGLE_PLAYER_WIN) {
             char *text = "You Win!";
             sdl_write(get_top_right().x/2 - get_choose_level_width()/2,
                     get_top_right().y - get_choose_level_height()/2,

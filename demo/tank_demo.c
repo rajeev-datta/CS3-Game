@@ -33,6 +33,7 @@ static const int NUM_SCENES = 2;
 static const int CIRC_PTS = 16;
 static const int FIRST_REMOVABLE_INDEX = 4;
 static const double BULLET_ELASTICITY = 0.9;
+static const int START_TIME = 0;
 
 typedef enum scenes{
     PLAY,
@@ -50,7 +51,8 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                 list_clear(keys_pressed);
                 body_set_velocity(tank1_body, (vector_t) {0,0});
                 for (size_t i=0; i < scene_bodies(scene); i++) {
-                    if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE_1) {
+                    if (*(body_types_t *) body_get_info(scene_get_body(scene, i))
+                        == TANK_REMOTE_MISSILE_1) {
                         body_t *missile = scene_get_body(scene, i);
                         missile_exists = true;
                         list_clear(keys_pressed);
@@ -66,18 +68,26 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                             for (size_t i = 0; i < list_size(keys_pressed); i++) {
                                 char key_pressed = *(char *) list_get(keys_pressed, i);
                                 if (key_pressed == 's') {
-                                    speed.x = -INIT_VEL * cos(body_get_orientation(missile));
-                                    speed.y = -INIT_VEL * sin(body_get_orientation(missile));
+                                    speed.x = -INIT_VEL
+                                              * cos(body_get_orientation(missile));
+                                    speed.y = -INIT_VEL
+                                              * sin(body_get_orientation(missile));
                                 }
                                 if (key_pressed == 'w') {
-                                    speed.x = INIT_VEL * cos(body_get_orientation(missile));
-                                    speed.y = INIT_VEL * sin(body_get_orientation(missile));
+                                    speed.x = INIT_VEL
+                                              * cos(body_get_orientation(missile));
+                                    speed.y = INIT_VEL
+                                              * sin(body_get_orientation(missile));
                                 }
                                 if (key_pressed == 'd') {
-                                    body_set_rotation(missile, body_get_orientation(missile) + ANGLE_OFFSET / (2*i + 1));
+                                    body_set_rotation(missile, 
+                                        body_get_orientation(missile)
+                                        + ANGLE_OFFSET / (2*i + 1));
                                 }
                                 if (key_pressed == 'a') {
-                                    body_set_rotation(missile, body_get_orientation(missile) - ANGLE_OFFSET / (2*i + 1));
+                                    body_set_rotation(missile,
+                                        body_get_orientation(missile)
+                                        - ANGLE_OFFSET / (2*i + 1));
                                 }
                             }
                             body_set_velocity(missile, speed);
@@ -110,10 +120,12 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                             speed1.y = INIT_VEL * sin(body_get_orientation(tank1_body));
                         }
                         if (key_pressed == 'd') {
-                            body_set_rotation(tank1_body, body_get_orientation(tank1_body) + ANGLE_OFFSET / (2*i + 1));
+                            body_set_rotation(tank1_body, body_get_orientation(tank1_body)
+                                                         + ANGLE_OFFSET / (2*i + 1));
                         }
                         if (key_pressed == 'a') {
-                            body_set_rotation(tank1_body, body_get_orientation(tank1_body) - ANGLE_OFFSET / (2*i + 1));
+                            body_set_rotation(tank1_body, body_get_orientation(tank1_body)
+                                                          - ANGLE_OFFSET / (2*i + 1));
                         }
                         if (key_pressed == ' ') {
                             if (body_get_time(tank1_body) > tank_get_curr_reload(tank1)) {
@@ -134,14 +146,16 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                 body_t *missile1 = NULL;
                 body_set_velocity(tank1_body, (vector_t) {0,0});
                 for (size_t i=0; i < scene_bodies(scene); i++) {
-                        if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE_1) {
+                        if (*(body_types_t *) body_get_info(scene_get_body(scene, i))
+                            == TANK_REMOTE_MISSILE_1) {
                             missile1 = scene_get_body(scene, i);
                         }
                 }
                 if (missile1 == NULL) {
                     tank_shoot(scene, tank1);
                     for (size_t i=0; i < scene_bodies(scene); i++) {
-                        if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE_1) {
+                        if (*(body_types_t *) body_get_info(scene_get_body(scene, i))
+                            == TANK_REMOTE_MISSILE_1) {
                             missile1 = scene_get_body(scene, i);
                         }
                     }
@@ -168,10 +182,12 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                             speed1.y = INIT_VEL * sin(body_get_orientation(missile1));
                         }
                         if (key_pressed == 'd') {
-                            body_set_rotation(missile1, body_get_orientation(missile1) + ANGLE_OFFSET / (2*i + 1));
+                            body_set_rotation(missile1, body_get_orientation(missile1)
+                                              + ANGLE_OFFSET / (2*i + 1));
                         }
                         if (key_pressed == 'a') {
-                            body_set_rotation(missile1, body_get_orientation(missile1) - ANGLE_OFFSET / (2*i + 1));
+                            body_set_rotation(missile1, body_get_orientation(missile1)
+                                              - ANGLE_OFFSET / (2*i + 1));
                         }
                         if (key_pressed == DOWN_ARROW) {
                             speed2.x = -INIT_VEL * cos(body_get_orientation(tank2_body));
@@ -182,10 +198,12 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                             speed2.y = INIT_VEL * sin(body_get_orientation(tank2_body));
                         }
                         if (key == RIGHT_ARROW) {
-                            body_set_rotation(tank2_body, body_get_orientation(tank2_body) + ANGLE_OFFSET / (2*i + 1));
+                            body_set_rotation(tank2_body, body_get_orientation(tank2_body)
+                                                          + ANGLE_OFFSET / (2*i + 1));
                         }
                         if (key_pressed == LEFT_ARROW) {
-                            body_set_rotation(tank2_body, body_get_orientation(tank2_body) - ANGLE_OFFSET / (2*i + 1));
+                            body_set_rotation(tank2_body, body_get_orientation(tank2_body)
+                                                          - ANGLE_OFFSET / (2*i + 1));
                         }
                         if (key_pressed == '.') {
                             if (body_get_time(tank2_body) > tank_get_curr_reload(tank2)) {
@@ -199,19 +217,22 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                 }
             }
 
-            else if ((tank_get_weapon(tank1) != (shooting_handler_t) remote_missile_shoot) && 
-                     (tank_get_weapon(tank2) == (shooting_handler_t) remote_missile_shoot)) {
+            else if ((tank_get_weapon(tank1) != (shooting_handler_t) remote_missile_shoot)
+                 && (tank_get_weapon(tank2) == (shooting_handler_t) remote_missile_shoot))
+                {
                 body_t *missile2 = NULL;
                 body_set_velocity(tank2_body, (vector_t) {0,0});
                 for (size_t i=0; i < scene_bodies(scene); i++) {
-                        if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE_2) {
+                        if (*(body_types_t *) body_get_info(scene_get_body(scene, i))
+                            == TANK_REMOTE_MISSILE_2) {
                             missile2 = scene_get_body(scene, i);
                         }
                 }
                 if (missile2 == NULL) {
                     tank_shoot(scene, tank2);
                     for (size_t i=0; i < scene_bodies(scene); i++) {
-                        if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE_2) {
+                        if (*(body_types_t *) body_get_info(scene_get_body(scene, i))
+                            == TANK_REMOTE_MISSILE_2) {
                             missile2 = scene_get_body(scene, i);
                         }
                     }
@@ -238,10 +259,12 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                             speed1.y = INIT_VEL * sin(body_get_orientation(tank1_body));
                         }
                         if (key_pressed == 'd') {
-                            body_set_rotation(tank1_body, body_get_orientation(tank1_body) + ANGLE_OFFSET / (2*i + 1));
+                            body_set_rotation(tank1_body, body_get_orientation(tank1_body)
+                                                          + ANGLE_OFFSET / (2*i + 1));
                         }
                         if (key_pressed == 'a') {
-                            body_set_rotation(tank1_body, body_get_orientation(tank1_body) - ANGLE_OFFSET / (2*i + 1));
+                            body_set_rotation(tank1_body, body_get_orientation(tank1_body)
+                                                          - ANGLE_OFFSET / (2*i + 1));
                         }
                         if (key_pressed == ' ') {
                             if (body_get_time(tank1_body) > tank_get_curr_reload(tank1)) {
@@ -258,10 +281,12 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                             speed2.y = INIT_VEL * sin(body_get_orientation(missile2));
                         }
                         if (key == RIGHT_ARROW) {
-                            body_set_rotation(missile2, body_get_orientation(missile2) + ANGLE_OFFSET / (2*i + 1));
+                            body_set_rotation(missile2, body_get_orientation(missile2)
+                                                        + ANGLE_OFFSET / (2*i + 1));
                         }
                         if (key_pressed == LEFT_ARROW) {
-                            body_set_rotation(missile2, body_get_orientation(missile2) - ANGLE_OFFSET / (2*i + 1));
+                            body_set_rotation(missile2, body_get_orientation(missile2)
+                                                        - ANGLE_OFFSET / (2*i + 1));
                         }
                     }
                     body_set_velocity(tank1_body, speed1);
@@ -269,17 +294,20 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                 }
             }
 
-            else if ((tank_get_weapon(tank1) == (shooting_handler_t) remote_missile_shoot) && 
-                     (tank_get_weapon(tank2) == (shooting_handler_t) remote_missile_shoot)) {
+            else if ((tank_get_weapon(tank1) == (shooting_handler_t) remote_missile_shoot)
+                 && (tank_get_weapon(tank2) == (shooting_handler_t) remote_missile_shoot))
+                {
                 body_t *missile1 = NULL;
                 body_t *missile2 = NULL;
                 body_set_velocity(tank1_body, (vector_t) {0,0});
                 body_set_velocity(tank2_body, (vector_t) {0,0});
                 for (size_t i=0; i < scene_bodies(scene); i++) {
-                        if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE_1) {
+                        if (*(body_types_t *) body_get_info(scene_get_body(scene, i))
+                            == TANK_REMOTE_MISSILE_1) {
                             missile1 = scene_get_body(scene, i);
                         }
-                        if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE_2) {
+                        if (*(body_types_t *) body_get_info(scene_get_body(scene, i))
+                            == TANK_REMOTE_MISSILE_2) {
                             missile2 = scene_get_body(scene, i);
                         }
                 }
@@ -291,10 +319,12 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                         tank_shoot(scene, tank2);
                     }
                     for (size_t i=0; i < scene_bodies(scene); i++) {
-                        if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE_1) {
+                        if (*(body_types_t *) body_get_info(scene_get_body(scene, i))
+                            == TANK_REMOTE_MISSILE_1) {
                             missile1 = scene_get_body(scene, i);
                         }
-                        if (*(body_types_t *) body_get_info(scene_get_body(scene, i)) == TANK_REMOTE_MISSILE_2) {
+                        if (*(body_types_t *) body_get_info(scene_get_body(scene, i))
+                            == TANK_REMOTE_MISSILE_2) {
                             missile2 = scene_get_body(scene, i);
                         }
                     }
@@ -322,10 +352,12 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                             speed1.y = INIT_VEL * sin(body_get_orientation(missile1));
                         }
                         if (key_pressed == 'd') {
-                            body_set_rotation(missile1, body_get_orientation(missile1) + ANGLE_OFFSET / (2*i + 1));
+                            body_set_rotation(missile1, body_get_orientation(missile1)
+                                                        + ANGLE_OFFSET / (2*i + 1));
                         }
                         if (key_pressed == 'a') {
-                            body_set_rotation(missile1, body_get_orientation(missile1) - ANGLE_OFFSET / (2*i + 1));
+                            body_set_rotation(missile1, body_get_orientation(missile1)
+                                                        - ANGLE_OFFSET / (2*i + 1));
                         }
                         if (key_pressed == DOWN_ARROW) {
                             speed2.x = -INIT_VEL * cos(body_get_orientation(missile2));
@@ -336,10 +368,12 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                             speed2.y = INIT_VEL * sin(body_get_orientation(missile2));
                         }
                         if (key == RIGHT_ARROW) {
-                            body_set_rotation(missile2, body_get_orientation(missile2) + ANGLE_OFFSET / (2*i + 1));
+                            body_set_rotation(missile2, body_get_orientation(missile2)
+                                                        + ANGLE_OFFSET / (2*i + 1));
                         }
                         if (key_pressed == LEFT_ARROW) {
-                            body_set_rotation(missile2, body_get_orientation(missile2) - ANGLE_OFFSET / (2*i + 1));
+                            body_set_rotation(missile2, body_get_orientation(missile2)
+                                                        - ANGLE_OFFSET / (2*i + 1));
                         }
                     }
                     body_set_velocity(missile1, speed1);
@@ -368,10 +402,12 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                             speed1.y = INIT_VEL * sin(body_get_orientation(tank1_body));
                         }
                         if (key_pressed == 'd') {
-                            body_set_rotation(tank1_body, body_get_orientation(tank1_body) + ANGLE_OFFSET / (2*i + 1));
+                            body_set_rotation(tank1_body, body_get_orientation(tank1_body)
+                                                          + ANGLE_OFFSET / (2*i + 1));
                         }
                         if (key_pressed == 'a') {
-                            body_set_rotation(tank1_body, body_get_orientation(tank1_body) - ANGLE_OFFSET / (2*i + 1));
+                            body_set_rotation(tank1_body, body_get_orientation(tank1_body)
+                                                          - ANGLE_OFFSET / (2*i + 1));
                         }
                         if (key_pressed == ' ') {
                             if (body_get_time(tank1_body) > tank_get_curr_reload(tank1)) {
@@ -388,10 +424,12 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                             speed2.y = INIT_VEL * sin(body_get_orientation(tank2_body));
                         }
                         if (key == RIGHT_ARROW) {
-                            body_set_rotation(tank2_body, body_get_orientation(tank2_body) + ANGLE_OFFSET / (2*i + 1));
+                            body_set_rotation(tank2_body, body_get_orientation(tank2_body)
+                                                          + ANGLE_OFFSET / (2*i + 1));
                         }
                         if (key_pressed == LEFT_ARROW) {
-                            body_set_rotation(tank2_body, body_get_orientation(tank2_body) - ANGLE_OFFSET / (2*i + 1));
+                            body_set_rotation(tank2_body, body_get_orientation(tank2_body)
+                                                          - ANGLE_OFFSET / (2*i + 1));
                         }
                         if (key_pressed == '.') {
                             if (body_get_time(tank2_body) > tank_get_curr_reload(tank2)) {
@@ -437,11 +475,14 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
             scene_erase_some(scenes[PLAY], FIRST_REMOVABLE_INDEX);
             screen_set_tanks(scenes[PLAY], multi, tank1, tank2);
             if (*level == 1) {
-                level_1(get_top_right(), LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY], multi);
+                level_1(get_top_right(), LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT,
+                        scenes[PLAY], multi);
             } else if (*level == 2) {
-                level_2(get_top_right(), LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY], multi);
+                level_2(get_top_right(), LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT,
+                        scenes[PLAY], multi);
             } else if (*level == 3) {
-                level_3(get_top_right(), LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY], multi);
+                level_3(get_top_right(), LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT,
+                        scenes[PLAY], multi);
             }
             *play = true;
         } else if (within_rect(scene_get_body(scenes[PAUSE], EASY_BUT), point)
@@ -459,7 +500,8 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
             }
             scene_erase_some(scenes[PLAY], FIRST_REMOVABLE_INDEX);
             screen_set_tanks(scenes[PLAY], multi, tank1, tank2);
-            level_1(get_top_right(), LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY], multi);
+            level_1(get_top_right(), LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT,
+                    scenes[PLAY], multi);
             *level = get_first_level();
             *play = true;
         } else if (within_rect(scene_get_body(scenes[PAUSE], MEDIUM_BUT), point)
@@ -477,7 +519,8 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
             }
             scene_erase_some(scenes[PLAY], FIRST_REMOVABLE_INDEX);
             screen_set_tanks(scenes[PLAY], multi, tank1, tank2);
-            level_2(get_top_right(), LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY], multi);
+            level_2(get_top_right(), LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT,
+                    scenes[PLAY], multi);
             *level = get_second_level();
             *play = true;
         } else if (within_rect(scene_get_body(scenes[PAUSE], HARD_BUT), point)
@@ -495,10 +538,12 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
             }
             scene_erase_some(scenes[PLAY], FIRST_REMOVABLE_INDEX);
             screen_set_tanks(scenes[PLAY], multi, tank1, tank2);
-            level_3(get_top_right(), LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT, scenes[PLAY], multi);
+            level_3(get_top_right(), LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT,
+                    scenes[PLAY], multi);
             *level = get_third_level();
             *play = true;
-        } else if (!(*choosing_level) && within_rect(scene_get_body(scenes[PAUSE], CHOOSE_PLAYER_BOX), point)) {
+        } else if (!(*choosing_level) && within_rect(scene_get_body(scenes[PAUSE],
+                   CHOOSE_PLAYER_BOX), point)) {
             *multi = !(*multi);
             *choosing_level = true;
             if (*game_over) {
@@ -549,8 +594,8 @@ int main(int argc, char *argv[]) {
     sdl_on_key((key_handler_t)on_key_push);
     sdl_on_mouse((mouse_handler_t)on_mouse);
 
-    double time_passed = 0;
-    double shoot_time = 0;
+    double time_passed = START_TIME;
+    double shoot_time = START_TIME;
     scene_t *temp_scene = malloc(sizeof(scene_t *));
     temp_scene = scene;
     scene_t **scenes = malloc(sizeof(scene_t *) * NUM_SCENES);
@@ -562,9 +607,9 @@ int main(int argc, char *argv[]) {
     *tank_center = center;
 
     list_t *keys_pressed = list_init(0, free);
-    int win;
+    game_outcomes_t win;
 
-    double timer = 0;
+    double timer = START_TIME;
 
     load_sound();
 
@@ -577,7 +622,8 @@ int main(int argc, char *argv[]) {
             if (win >=1 && win <= 3) {
                 if (*level == get_second_level()) {
                     *unlocked_level = get_third_level();
-                } else if (*level == get_first_level() && *unlocked_level == get_first_level()) {  
+                } else if (*level == get_first_level() && *unlocked_level
+                           == get_first_level()) {  
                     *unlocked_level = get_second_level();
                 }
             }
@@ -585,8 +631,9 @@ int main(int argc, char *argv[]) {
             if ((*game_over || *game_started)) {
                 *play = false;
                 vector_t center = {get_top_right().x/2.0, 3*get_top_right().y/4.0};
-                screen_set_rect(pause_scene, center, get_top_right().x, get_top_right().y/2
-                                - get_choose_level_height(), WHITE_SCREEN, color_get_white());
+                screen_set_rect(pause_scene, center, get_top_right().x,
+                                get_top_right().y/2 - get_choose_level_height(),
+                                WHITE_SCREEN, color_get_white());
             }
         }
 
@@ -600,7 +647,8 @@ int main(int argc, char *argv[]) {
             if (shoot_time >= TANK_SHOOT_TIME) {
                 vector_t player_loc;
                 for(int i = 0; i < scene_bodies(scene); i++) {
-                    if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == TANK_1) {
+                    if (*(body_types_t *)body_get_info(scene_get_body(scene, i))
+                        == TANK_1) {
                         player_loc = body_get_centroid(scene_get_body(scene, i));
                     }
                 }
@@ -621,8 +669,10 @@ int main(int argc, char *argv[]) {
             wall_boundary(scene, tank_get_body(tank2));
 
             for(size_t i = 0; i < scene_bodies(scene); i++) { 
-                if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == ENEMY_TANK && !body_is_powerup(scene_get_body(scene, i))) {
-                    body_hit_boundary_check(scene_get_body(scene, i), get_bottom_left(), get_top_right(), dt);
+                if (*(body_types_t *)body_get_info(scene_get_body(scene, i)) == ENEMY_TANK
+                    && !body_is_powerup(scene_get_body(scene, i))) {
+                    body_hit_boundary_check(scene_get_body(scene, i), get_bottom_left(),
+                    get_top_right(), dt);
                 }
             }
 
@@ -648,7 +698,7 @@ int main(int argc, char *argv[]) {
         
         scene_tick(temp_scene, dt);
 
-        //keep playing music
+        // Keep playing music
         continue;
     }
 

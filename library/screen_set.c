@@ -19,6 +19,7 @@ static const vector_t TANK1_INIT_POS = {50, 250};
 static const vector_t TANK2_INIT_POS = {950, 250};
 static const vector_t TANK2_OFF_SCREEN = {1200, 700};
 static const int INIT_LIVES = 3;
+static const int MIN_LIVES_LIMIT = 0;
 
 double get_button_length() {
     return BUTTON_LENGTH;
@@ -74,6 +75,10 @@ vector_t get_tank2_off_screen() {
 
 int get_init_lives() {
     return INIT_LIVES;
+}
+
+int get_min_lives_limit() {
+    return MIN_LIVES_LIMIT;
 }
 
 void screen_set_pause_button(scene_t *scene) {

@@ -45,6 +45,11 @@ list_t *animate_invader(vector_t *center, double radius, int points);
 //Animates a rectangle, used as a bullet
 list_t *animate_rectangle(vector_t center, double length, double height);
 
+const typedef enum rect_corners{
+    BOTTOM_LEFT_CORNER,
+    TOP_LEFT_CORNER
+} rect_corners_t;
+
 /**
  *  @brief Makes a star
  *

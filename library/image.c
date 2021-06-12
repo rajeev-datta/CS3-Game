@@ -3,11 +3,16 @@
 #include "sdl_wrapper.h"
 #include "levels.h"
 #include <assert.h>
+#include "animate.h"
 
 static const double IMG_X_SCALE = 0.9;
 static const double IMG_Y_SCALE = 0.8;
 static const int LOCK_WIDTH = 70;
 static const int LOCK_HEIGHT = 100;
+static const int HALVE = 2;
+static const int RECT_PTS = 4;
+static const double THIRD = 3.0;
+static const int WHOLE = 1;
 
 static SDL_Surface *LEVEL1_SURFACE;
 static SDL_Surface *LEVEL2_SURFACE;
@@ -39,38 +44,44 @@ void image_load() {
 }
 
 void image_pause_screen(scene_t *scene, int *unlocked_level) {
-    double level_width = get_top_right().x / 3.0 - get_level_buffer();
-    double level_height = level_width/2;
+    double level_width = get_top_right().x / THIRD - get_level_buffer();
+    double level_height = level_width/HALVE;
     double image_width = level_width * IMG_X_SCALE;
     double image_height = level_height * IMG_Y_SCALE;
 
     list_t *easy_shape = body_get_shape(scene_get_body(scene, EASY_BUT));
-    assert(list_size(easy_shape) == 4);
-    int easy_x = ((vector_t *)list_get(easy_shape, 0))->x + level_width * (1 - IMG_X_SCALE)/2;
-    int easy_y = ((vector_t *)list_get(easy_shape, 1))->y - level_height * (1 - IMG_Y_SCALE)/2;
+    assert(list_size(easy_shape) == RECT_PTS);
+    int easy_x = ((vector_t *)list_get(easy_shape, BOTTOM_LEFT_CORNER))->x
+                                       + level_width * (WHOLE - IMG_X_SCALE)/HALVE;
+    int easy_y = ((vector_t *)list_get(easy_shape, TOP_LEFT_CORNER))->y
+                                       - level_height * (WHOLE - IMG_Y_SCALE)/HALVE;
     sdl_image(LEVEL1_SURFACE, easy_x, easy_y, image_width, image_height);
 
     list_t *medium_shape = body_get_shape(scene_get_body(scene, MEDIUM_BUT));
-    assert(list_size(medium_shape) == 4);
-    int medium_x = ((vector_t *)list_get(medium_shape, 0))->x + level_width * (1 - IMG_X_SCALE)/2;
-    int medium_y = ((vector_t *)list_get(medium_shape, 1))->y - level_height * (1 - IMG_Y_SCALE)/2;
+    assert(list_size(medium_shape) == RECT_PTS);
+    int medium_x = ((vector_t *)list_get(medium_shape, BOTTOM_LEFT_CORNER))->x
+                                         + level_width * (WHOLE - IMG_X_SCALE)/HALVE;
+    int medium_y = ((vector_t *)list_get(medium_shape, TOP_LEFT_CORNER))->y
+                                         - level_height * (WHOLE - IMG_Y_SCALE)/HALVE;
     sdl_image(LEVEL2_SURFACE, medium_x, medium_y, image_width, image_height);
 
     list_t *hard_shape = body_get_shape(scene_get_body(scene, HARD_BUT));
-    assert(list_size(hard_shape) == 4);
-    int hard_x = ((vector_t *)list_get(hard_shape, 0))->x + level_width * (1 - IMG_X_SCALE)/2;
-    int hard_y = ((vector_t *)list_get(hard_shape, 1))->y - level_height * (1 - IMG_Y_SCALE)/2;
+    assert(list_size(hard_shape) == RECT_PTS);
+    int hard_x = ((vector_t *)list_get(hard_shape, BOTTOM_LEFT_CORNER))->x
+                                       + level_width * (WHOLE - IMG_X_SCALE)/HALVE;
+    int hard_y = ((vector_t *)list_get(hard_shape, TOP_LEFT_CORNER))->y
+                                       - level_height * (WHOLE - IMG_Y_SCALE)/HALVE;
     sdl_image(LEVEL3_SURFACE, hard_x, hard_y, image_width, image_height);
 
     if (*unlocked_level < get_second_level()) {
-        sdl_image(LOCK_SURFACE, medium_x + image_width/2 - LOCK_WIDTH/2,
-                 medium_y + image_height/2 - LOCK_HEIGHT/2 - get_buffer(), LOCK_WIDTH,
-                 LOCK_HEIGHT);
+        sdl_image(LOCK_SURFACE, medium_x + image_width/HALVE - LOCK_WIDTH/HALVE,
+                 medium_y + image_height/HALVE - LOCK_HEIGHT/HALVE - get_buffer(),
+                 LOCK_WIDTH, LOCK_HEIGHT);
     }
     if (*unlocked_level < get_third_level()) {
-        sdl_image(LOCK_SURFACE, hard_x + image_width/2 - LOCK_WIDTH/2,
-                 hard_y + image_height/2 - LOCK_HEIGHT/2 - get_buffer(), LOCK_WIDTH,
-                 LOCK_HEIGHT);
+        sdl_image(LOCK_SURFACE, hard_x + image_width/HALVE - LOCK_WIDTH/HALVE,
+                 hard_y + image_height/HALVE - LOCK_HEIGHT/HALVE - get_buffer(),
+                 LOCK_WIDTH, LOCK_HEIGHT);
     }
 
     list_free(easy_shape);

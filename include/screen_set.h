@@ -21,6 +21,14 @@ typedef enum scene_indices{
     TANK2
 } scene_indices_t;
 
+typedef enum game_outcomes{
+    GAME_ONGOING,
+    SINGLE_PLAYER_LOSS,
+    PLAYER1_WIN,
+    PLAYER2_WIN,
+    SINGLE_PLAYER_WIN
+} game_outcomes_t;
+
 double get_button_length();
 
 double get_button_height();
@@ -48,6 +56,8 @@ vector_t get_tank2_init_pos();
 vector_t get_tank2_off_screen();
 
 int get_init_lives();
+
+int get_min_lives_limit();
 
 // Makes the pause button and adds it to the scene
 void screen_set_pause_button(scene_t *scene);

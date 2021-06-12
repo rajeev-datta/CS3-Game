@@ -32,6 +32,9 @@ static double const ANGLE_OFFSET = (10 * M_PI)/180;
 static const int NUM_SCENES = 2;
 static const int FIRST_REMOVABLE_INDEX = 4;
 static const int START_TIME = 0;
+static const int FIRST_KEY = 0;
+static const double MID_SCALE = 0.5;
+static const double THREE_FOURTHS_SCALE = 3.0/4.0;
 
 typedef enum scenes{
     PLAY,
@@ -48,7 +51,7 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                 bool missile_exists = false;
                 list_clear(keys_pressed);
                 body_set_velocity(tank1_body, VEC_ZERO);
-                for (size_t i=0; i < scene_bodies(scene); i++) {
+                for (size_t i = 0; i < scene_bodies(scene); i++) {
                     if (*(body_types_t *) body_get_info(scene_get_body(scene, i))
                         == TANK_REMOTE_MISSILE_1) {
                         body_t *missile = scene_get_body(scene, i);
@@ -128,7 +131,7 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                         if (key_pressed == ' ') {
                             if (body_get_time(tank1_body) > tank_get_curr_reload(tank1)) {
                                 tank_shoot(scene, tank1);
-                                tank_set_body_time(tank1, 0);
+                                tank_set_body_time(tank1, (double) START_TIME);
                             }
                         }
                     }
@@ -143,7 +146,7 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                 (tank_get_weapon(tank2) != (shooting_handler_t) remote_missile_shoot)) {
                 body_t *missile1 = NULL;
                 body_set_velocity(tank1_body, VEC_ZERO);
-                for (size_t i=0; i < scene_bodies(scene); i++) {
+                for (size_t i = 0; i < scene_bodies(scene); i++) {
                         if (*(body_types_t *) body_get_info(scene_get_body(scene, i))
                             == TANK_REMOTE_MISSILE_1) {
                             missile1 = scene_get_body(scene, i);
@@ -151,7 +154,7 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                 }
                 if (missile1 == NULL) {
                     tank_shoot(scene, tank1);
-                    for (size_t i=0; i < scene_bodies(scene); i++) {
+                    for (size_t i = 0; i < scene_bodies(scene); i++) {
                         if (*(body_types_t *) body_get_info(scene_get_body(scene, i))
                             == TANK_REMOTE_MISSILE_1) {
                             missile1 = scene_get_body(scene, i);
@@ -206,7 +209,7 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                         if (key_pressed == '.') {
                             if (body_get_time(tank2_body) > tank_get_curr_reload(tank2)) {
                                 tank_shoot(scene, tank2);
-                                tank_set_body_time(tank2, 0);
+                                tank_set_body_time(tank2, (double) START_TIME);
                             }
                         }
                     }
@@ -220,7 +223,7 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                 {
                 body_t *missile2 = NULL;
                 body_set_velocity(tank2_body, VEC_ZERO);
-                for (size_t i=0; i < scene_bodies(scene); i++) {
+                for (size_t i = 0; i < scene_bodies(scene); i++) {
                         if (*(body_types_t *) body_get_info(scene_get_body(scene, i))
                             == TANK_REMOTE_MISSILE_2) {
                             missile2 = scene_get_body(scene, i);
@@ -228,7 +231,7 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                 }
                 if (missile2 == NULL) {
                     tank_shoot(scene, tank2);
-                    for (size_t i=0; i < scene_bodies(scene); i++) {
+                    for (size_t i = 0; i < scene_bodies(scene); i++) {
                         if (*(body_types_t *) body_get_info(scene_get_body(scene, i))
                             == TANK_REMOTE_MISSILE_2) {
                             missile2 = scene_get_body(scene, i);
@@ -267,7 +270,7 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                         if (key_pressed == ' ') {
                             if (body_get_time(tank1_body) > tank_get_curr_reload(tank1)) {
                                 tank_shoot(scene, tank1);
-                                tank_set_body_time(tank1, 0);
+                                tank_set_body_time(tank1, (double) START_TIME);
                             }
                         }
                         if (key_pressed == DOWN_ARROW) {
@@ -299,7 +302,7 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                 body_t *missile2 = NULL;
                 body_set_velocity(tank1_body, VEC_ZERO);
                 body_set_velocity(tank2_body, VEC_ZERO);
-                for (size_t i=0; i < scene_bodies(scene); i++) {
+                for (size_t i = 0; i < scene_bodies(scene); i++) {
                         if (*(body_types_t *) body_get_info(scene_get_body(scene, i))
                             == TANK_REMOTE_MISSILE_1) {
                             missile1 = scene_get_body(scene, i);
@@ -316,7 +319,7 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                     if (missile2 == NULL) {
                         tank_shoot(scene, tank2);
                     }
-                    for (size_t i=0; i < scene_bodies(scene); i++) {
+                    for (size_t i = 0; i < scene_bodies(scene); i++) {
                         if (*(body_types_t *) body_get_info(scene_get_body(scene, i))
                             == TANK_REMOTE_MISSILE_1) {
                             missile1 = scene_get_body(scene, i);
@@ -410,7 +413,7 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                         if (key_pressed == ' ') {
                             if (body_get_time(tank1_body) > tank_get_curr_reload(tank1)) {
                                 tank_shoot(scene, tank1);
-                                tank_set_body_time(tank1, 0);
+                                tank_set_body_time(tank1, (double) START_TIME);
                             }
                         }
                         if (key_pressed == DOWN_ARROW) {
@@ -432,7 +435,7 @@ void on_key_push(char key, key_event_type_t type, double held_time,
                         if (key_pressed == '.') {
                             if (body_get_time(tank2_body) > tank_get_curr_reload(tank2)) {
                                 tank_shoot(scene, tank2);
-                                tank_set_body_time(tank2, 0);
+                                tank_set_body_time(tank2, (double) START_TIME);
                             }
                         }
                     }
@@ -475,10 +478,10 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
             if (*level == 1) {
                 level_1(get_top_right(), LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT,
                         scenes[PLAY], multi);
-            } else if (*level == 2) {
+            } else if (*level == get_second_level()) {
                 level_2(get_top_right(), LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT,
                         scenes[PLAY], multi);
-            } else if (*level == 3) {
+            } else if (*level == get_third_level()) {
                 level_3(get_top_right(), LEVEL_1_WALL_LENGTH, LEVEL_1_WALL_HEIGHT,
                         scenes[PLAY], multi);
             }
@@ -551,9 +554,11 @@ void on_mouse(scene_t *scene, vector_t point, bool *play, scene_t **scenes, int 
                 scene_remove_body(scene, WHITE_SCREEN);
                 *game_started = false;
             }
-            vector_t center = {get_top_right().x/2.0, 3.0*get_top_right().y/4.0};
+            vector_t center = {get_top_right().x * MID_SCALE,
+                              get_top_right().y * THREE_FOURTHS_SCALE};
             screen_set_rect(scene, center, get_top_right().x,
-                              get_top_right().y/2.0, WHITE_SCREEN, color_get_white());
+                            get_top_right().y * MID_SCALE, WHITE_SCREEN,
+                            color_get_white());
         }
     }
 }
@@ -604,18 +609,18 @@ int main(int argc, char *argv[]) {
     vector_t center = {rand() % (int)get_top_right().x, rand() % (int)get_top_right().y};
     *tank_center = center;
 
-    list_t *keys_pressed = list_init(0, free);
+    list_t *keys_pressed = list_init(FIRST_KEY, free);
     game_outcomes_t win;
 
     load_sound();
 
-    while (!sdl_is_done(temp_scene, scene_get_body(temp_scene, 0), play, scenes, level,
+    while (!sdl_is_done(temp_scene, scene_get_body(temp_scene, PLAY), play, scenes, level,
                         multi, choosing_level, tank1, tank2, game_over, keys_pressed,
                         game_started, unlocked_level)) {
         double dt = time_since_last_tick();
         if (*play) {
             win = gameplay_find_winner(scene, tank1, tank2, multi, game_over);
-            if (win >=1 && win <= 3) {
+            if (win >= PLAYER1_WIN && win <= SINGLE_PLAYER_WIN) {
                 if (*level == get_second_level()) {
                     *unlocked_level = get_third_level();
                 } else if (*level == get_first_level() && *unlocked_level
@@ -626,9 +631,10 @@ int main(int argc, char *argv[]) {
 
             if ((*game_over || *game_started)) {
                 *play = false;
-                vector_t center = {get_top_right().x/2.0, 3*get_top_right().y/4.0};
+                vector_t center = {get_top_right().x * MID_SCALE,
+                                   get_top_right().y * THREE_FOURTHS_SCALE};
                 screen_set_rect(pause_scene, center, get_top_right().x,
-                                get_top_right().y/2 - get_choose_level_height(),
+                                get_top_right().y * MID_SCALE - get_choose_level_height(),
                                 WHITE_SCREEN, color_get_white());
             }
         }
